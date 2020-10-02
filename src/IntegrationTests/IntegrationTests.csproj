@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bewit.Generation\Bewit.Generation.csproj" />
-    <ProjectReference Include="..\Bewit.Extensions.HotChocolate\Bewit.Extensions.HotChocolate.csproj" />
-    <ProjectReference Include="..\Bewit.Storage.MongoDB\Bewit.Storage.MongoDB.csproj" />
-    <ProjectReference Include="..\Bewit.Extensions.Mvc\Bewit.Extensions.Mvc.csproj" />
-    <ProjectReference Include="..\Bewit.Validation\Bewit.Validation.csproj" />
-    <ProjectReference Include="..\Bewit\Bewit.csproj" />
+    <ProjectReference Include="..\Generation\Generation.csproj" />
+    <ProjectReference Include="..\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="..\Storage.MongoDB\Storage.MongoDB.csproj" />
+    <ProjectReference Include="..\Extensions.Mvc\Extensions.Mvc.csproj" />
+    <ProjectReference Include="..\Validation\Validation.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

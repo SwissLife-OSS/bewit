@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Bewit\Bewit.csproj" />
+    <ProjectReference Include="..\..\src\Core\Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
