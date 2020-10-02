@@ -1,0 +1,13 @@
+﻿{
+  "QueryResult": {
+    "Data": {
+      "foo": "bar"
+    },
+    "Errors": null,
+    "Extensions": null,
+    "ContextData": null
+  },
+  "BewitContext": {
+    "Email": "foo@bar.gmail.com"
+  }
+}

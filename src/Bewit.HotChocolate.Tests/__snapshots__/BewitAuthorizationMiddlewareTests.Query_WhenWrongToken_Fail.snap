@@ -1,0 +1,37 @@
+﻿{
+  "Data": {
+    "foo": null
+  },
+  "Errors": [
+    {
+      "Message": "NotAuthorized",
+      "Code": null,
+      "Path": [
+        "foo"
+      ],
+      "Locations": [
+        {
+          "Line": 1,
+          "Column": 3
+        }
+      ],
+      "Exception": {
+        "ClassName": "Bewit.Validation.Exceptions.BewitInvalidException",
+        "Message": "The given Bewit is invalid.",
+        "Data": null,
+        "InnerException": null,
+        "HelpURL": null,
+        "StackTraceString": "   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in /Users/michael/local/swiss/Bewit/src/Bewit.Validation/BewitTokenValidator.cs:line 80\n   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitTokenAsync(BewitToken`1 bewit, CancellationToken cancellationToken) in /Users/michael/local/swiss/Bewit/src/Bewit.Validation/BewitTokenValidator.cs:line 40\n   at Bewit.HotChocolate.BewitAuthorizationMiddleware.InvokeAsync(IDirectiveContext context) in /Users/michael/local/swiss/Bewit/src/Bewit.HotChocolate/BewitAuthorizationMiddleware.cs:line 37",
+        "RemoteStackTraceString": null,
+        "RemoteStackIndex": 0,
+        "ExceptionMethod": null,
+        "HResult": -2146233088,
+        "Source": "Bewit.Validation",
+        "WatsonBuckets": null
+      },
+      "Extensions": {}
+    }
+  ],
+  "Extensions": null,
+  "ContextData": null
+}

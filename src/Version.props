@@ -1,7 +1,10 @@
 <Project>
 
   <PropertyGroup>
-    <Version Condition="$(Version) == ''">0.0.0</Version>
+    <HotChocolateVersion>11.0.0-preview.137</HotChocolateVersion>
+    <SquadronVersion>0.5.0</SquadronVersion>
+    <xUnitVersion>2.4.1</xUnitVersion>
+    <MicrosoftExtensionsVersion>3.1.8</MicrosoftExtensionsVersion>
   </PropertyGroup>
 
 </Project>
