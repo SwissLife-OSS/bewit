@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
+
+  <PropertyGroup>
+    <RootNamespace>Bewit.Generation</RootNamespace>
+    <AssemblyName>Bewit.Generation</AssemblyName>
+    <PackageId>Bewit.Generation</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

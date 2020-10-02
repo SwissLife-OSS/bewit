@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
+
+  <PropertyGroup>
+    <RootNamespace>Bewit.Extensions.HotChocolate</RootNamespace>
+    <AssemblyName>Bewit.Extensions.HotChocolate</AssemblyName>
+    <PackageId>Bewit.Extensions.HotChocolate</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Generation\Generation.csproj" />
+    <ProjectReference Include="..\Validation\Validation.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Server" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
