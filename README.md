@@ -1,4 +1,4 @@
-** Bewit is an authentication scheme alternative to cookies and bearer tokens.**
+**Bewit is an authentication scheme alternative to cookies and bearer tokens.**
 
 Bewit enables you to provide authentication in use cases where cookies and authentication headers can not be used. With support for both stateful and stateless authentication, Bewit is a practical solution for many scenarii, including file downloads and temporary or single-use links.
 
@@ -59,9 +59,9 @@ services.AddBewitGeneration<string>(
 );
 ```
 
-### Mvc Server
+### MVC Server
 
-Create a simple MVC Server with the following Controller:
+Create a simple ASp.Net MVC Server with the following Controller:
 
 ```csharp
     [Route("api/[controller]")]
