@@ -104,7 +104,7 @@ mutation foo {
 
 ### Generating secured Links
 
-- [ ] Vanilla (no overhead)
+- [x] Vanilla (no overhead)
 - [x] HotChocolate integration
 - [ ] graphql-dotnet integration
 
