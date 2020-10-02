@@ -61,7 +61,7 @@ services.AddBewitGeneration<string>(
 
 ### MVC Server
 
-Create a simple ASp.Net MVC Server with the following Controller:
+Create a simple Asp.Net MVC Server with the following Controller:
 
 ```csharp
     [Route("api/[controller]")]
