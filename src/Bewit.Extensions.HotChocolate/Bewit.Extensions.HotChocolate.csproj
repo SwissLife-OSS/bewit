@@ -2,9 +2,9 @@
   <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
-    <RootNamespace>Bewit.HotChocolate</RootNamespace>
-    <AssemblyName>Bewit.HotChocolate</AssemblyName>
-    <PackageId>Bewit.HotChocolate</PackageId>
+    <RootNamespace>Bewit.Extensions.HotChocolate</RootNamespace>
+    <AssemblyName>Bewit.Extensions.HotChocolate</AssemblyName>
+    <PackageId>Bewit.Extensions.HotChocolate</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

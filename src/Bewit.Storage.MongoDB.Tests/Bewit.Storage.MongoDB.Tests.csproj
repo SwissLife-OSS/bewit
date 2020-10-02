@@ -2,18 +2,17 @@
   <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
-    <AssemblyName>Bewit.Mvc.Tests</AssemblyName>
-    <RootNamespace>Bewit.Mvc.Tests</RootNamespace>
+    <AssemblyName>Bewit.MongoDB.Tests</AssemblyName>
+    <RootNamespace>Bewit.MongoDB.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bewit.Generation\Bewit.Generation.csproj" />
-    <ProjectReference Include="..\Bewit.Mvc\Bewit.Mvc.csproj" />
-    <ProjectReference Include="..\Bewit.Validation\Bewit.Validation.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+    <PackageReference Include="Squadron.Mongo" Version="$(SquadronVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <ProjectReference Include="..\Bewit.Storage.MongoDB\Bewit.Storage.MongoDB.csproj" />
   </ItemGroup>
 
   <!--For Visual Studio for Mac Test Explorer we need this reference here-->

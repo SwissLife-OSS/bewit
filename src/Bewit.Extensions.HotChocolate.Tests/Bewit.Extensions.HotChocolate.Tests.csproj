@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bewit.HotChocolate\Bewit.HotChocolate.csproj" />
-    <ProjectReference Include="..\Bewit.MongoDB\Bewit.MongoDB.csproj" />
+    <ProjectReference Include="..\Bewit.Extensions.HotChocolate\Bewit.Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="..\Bewit.Storage.MongoDB\Bewit.Storage.MongoDB.csproj" />
   </ItemGroup>
 
   <ItemGroup>

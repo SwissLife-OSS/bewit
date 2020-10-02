@@ -9,21 +9,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Generation", "Bewit.G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Validation", "Bewit.Validation\Bewit.Validation.csproj", "{05D226F6-E0A6-4CB9-91F4-5A709D16CCCB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.MongoDB", "Bewit.MongoDB\Bewit.MongoDB.csproj", "{BE0C448E-F3DD-444B-BFAF-54DAD9D62B14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Storage.MongoDB", "Bewit.Storage.MongoDB\Bewit.Storage.MongoDB.csproj", "{BE0C448E-F3DD-444B-BFAF-54DAD9D62B14}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Mvc", "Bewit.Mvc\Bewit.Mvc.csproj", "{C37AAB75-B536-4239-8A7B-7F441D37C1A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Extensions.Mvc", "Bewit.Extensions.Mvc\Bewit.Extensions.Mvc.csproj", "{C37AAB75-B536-4239-8A7B-7F441D37C1A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.HotChocolate", "Bewit.HotChocolate\Bewit.HotChocolate.csproj", "{12BC2B57-D9B4-43B9-B3AE-02424003C1D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Extensions.HotChocolate", "Bewit.Extensions.HotChocolate\Bewit.Extensions.HotChocolate.csproj", "{12BC2B57-D9B4-43B9-B3AE-02424003C1D9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Generation.Tests", "Bewit.Generation.Tests\Bewit.Generation.Tests.csproj", "{F87366C0-5988-4FD9-A3A3-3E1499CB026E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.HotChocolate.Tests", "Bewit.HotChocolate.Tests\Bewit.HotChocolate.Tests.csproj", "{D41A5FD5-B15F-484B-AAA3-CA7454004727}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Extensions.HotChocolate.Tests", "Bewit.Extensions.HotChocolate.Tests\Bewit.Extensions.HotChocolate.Tests.csproj", "{D41A5FD5-B15F-484B-AAA3-CA7454004727}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.IntegrationTests", "Bewit.IntegrationTests\Bewit.IntegrationTests.csproj", "{F61AC6DB-8B0F-41F1-9B11-2DD4DE9326B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.MongoDB.Tests", "Bewit.MongoDB.Tests\Bewit.MongoDB.Tests.csproj", "{55534AE7-A127-4625-A874-62DEF8CD2C70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Storage.MongoDB.Tests", "Bewit.Storage.MongoDB.Tests\Bewit.Storage.MongoDB.Tests.csproj", "{55534AE7-A127-4625-A874-62DEF8CD2C70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Mvc.Tests", "Bewit.Mvc.Tests\Bewit.Mvc.Tests.csproj", "{FED86245-1CD4-4E76-BE8F-55BFAECB8FF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Extensions.Mvc.Tests", "Bewit.Extensions.Mvc.Tests\Bewit.Extensions.Mvc.Tests.csproj", "{FED86245-1CD4-4E76-BE8F-55BFAECB8FF6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bewit.Validation.Tests", "Bewit.Validation.Tests\Bewit.Validation.Tests.csproj", "{AE9EB76D-5549-4A73-AEB3-0A1F03D745BC}"
 EndProject

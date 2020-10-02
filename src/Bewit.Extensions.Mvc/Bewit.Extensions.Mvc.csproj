@@ -2,9 +2,9 @@
   <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
-    <RootNamespace>Bewit.Mvc</RootNamespace>
-    <AssemblyName>Bewit.Mvc</AssemblyName>
-    <PackageId>Bewit.Mvc</PackageId>
+    <RootNamespace>Bewit.Extensions.Mvc</RootNamespace>
+    <AssemblyName>Bewit.Extensions.Mvc</AssemblyName>
+    <PackageId>Bewit.Extensions.Mvc</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,9 +2,9 @@
   <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
-    <RootNamespace>Bewit.MongoDB</RootNamespace>
-    <AssemblyName>Bewit.MongoDB</AssemblyName>
-    <PackageId>Bewit.MongoDB</PackageId>
+    <RootNamespace>Bewit.Storage.MongoDB</RootNamespace>
+    <AssemblyName>Bewit.Storage.MongoDB</AssemblyName>
+    <PackageId>Bewit.Storage.MongoDB</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
