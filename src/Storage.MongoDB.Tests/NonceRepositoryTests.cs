@@ -9,7 +9,7 @@ using MongoDB.Driver;
 using Squadron;
 using Xunit;
 
-namespace Bewit.MongoDB.Tests
+namespace Bewit.Storage.MongoDB.Tests
 {
     public class NonceRepositoryTests : IClassFixture<MongoResource>
     {
@@ -37,15 +37,15 @@ namespace Bewit.MongoDB.Tests
             IMongoDatabase database = _mongoResource.CreateDatabase();
             var repository = new NonceRepository(database, nameof(Token));
             var token = "myToken";
-            var expirationDate = DateTime.UtcNow;
+            DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
 
             //Act
             await repository.InsertOneAsync(nonce, CancellationToken.None);
 
             //Assert
-            var collection = database.GetCollection<Token>(nameof(Token));
-            List<Token> items = (
+            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
+            var items = (
                 await collection.FindAsync(
                     Builders<Token>.Filter.Empty,
                     cancellationToken: CancellationToken.None)
@@ -62,19 +62,19 @@ namespace Bewit.MongoDB.Tests
             IMongoDatabase database = _mongoResource.CreateDatabase();
             var repository = new NonceRepository(database, nameof(Token));
             var token = "myToken";
-            var expirationDate = DateTime.UtcNow;
+            DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
-            var collection = database.GetCollection<Token>(nameof(Token));
+            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
             await collection.InsertOneAsync(
                 nonce, new InsertOneOptions(), CancellationToken.None);
 
             //Act
-            var returnedNonce =
+            Token returnedNonce =
                 await repository.FindOneAndDeleteAsync(token,
                     CancellationToken.None);
 
             //Assert
-            List<Token> items = (
+            var items = (
                 await collection.FindAsync(
                     Builders<Token>.Filter.Empty,
                     cancellationToken: CancellationToken.None)
@@ -93,13 +93,13 @@ namespace Bewit.MongoDB.Tests
             var token = "myToken";
 
             //Act
-            var returnedNonce =
+            Token returnedNonce =
                 await repository.FindOneAndDeleteAsync(token,
                     CancellationToken.None);
 
             //Assert
-            var collection = database.GetCollection<Token>(nameof(Token));
-            List<Token> items = (
+            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
+            var items = (
                 await collection.FindAsync(
                     Builders<Token>.Filter.Empty,
                     cancellationToken: CancellationToken.None)

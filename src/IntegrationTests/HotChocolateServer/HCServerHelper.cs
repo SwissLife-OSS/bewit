@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Bewit.Core;
+using Bewit.Extensions.HotChocolate;
 using Bewit.Generation;
-using Bewit.HotChocolate;
-using Bewit.MongoDB;
+using Bewit.Storage.MongoDB;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Configuration;

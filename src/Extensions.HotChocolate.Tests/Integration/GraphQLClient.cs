@@ -1,11 +1,11 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Bewit.HotChocolate.Tests.Integration
+namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class GraphQLClient
     {
@@ -23,7 +23,7 @@ namespace Bewit.HotChocolate.Tests.Integration
         {
             using (HttpClient client = _client)
             {
-                string encodedData = JsonConvert.SerializeObject(request,
+                var encodedData = JsonConvert.SerializeObject(request,
                     new JsonSerializerSettings
                     {
                         ContractResolver =
@@ -37,7 +37,7 @@ namespace Bewit.HotChocolate.Tests.Integration
                         Encoding.UTF8,
                         ContentType), cancellationToken);
 
-                string res = await httpResult.Content.ReadAsStringAsync();
+                var res = await httpResult.Content.ReadAsStringAsync();
 
                 return JsonConvert.DeserializeObject<QueryResponse<T>>(res);
             }

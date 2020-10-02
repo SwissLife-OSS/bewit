@@ -2,8 +2,8 @@
   <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
-    <AssemblyName>Bewit.HotChocolate.Tests</AssemblyName>
-    <RootNamespace>Bewit.HotChocolate.Tests</RootNamespace>
+    <AssemblyName>Bewit.Extensions.HotChocolate.Tests</AssemblyName>
+    <RootNamespace>Bewit.Extensions.HotChocolate.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

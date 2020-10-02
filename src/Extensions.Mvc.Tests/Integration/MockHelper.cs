@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using Bewit.Core;
 using Moq;
 
-namespace Bewit.Mvc.Tests.Integration
+namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     internal static class MockHelper
     {

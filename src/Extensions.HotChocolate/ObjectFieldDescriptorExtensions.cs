@@ -1,6 +1,6 @@
 using HotChocolate.Types;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public static class ObjectFieldDescriptorExtensions
     {

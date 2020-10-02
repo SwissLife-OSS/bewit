@@ -1,11 +1,11 @@
-﻿using Bewit.Mvc.Filter;
+using Bewit.Mvc.Filter;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bewit.Mvc.Tests.Integration
+namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DummyController: Controller
+    public class DummyController : Controller
     {
         [HttpGet("NoBewitProtection")]
         public ActionResult NoBewitProtection()
@@ -23,8 +23,8 @@ namespace Bewit.Mvc.Tests.Integration
         [HttpGet("WithBewitParameters/{id}")]
         [Bewit]
         public ActionResult WithBewitParameters(
-            string id, 
-            [FromBewit] string firstName, 
+            string id,
+            [FromBewit] string firstName,
             [FromBewit] string lastName)
         {
             return Content($"{id}: {firstName} {lastName}");

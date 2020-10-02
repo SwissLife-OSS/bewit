@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Bewit.HotChocolate.Tests.Integration
+namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class QueryRequest
     {

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public interface IBewitContext
     {

@@ -1,4 +1,4 @@
-﻿namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     internal static class BewitTokenHeader
     {

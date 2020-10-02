@@ -1,8 +1,11 @@
+using System;
 using System.Threading.Tasks;
+using HotChocolate;
+using HotChocolate.Execution;
 using Snapshooter.Xunit;
 using Xunit;
 
-namespace Bewit.HotChocolate.Tests
+namespace Bewit.Extensions.HotChocolate.Tests
 {
     public class BewitAuthorizationMiddlewareTests
     {
@@ -10,13 +13,13 @@ namespace Bewit.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            var serviceProvider = TestHelpers.CreateServiceProvider();
+            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
             var payload = "foo@bar.gmail.com";
             var token = await TestHelpers.CreateToken(serviceProvider, payload);
-            var schema = TestHelpers.CreateSchema(serviceProvider);
+            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            var result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
 
             // assert
             result.MatchSnapshot();
@@ -26,12 +29,12 @@ namespace Bewit.HotChocolate.Tests
         public async Task Query_WhenWrongToken_Fail()
         {
             // arrange
-            var serviceProvider = TestHelpers.CreateServiceProvider();
+            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
             var token = await TestHelpers.CreateBadToken();
-            var schema = TestHelpers.CreateSchema(serviceProvider);
+            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            var result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
 
             // assert
             result.MatchSnapshot(options =>
@@ -42,11 +45,11 @@ namespace Bewit.HotChocolate.Tests
         public async Task Query_WhenNotAuthorize_Fail()
         {
             // arrange
-            var serviceProvider = TestHelpers.CreateServiceProvider();
-            var schema = TestHelpers.CreateSchema(serviceProvider);
+            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
+            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            var result = await TestHelpers.ExecuteQuery(schema);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(schema);
 
             // assert
             result.MatchSnapshot();

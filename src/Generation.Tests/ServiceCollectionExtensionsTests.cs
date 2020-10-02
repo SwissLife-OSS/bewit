@@ -21,7 +21,7 @@ namespace Bewit.Generation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            IConfigurationRoot? configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
                     new KeyValuePair<string, string>("Bewit:Secret", "123")
@@ -53,7 +53,7 @@ namespace Bewit.Generation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            IConfigurationRoot? configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
                     new KeyValuePair<string, string>("Bewit:esfesf", "123")

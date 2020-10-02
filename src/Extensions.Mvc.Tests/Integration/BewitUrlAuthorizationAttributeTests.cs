@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Bewit.Mvc.Tests.Integration
+namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitUrlAuthorizationAttributeTests
     {
@@ -22,7 +22,7 @@ namespace Bewit.Mvc.Tests.Integration
         {
             //Arrange
             TestServer server = TestServerHelper.CreateServer<string>(Secret);
-            string url = "/api/dummy/NoBewitProtection";
+            var url = "/api/dummy/NoBewitProtection";
             HttpClient client = server.CreateClient();
 
             //Act
@@ -31,7 +31,7 @@ namespace Bewit.Mvc.Tests.Integration
 
             //Assert
             res.StatusCode.Should().Be(HttpStatusCode.OK);
-            string content = await res.Content.ReadAsStringAsync();
+            var content = await res.Content.ReadAsStringAsync();
             content.Should().Be("bar");
         }
 
@@ -41,8 +41,8 @@ namespace Bewit.Mvc.Tests.Integration
             //Arrange
             var cryptoService = new HmacSha256CryptographyService(Secret);
             TestServer server = TestServerHelper.CreateServer<string>(Secret);
-            string url = "/api/dummy/WithBewitProtection";
-            BewitTokenGenerator<string> tokenGenerator =
+            var url = "/api/dummy/WithBewitProtection";
+            var tokenGenerator =
                 new BewitTokenGenerator<string>(
                     TimeSpan.FromMinutes(1),
                     cryptoService,
@@ -51,7 +51,7 @@ namespace Bewit.Mvc.Tests.Integration
                 await tokenGenerator.GenerateBewitTokenAsync(
                     url.ToLowerInvariant(),
                     CancellationToken.None);
-            string fullUrl = $"{url}?bewit={bewitToken}";
+            var fullUrl = $"{url}?bewit={bewitToken}";
             HttpClient client = server.CreateClient();
 
             //Act
@@ -60,7 +60,7 @@ namespace Bewit.Mvc.Tests.Integration
 
             //Assert
             res.StatusCode.Should().Be(HttpStatusCode.OK);
-            string content = await res.Content.ReadAsStringAsync();
+            var content = await res.Content.ReadAsStringAsync();
             content.Should().Be("bar");
         }
 
@@ -75,8 +75,8 @@ namespace Bewit.Mvc.Tests.Integration
             //Arrange
             var cryptoService = new HmacSha256CryptographyService(Secret);
             TestServer server = TestServerHelper.CreateServer<string>(Secret);
-            string url = "/api/dummy/SomeBewitProtectedUrl";
-            BewitTokenGenerator<string> tokenGenerator =
+            var url = "/api/dummy/SomeBewitProtectedUrl";
+            var tokenGenerator =
                 new BewitTokenGenerator<string>(
                     TimeSpan.FromMinutes(1),
                     cryptoService,
@@ -85,7 +85,7 @@ namespace Bewit.Mvc.Tests.Integration
                 await tokenGenerator.GenerateBewitTokenAsync(url.ToLowerInvariant(),
                     CancellationToken.None);
             url = "/api/dummy/WithBewitProtection";
-            string fullUrl = $"{url}?bewit={bewitToken}";
+            var fullUrl = $"{url}?bewit={bewitToken}";
             HttpClient client = server.CreateClient();
 
             //Act
@@ -94,7 +94,7 @@ namespace Bewit.Mvc.Tests.Integration
 
             //Assert
             res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            string content = await res.Content.ReadAsStringAsync();
+            var content = await res.Content.ReadAsStringAsync();
             if (content != null)
             {
                 Assert.Equal(-1, content.IndexOf("bar"));
@@ -107,8 +107,8 @@ namespace Bewit.Mvc.Tests.Integration
             //Arrange
             var cryptoService = new HmacSha256CryptographyService(Secret);
             TestServer server = TestServerHelper.CreateServer<string>(Secret);
-            string url = "/api/dummy/SomeBewitProtectedUrl";
-            BewitTokenGenerator<string> tokenGenerator =
+            var url = "/api/dummy/SomeBewitProtectedUrl";
+            var tokenGenerator =
                 new BewitTokenGenerator<string>(
                     TimeSpan.FromMinutes(1),
                     cryptoService,
@@ -119,11 +119,11 @@ namespace Bewit.Mvc.Tests.Integration
 
             //try to hack the token by replacing the url but reusing the same hash
             url = "/api/dummy/WithBewitProtection";
-            string serializedBewit =
+            var serializedBewit =
                 Encoding.UTF8.GetString(Convert.FromBase64String((string)bewitToken));
             Bewit<string> bewitInternal =
                 JsonConvert.DeserializeObject<Bewit<string>>(serializedBewit);
-            Bewit<string> newBewitInternal = new Bewit<string>(
+            var newBewitInternal = new Bewit<string>(
                 bewitInternal.Nonce,
                 bewitInternal.ExpirationDate,
                 url.ToLowerInvariant(),
@@ -133,7 +133,7 @@ namespace Bewit.Mvc.Tests.Integration
                 Encoding.UTF8.GetBytes(serializedBewit)
             ));
 
-            string fullUrl = $"{url}?bewit={bewitToken}";
+            var fullUrl = $"{url}?bewit={bewitToken}";
             HttpClient client = server.CreateClient();
 
             //Act
@@ -142,7 +142,7 @@ namespace Bewit.Mvc.Tests.Integration
 
             //Assert
             res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            string content = await res.Content.ReadAsStringAsync();
+            var content = await res.Content.ReadAsStringAsync();
             if (content != null)
             {
                 Assert.Equal(-1, content.IndexOf("bar"));

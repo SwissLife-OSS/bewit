@@ -1,12 +1,12 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
-namespace Bewit.MongoDB
+namespace Bewit.Storage.MongoDB
 {
-    public class NonceRepository: INonceRepository
+    public class NonceRepository : INonceRepository
     {
         private readonly IMongoCollection<Token> _collection;
 

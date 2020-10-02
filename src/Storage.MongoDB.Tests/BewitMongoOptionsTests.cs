@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 
-namespace Bewit.MongoDB.Tests
+namespace Bewit.Storage.MongoDB.Tests
 {
     public class BewitMongoOptionsTests
     {
@@ -12,7 +12,7 @@ namespace Bewit.MongoDB.Tests
             const string collectionName = "foo";
             const string connectionString = "bar";
             const string databaseName = "baz";
-            
+
             //Act
             var options = new BewitMongoOptions
             {

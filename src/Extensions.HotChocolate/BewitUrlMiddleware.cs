@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Bewit.Generation;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public class BewitUrlMiddleware
     {
@@ -19,7 +19,7 @@ namespace Bewit.HotChocolate
         }
 
         public async Task InvokeAsync(
-            IMiddlewareContext context, 
+            IMiddlewareContext context,
             IBewitTokenGenerator<string> tokenGenerator)
         {
             await _next(context).ConfigureAwait(false);
@@ -36,7 +36,7 @@ namespace Bewit.HotChocolate
                 {
                     { "bewit", WebUtility.UrlEncode((string) bewit) }
                 };
-                string newUri =
+                var newUri =
                     QueryHelpers.AddQueryString(result, parametersToAdd);
 
                 context.Result = newUri;

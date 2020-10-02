@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bewit.Core;
 using Bewit.Generation;
-using Bewit.MongoDB;
-using Bewit.Validation;
+using Bewit.Storage.MongoDB;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Squadron;
 
-namespace Bewit.HotChocolate.Tests
+namespace Bewit.Extensions.HotChocolate.Tests
 {
     public static class TestHelpers
     {
         public static async Task<string> CreateToken(
             IServiceProvider serviceProvider, object payload)
         {
-            var bewitGenerator = serviceProvider
+            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
                 .GetService<IBewitTokenGenerator<object>>();
 
             return (await bewitGenerator
@@ -30,13 +30,13 @@ namespace Bewit.HotChocolate.Tests
         public static async Task<string> CreateBadToken()
         {
             var bewitOptions = new BewitOptions
-                { Secret = "badSecret", TokenDuration = TimeSpan.FromMinutes(5) };
+            { Secret = "badSecret", TokenDuration = TimeSpan.FromMinutes(5) };
 
-            var serviceProvider = new ServiceCollection()
+            ServiceProvider serviceProvider = new ServiceCollection()
                 .AddBewitGeneration<object>(bewitOptions)
                 .BuildServiceProvider();
 
-            var bewitGenerator = serviceProvider
+            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
                 .GetService<IBewitTokenGenerator<object>>();
 
             return (await bewitGenerator
@@ -47,7 +47,7 @@ namespace Bewit.HotChocolate.Tests
         public static async Task<IExecutionResult> ExecuteQuery(
             ISchema schema, string token = null)
         {
-            var requestBuilder = QueryRequestBuilder.New()
+            IQueryRequestBuilder requestBuilder = QueryRequestBuilder.New()
                 .SetQuery(@"{ foo }");
 
             if (token != null)
@@ -77,7 +77,7 @@ namespace Bewit.HotChocolate.Tests
 
         public static IServiceProvider CreateServiceProvider()
         {
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Bewit:Secret", "secret"),
@@ -85,7 +85,7 @@ namespace Bewit.HotChocolate.Tests
                 })
                 .Build();
 
-            var serviceProvider = new ServiceCollection()
+            ServiceProvider serviceProvider = new ServiceCollection()
                 .AddBewitAuthorization(configuration)
                 .AddBewitGeneration<object>(configuration)
                 .BuildServiceProvider();
@@ -95,8 +95,9 @@ namespace Bewit.HotChocolate.Tests
 
         public static IServiceProvider CreateServiceProvider(MongoResource mongoResource)
         {
-            var db = mongoResource.CreateDatabase();
-            var configuration = new ConfigurationBuilder()
+
+            IMongoDatabase db = mongoResource.CreateDatabase();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Bewit:Mongo:ConnectionString", mongoResource.ConnectionString),
@@ -107,7 +108,7 @@ namespace Bewit.HotChocolate.Tests
                 })
                 .Build();
 
-            var serviceProvider = new ServiceCollection()
+            ServiceProvider serviceProvider = new ServiceCollection()
                 .AddBewitAuthorization(configuration, builder =>
                     builder.UseMongoPersistance(configuration))
                 .AddBewitGeneration<object>(configuration, builder => builder.UseMongoPersistance(configuration))

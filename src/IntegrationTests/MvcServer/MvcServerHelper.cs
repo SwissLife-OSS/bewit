@@ -1,6 +1,6 @@
-﻿using Bewit.Core;
-using Bewit.MongoDB;
+using Bewit.Core;
 using Bewit.Mvc.Filter;
+using Bewit.Storage.MongoDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;

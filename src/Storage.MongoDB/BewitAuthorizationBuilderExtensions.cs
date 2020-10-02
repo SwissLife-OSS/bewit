@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Bewit.MongoDB
+namespace Bewit.Storage.MongoDB
 {
     public static class BewitAuthorizationBuilderExtensions
     {
@@ -14,7 +14,7 @@ namespace Bewit.MongoDB
             BewitMongoOptions options =
                 configuration.GetSection("Bewit:Mongo").Get<BewitMongoOptions>();
 
-            return UseMongoPersistance(builder, options);
+            return builder.UseMongoPersistance(options);
         }
 
         public static BewitRegistrationBuilder UseMongoPersistance(
@@ -28,7 +28,7 @@ namespace Bewit.MongoDB
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            MongoClient client =
+            var client =
                 new MongoClient(options.ConnectionString);
             IMongoDatabase db =
                 client.GetDatabase(options.DatabaseName);

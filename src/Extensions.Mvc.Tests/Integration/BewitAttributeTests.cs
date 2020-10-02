@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -10,7 +10,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Xunit;
 
-namespace Bewit.Mvc.Tests.Integration
+namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitAttributeTests
     {
@@ -21,12 +21,12 @@ namespace Bewit.Mvc.Tests.Integration
         {
             //Arrange
             TestServer server = TestServerHelper.CreateServer<IDictionary<string, object>>(Secret);
-            BewitTokenGenerator<IDictionary<string, object>> tokenGenerator =
+            var tokenGenerator =
                 new BewitTokenGenerator<IDictionary<string, object>>(
-                    TimeSpan.FromMinutes(1), 
-                    new HmacSha256CryptographyService(Secret), 
+                    TimeSpan.FromMinutes(1),
+                    new HmacSha256CryptographyService(Secret),
                     new TestServerHelper.MockedVariablesProvider());
-            const string id = "1", 
+            const string id = "1",
                 firstName = "John",
                 lastName = "Smith";
             var payload =
@@ -39,8 +39,8 @@ namespace Bewit.Mvc.Tests.Integration
                 await tokenGenerator.GenerateBewitTokenAsync(
                     payload,
                     CancellationToken.None);
-            string url = $"/api/dummy/WithBewitParameters/{id}";
-            string fullUrl = $"{url}?bewit={bewitToken}";
+            var url = $"/api/dummy/WithBewitParameters/{id}";
+            var fullUrl = $"{url}?bewit={bewitToken}";
             HttpClient client = server.CreateClient();
 
             //Act
@@ -49,7 +49,7 @@ namespace Bewit.Mvc.Tests.Integration
 
             //Assert
             res.StatusCode.Should().Be(HttpStatusCode.OK);
-            string content = await res.Content.ReadAsStringAsync();
+            var content = await res.Content.ReadAsStringAsync();
             content.Should().Be($"{id}: {firstName} {lastName}");
         }
     }

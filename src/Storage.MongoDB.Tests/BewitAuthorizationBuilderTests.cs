@@ -7,9 +7,9 @@ using MongoDB.Driver;
 using Squadron;
 using Xunit;
 
-namespace Bewit.MongoDB.Tests
+namespace Bewit.Storage.MongoDB.Tests
 {
-    public class BewitAuthorizationBuilderTests: IClassFixture<MongoResource>
+    public class BewitAuthorizationBuilderTests : IClassFixture<MongoResource>
     {
         public class Foo { }
 

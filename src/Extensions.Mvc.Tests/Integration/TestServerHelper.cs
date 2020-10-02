@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Bewit.Core;
 using Bewit.Mvc.Filter;
 using Bewit.Validation;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.Mvc.Tests.Integration
+namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     internal static class TestServerHelper
     {

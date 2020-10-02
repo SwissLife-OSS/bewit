@@ -1,6 +1,5 @@
-﻿using System;
 
-namespace Bewit.MongoDB
+namespace Bewit.Storage.MongoDB
 {
     public class BewitMongoOptions
     {
@@ -15,7 +14,7 @@ namespace Bewit.MongoDB
         /// Madatory.
         /// </summary>
         public string DatabaseName { get; set; } //mandatory
-        
+
         /// <summary>
         /// Name of the Bewit Collection in the Mongo database. 
         /// Optional. 

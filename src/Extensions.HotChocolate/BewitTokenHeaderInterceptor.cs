@@ -1,11 +1,11 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Execution;
 using HotChocolate.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public class BewitTokenHeaderInterceptor
         : IQueryRequestInterceptor<HttpContext>

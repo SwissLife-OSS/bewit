@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
-using Bewit.Generation;
+using HotChocolate;
+using HotChocolate.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
 
-namespace Bewit.HotChocolate.Tests
+namespace Bewit.Extensions.HotChocolate.Tests
 {
     public class BewitAuthorizationMiddlewareIntegrationTests
         : IClassFixture<MongoResource>
@@ -22,17 +23,17 @@ namespace Bewit.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            var serviceProvider = TestHelpers.CreateServiceProvider(_mongoResource);
-            var payload = new CustomPayload {Email = "foo@bar.gmail.com"};
+            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider(_mongoResource);
+            var payload = new CustomPayload { Email = "foo@bar.gmail.com" };
             var token = await TestHelpers.CreateToken(serviceProvider, payload);
-            var schema = TestHelpers.CreateSchema(serviceProvider);
+            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            var result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
 
             // assert
-            var bewitContext = serviceProvider.GetService<IBewitContext>();
-            var customPayload = await bewitContext.GetAsync<CustomPayload>();
+            IBewitContext bewitContext = serviceProvider.GetService<IBewitContext>();
+            CustomPayload customPayload = await bewitContext.GetAsync<CustomPayload>();
             new { QueryResult = result, BewitContext = customPayload }.MatchSnapshot();
         }
     }

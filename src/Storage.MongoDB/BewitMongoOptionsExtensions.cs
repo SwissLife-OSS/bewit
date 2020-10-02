@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using MongoDB.Driver.Core.Configuration;
 
-namespace Bewit.MongoDB
+namespace Bewit.Storage.MongoDB
 {
     internal static class BewitMongoOptionsExtensions
     {

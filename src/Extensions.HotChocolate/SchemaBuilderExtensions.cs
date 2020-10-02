@@ -1,7 +1,7 @@
 using System;
 using HotChocolate;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public static class SchemaBuilderExtensions
     {

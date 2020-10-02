@@ -1,4 +1,4 @@
-﻿namespace Bewit.HotChocolate.Tests.Integration
+namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class QueryResponse<T>
     {

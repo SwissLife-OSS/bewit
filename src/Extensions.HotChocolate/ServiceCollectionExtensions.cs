@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Bewit.Core;
 using Bewit.Validation;
 using HotChocolate.Server;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public static class ServiceCollectionExtensions
     {
@@ -22,7 +22,7 @@ namespace Bewit.HotChocolate
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            var options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
 
             return services
                 .AddSingleton<IBewitContext, BewitContext>()

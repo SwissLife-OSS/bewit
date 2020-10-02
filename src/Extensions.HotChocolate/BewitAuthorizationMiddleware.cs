@@ -5,7 +5,7 @@ using Bewit.Validation;
 using HotChocolate;
 using HotChocolate.Resolvers;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public class BewitAuthorizationMiddleware
     {
@@ -34,7 +34,7 @@ namespace Bewit.HotChocolate
                 if (context.ContextData.TryGetValue(BewitTokenHeader.Value, out var objectToken) &&
                     objectToken is string bewitToken)
                 {
-                    object bewit = await
+                    var bewit = await
                         _tokenValidator.ValidateBewitTokenAsync(
                             new BewitToken<object>(bewitToken),
                             context.RequestAborted);
@@ -52,7 +52,7 @@ namespace Bewit.HotChocolate
                         .Build();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 context.Result = ErrorBuilder.New()
                     .SetMessage("NotAuthorized")

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Bewit.Core;
 using Bewit.Generation;
 using HotChocolate.Resolvers;
 
-namespace Bewit.HotChocolate
+namespace Bewit.Extensions.HotChocolate
 {
     public class BewitMiddleware<TPayload>
     {
@@ -23,12 +23,12 @@ namespace Bewit.HotChocolate
 
             if (context.Result is TPayload result)
             {
-                BewitToken<TPayload> bewit 
+                BewitToken<TPayload> bewit
                     = await tokenGenerator.GenerateBewitTokenAsync(
                         result,
                         context.RequestAborted);
 
-                context.Result = (string) bewit;
+                context.Result = (string)bewit;
             }
         }
     }

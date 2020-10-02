@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Bewit.Core;
 using Bewit.Mvc.Filter;
 using FluentAssertions;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Bewit.Mvc.Tests
+namespace Bewit.Extensions.Mvc.Tests
 {
     public class ServiceCollectionExtensionsTests
     {

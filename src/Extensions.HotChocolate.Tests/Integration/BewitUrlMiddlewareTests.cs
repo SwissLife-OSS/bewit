@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Bewit.HotChocolate.Tests.Integration
+namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class BewitUrlMiddlewareTests
     {
@@ -39,13 +39,13 @@ namespace Bewit.HotChocolate.Tests.Integration
             //Arrange
             TestServer testServer = CreateTestServer();
             HttpClient client = testServer.CreateClient();
-            GraphQLClient gqlClient = new GraphQLClient(client);
-            QueryRequest query = new QueryRequest(
+            var gqlClient = new GraphQLClient(client);
+            var query = new QueryRequest(
                 string.Empty,
                 @"mutation giveMeAccess {
                     RequestAccess
-                }", 
-                "giveMeAccess", 
+                }",
+                "giveMeAccess",
                 new Dictionary<string, object>());
 
             //Act
