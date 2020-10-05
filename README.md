@@ -41,7 +41,7 @@ ISchema schema = SchemaBuilder.New()
                 d.Field("RequestAccessUrl")
                     .Type<NonNullType<StringType>>()
                     .Resolver(ctx => $"{mvcApiUrl}/api/file/123")
-                    .UseBewitUrlProtection();;
+                    .UseBewitUrlProtection();
             }))
     .Create();
 ```
