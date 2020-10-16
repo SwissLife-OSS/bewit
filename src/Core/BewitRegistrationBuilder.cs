@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Bewit.Core
 {
@@ -6,7 +6,13 @@ namespace Bewit.Core
     {
         private Func<BewitOptions, ICryptographyService> _getCryptographyService;
 
-        public Func<INonceRepository> GetRepository { get; set; }
+        private Func<INonceRepository> _getRepository { get; set; }
+
+        public BewitRegistrationBuilder SetRepository(Func<INonceRepository> create)
+        {
+            _getRepository = create;
+            return this;
+        }
 
         public Func<BewitOptions, ICryptographyService> GetCryptographyService
         {
