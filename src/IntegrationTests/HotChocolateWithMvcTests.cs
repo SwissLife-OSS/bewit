@@ -32,11 +32,13 @@ namespace Bewit.IntegrationTests
         {
             //Arrange MVC Server
             string secret = "4r8FfT!$p0Ortz";
+
             IMongoDatabase database = _mongoResource.CreateDatabase();
             TestServer hcServer = HCServerHelper.CreateHotChocolateServer(
                 secret,
                 _mongoResource.ConnectionString,
                 database.DatabaseNamespace.DatabaseName);
+
             HttpClient hcClient = hcServer.CreateClient();
             GraphQLClient gqlHcClient = new GraphQLClient(hcClient);
             QueryRequest query = new QueryRequest(
@@ -54,7 +56,7 @@ namespace Bewit.IntegrationTests
             HttpClient mvcClient = mvcServer.CreateClient();
 
             //Act
-            /* 1. Get Url from HotChcolate*/
+            /* 1. Get Url from HotChocolate */
             QueryResponse<GiveMeAccessResult> requireAccessResult =
                 await gqlHcClient.QueryAsync<GiveMeAccessResult>(query,
                     CancellationToken.None);

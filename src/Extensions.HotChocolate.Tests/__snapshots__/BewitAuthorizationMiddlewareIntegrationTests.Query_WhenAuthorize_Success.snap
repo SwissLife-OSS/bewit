@@ -1,11 +1,14 @@
 ﻿{
   "QueryResult": {
+    "Label": null,
+    "Path": null,
     "Data": {
       "foo": "bar"
     },
     "Errors": null,
     "Extensions": null,
-    "ContextData": null
+    "ContextData": null,
+    "HasNext": null
   },
   "BewitContext": {
     "Email": "foo@bar.gmail.com"

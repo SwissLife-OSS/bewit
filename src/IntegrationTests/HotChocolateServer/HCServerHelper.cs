@@ -24,6 +24,8 @@ namespace Bewit.IntegrationTests.HotChocolateServer
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
+                    services.AddRouting();
+
                     //for url protection
                     services.AddBewitGeneration<string>(
                         new BewitOptions
@@ -80,7 +82,7 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                 .Configure(app =>
                     app
                         .UseRouting()
-                        .UseEndpoints(endpoint => endpoint.MapGraphQL()));
+                        .UseEndpoints(endpoint => endpoint.MapGraphQL("/")));
 
             return new TestServer(hostBuilder);
         }
