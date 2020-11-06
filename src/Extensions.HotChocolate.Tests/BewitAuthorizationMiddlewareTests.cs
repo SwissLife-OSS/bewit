@@ -13,13 +13,12 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
             var payload = "foo@bar.gmail.com";
             var token = await TestHelpers.CreateToken(serviceProvider, payload);
-            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider, token);
 
             // assert
             result.MatchSnapshot();
@@ -29,12 +28,11 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenWrongToken_Fail()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
             var token = await TestHelpers.CreateBadToken();
-            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
 
             // act
-            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider, token);
 
             // assert
             result.MatchSnapshot(options =>
@@ -45,11 +43,10 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenNotAuthorize_Fail()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider();
-            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
 
             // act
-            IExecutionResult result = await TestHelpers.ExecuteQuery(schema);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider);
 
             // assert
             result.MatchSnapshot();

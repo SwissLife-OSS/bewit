@@ -4,46 +4,22 @@ using Bewit.Extensions.HotChocolate;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
 using HotChocolate;
-using HotChocolate.AspNetCore;
 using HotChocolate.Configuration;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Bewit.IntegrationTests.HotChocolateServer
 {
     internal static class HCServerHelper
     {
-        internal static TestServer CreateHotChcocolateServer(
+        internal static TestServer CreateHotChocolateServer(
             string secret,
             string connectionString,
-            string databaseName
-        )
+            string databaseName)
         {
-            ISchema schema = SchemaBuilder.New()
-                .SetOptions(new SchemaOptions
-                {
-                    StrictValidation = false
-                })
-                .AddMutationType(
-                    new ObjectType(
-                        d =>
-                        {
-                            d.Name("Mutation");
-                            d.Field("RequestAccessToken")
-                                .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "foo")
-                                .UseBewitProtection<string>();
-                            d.Field("RequestAccessUrlWithQueryString")
-                                .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "http://foo.bar/api/dummy/WithBewitProtection?foo=bar&baz=qux")
-                                .UseBewitUrlProtection();
-                            d.Field("RequestAccessUrl")
-                                .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "http://foo.bar/api/dummy/WithBewitProtection")
-                                .UseBewitUrlProtection();
-                        }))
-                .Create();
 
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
@@ -80,10 +56,31 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                                 })
                     );
 
-                    services.AddGraphQL(schema);
+                    services.AddGraphQLServer()
+                        .SetOptions(new SchemaOptions { StrictValidation = false })
+                        .AddMutationType(d =>
+                        {
+                            d.Name("Mutation");
+                            d.Field("RequestAccessToken")
+                                .Type<NonNullType<StringType>>()
+                                .Resolver(ctx => "foo")
+                                .UseBewitProtection<string>();
+                            d.Field("RequestAccessUrlWithQueryString")
+                                .Type<NonNullType<StringType>>()
+                                .Resolver(ctx =>
+                                    "http://foo.bar/api/dummy/WithBewitProtection?foo=bar&baz=qux")
+                                .UseBewitUrlProtection();
+                            d.Field("RequestAccessUrl")
+                                .Type<NonNullType<StringType>>()
+                                .Resolver(ctx =>
+                                    "http://foo.bar/api/dummy/WithBewitProtection")
+                                .UseBewitUrlProtection();
+                        });
                 })
                 .Configure(app =>
-                    app.UseGraphQL());
+                    app
+                        .UseRouting()
+                        .UseEndpoints(endpoint => endpoint.MapGraphQL()));
 
             return new TestServer(hostBuilder);
         }

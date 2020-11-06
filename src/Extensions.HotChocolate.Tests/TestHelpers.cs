@@ -45,37 +45,21 @@ namespace Bewit.Extensions.HotChocolate.Tests
         }
 
         public static async Task<IExecutionResult> ExecuteQuery(
-            ISchema schema, string token = null)
+            IServiceProvider services, string token = null)
         {
-            IQueryRequestBuilder requestBuilder = QueryRequestBuilder.New()
-                .SetQuery(@"{ foo }");
+            IQueryRequestBuilder requestBuilder =
+                QueryRequestBuilder.New()
+                    .SetQuery(@"{ foo }");
 
             if (token != null)
             {
                 requestBuilder.AddProperty(BewitTokenHeader.Value, token);
             }
 
-            return await schema.MakeExecutable()
-                .ExecuteAsync(requestBuilder
-                    .Create());
+            return await services.ExecuteRequestAsync(requestBuilder.Create());
         }
 
-        public static ISchema CreateSchema(
-            IServiceProvider serviceProvider)
-        {
-            return SchemaBuilder.New()
-                .AddBewitAuthorizeDirectiveType()
-                .AddQueryType(c =>
-                    c.Name("Query")
-                        .Field("foo")
-                        .Type<StringType>()
-                        .Resolver("bar")
-                        .AuthorizeBewit())
-                .AddServices(serviceProvider)
-                .Create();
-        }
-
-        public static IServiceProvider CreateServiceProvider()
+        public static IServiceProvider CreateSchema()
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
@@ -83,19 +67,26 @@ namespace Bewit.Extensions.HotChocolate.Tests
                     new KeyValuePair<string, string>("Bewit:Secret", "secret"),
                     new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
                 })
+
                 .Build();
-
-            ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitAuthorization(configuration)
+            return new ServiceCollection()
                 .AddBewitGeneration<object>(configuration)
+                .AddGraphQLServer()
+                .AddBewitAuthorizeDirectiveType()
+                .AddBewitAuthorization(configuration)
+                .AddQueryType(c =>
+                    c.Name("Query")
+                        .Field("foo")
+                        .Type<StringType>()
+                        .Resolver("bar")
+                        .AuthorizeBewit())
+                .Services
                 .BuildServiceProvider();
-
-            return serviceProvider;
         }
 
-        public static IServiceProvider CreateServiceProvider(MongoResource mongoResource)
-        {
 
+        public static IServiceProvider CreateSchema(MongoResource mongoResource)
+        {
             IMongoDatabase db = mongoResource.CreateDatabase();
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
@@ -108,13 +99,20 @@ namespace Bewit.Extensions.HotChocolate.Tests
                 })
                 .Build();
 
-            ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitAuthorization(configuration, builder =>
-                    builder.UseMongoPersistance(configuration))
+            return new ServiceCollection()
+                .AddBewitGeneration<object>(configuration)
+                .AddGraphQLServer()
+                .AddBewitAuthorizeDirectiveType()
+                .AddBewitAuthorization(configuration)
+                .AddQueryType(c =>
+                    c.Name("Query")
+                        .Field("foo")
+                        .Type<StringType>()
+                        .Resolver("bar")
+                        .AuthorizeBewit())
+                .Services
                 .AddBewitGeneration<object>(configuration, builder => builder.UseMongoPersistance(configuration))
                 .BuildServiceProvider();
-
-            return serviceProvider;
         }
     }
 }

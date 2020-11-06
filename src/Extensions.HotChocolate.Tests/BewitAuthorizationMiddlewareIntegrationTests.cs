@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using HotChocolate;
 using HotChocolate.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
@@ -23,16 +22,16 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateServiceProvider(_mongoResource);
+            IServiceProvider services = TestHelpers.CreateSchema();
             var payload = new CustomPayload { Email = "foo@bar.gmail.com" };
-            var token = await TestHelpers.CreateToken(serviceProvider, payload);
-            ISchema schema = TestHelpers.CreateSchema(serviceProvider);
+            var token = await TestHelpers.CreateToken(services, payload);
+
 
             // act
-            IExecutionResult result = await TestHelpers.ExecuteQuery(schema, token);
+            IExecutionResult result = await TestHelpers.ExecuteQuery(services, token);
 
             // assert
-            IBewitContext bewitContext = serviceProvider.GetService<IBewitContext>();
+            IBewitContext bewitContext = services.GetService<IBewitContext>();
             CustomPayload customPayload = await bewitContext.GetAsync<CustomPayload>();
             new { QueryResult = result, BewitContext = customPayload }.MatchSnapshot();
         }

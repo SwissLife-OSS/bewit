@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Bewit.IntegrationTests
 {
-    public class HotChocolateWithMvcTests: IClassFixture<MongoResource>
+    public class HotChocolateWithMvcTests : IClassFixture<MongoResource>
     {
         public class GiveMeAccessResult
         {
@@ -33,7 +33,7 @@ namespace Bewit.IntegrationTests
             //Arrange MVC Server
             string secret = "4r8FfT!$p0Ortz";
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            TestServer hcServer = HCServerHelper.CreateHotChcocolateServer(
+            TestServer hcServer = HCServerHelper.CreateHotChocolateServer(
                 secret,
                 _mongoResource.ConnectionString,
                 database.DatabaseNamespace.DatabaseName);
@@ -75,7 +75,7 @@ namespace Bewit.IntegrationTests
             //Arrange MVC Server
             string secret = "4r8FfT!$p0Ortz";
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            TestServer hcServer = HCServerHelper.CreateHotChcocolateServer(
+            TestServer hcServer = HCServerHelper.CreateHotChocolateServer(
                 secret,
                 _mongoResource.ConnectionString,
                 database.DatabaseNamespace.DatabaseName);

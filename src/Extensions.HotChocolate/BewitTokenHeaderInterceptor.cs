@@ -1,28 +1,29 @@
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Utilities;
 using HotChocolate.Execution;
-using HotChocolate.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace Bewit.Extensions.HotChocolate
 {
     public class BewitTokenHeaderInterceptor
-        : IQueryRequestInterceptor<HttpContext>
+        : IHttpRequestInterceptor
     {
-        public Task OnCreateAsync(
+        public ValueTask OnCreateAsync(
             HttpContext context,
+            IRequestExecutor requestExecutor,
             IQueryRequestBuilder requestBuilder,
             CancellationToken cancellationToken)
         {
             if (context.Request.Headers.TryGetValue(
-                    BewitTokenHeader.Value,
-                    out StringValues bewitToken))
+                BewitTokenHeader.Value,
+                out StringValues bewitToken))
             {
                 requestBuilder.AddProperty(BewitTokenHeader.Value, bewitToken.ToString());
             }
 
-            return Task.CompletedTask;
+            return default;
         }
     }
 }
