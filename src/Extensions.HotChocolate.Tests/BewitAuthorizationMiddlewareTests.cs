@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using HotChocolate;
 using HotChocolate.Execution;
 using Snapshooter.Xunit;
 using Xunit;
