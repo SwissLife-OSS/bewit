@@ -57,7 +57,8 @@ namespace Host
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
-                .AddMutationType<MutationType>();
+                .AddMutationType<MutationType>()
+                .AddType<DocumentType>();
 
             //Add MVC Services
             services.AddControllers();

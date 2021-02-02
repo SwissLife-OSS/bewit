@@ -10,26 +10,26 @@ namespace Bewit.Extensions.HotChocolate
     public static class ServiceCollectionExtensions
     {
         public static IRequestExecutorBuilder AddBewitAuthorization(
-            this IRequestExecutorBuilder services,
+            this IRequestExecutorBuilder builder,
             IConfiguration configuration)
         {
-            return services.AddBewitAuthorization(configuration, build => { });
+            return builder.AddBewitAuthorization(configuration, build => { });
         }
 
         public static IRequestExecutorBuilder AddBewitAuthorization(
-            this IRequestExecutorBuilder services,
+            this IRequestExecutorBuilder builder,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
 
-            services
+            builder
                 .AddHttpRequestInterceptor<BewitTokenHeaderInterceptor>()
                 .Services
                 .AddSingleton<IBewitContext, BewitContext>()
                 .AddBewitValidation<object>(options, build);
 
-            return services;
+            return builder;
         }
     }
 }
