@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bewit.Core;
+using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Moq;
 using Squadron;
 
 namespace Bewit.Extensions.HotChocolate.Tests
@@ -49,11 +52,12 @@ namespace Bewit.Extensions.HotChocolate.Tests
         {
             IQueryRequestBuilder requestBuilder =
                 QueryRequestBuilder.New()
-                    .SetQuery(@"{ foo }");
+                    .SetQuery("{ foo }");
 
             if (token != null)
             {
-                requestBuilder.AddProperty(BewitTokenHeader.Value, token);
+                HttpContext httpContext = services.GetRequiredService<HttpContext>();
+                httpContext.Request.Headers.Add(BewitTokenHeader.Value, token);
             }
 
             return await services.ExecuteRequestAsync(requestBuilder.Create());
@@ -67,13 +71,18 @@ namespace Bewit.Extensions.HotChocolate.Tests
                     new KeyValuePair<string, string>("Bewit:Secret", "secret"),
                     new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
                 })
-
                 .Build();
+
+            var httpContext = new DefaultHttpContext();
+            var httpContextAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+            httpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContext);
+
             return new ServiceCollection()
+                .AddSingleton<HttpContext>(httpContext)
+                .AddSingleton(httpContextAccessor.Object)
                 .AddBewitGeneration<object>(configuration)
                 .AddGraphQLServer()
-                .AddBewitAuthorizeDirectiveType()
-                .AddBewitAuthorization(configuration)
+                .UseBewitAuthorization(configuration)
                 .AddQueryType(c =>
                     c.Name("Query")
                         .Field("foo")
@@ -81,37 +90,6 @@ namespace Bewit.Extensions.HotChocolate.Tests
                         .Resolver("bar")
                         .AuthorizeBewit())
                 .Services
-                .BuildServiceProvider();
-        }
-
-
-        public static IServiceProvider CreateSchema(MongoResource mongoResource)
-        {
-            IMongoDatabase db = mongoResource.CreateDatabase();
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("Bewit:Mongo:ConnectionString", mongoResource.ConnectionString),
-                    new KeyValuePair<string, string>("Bewit:Mongo:DatabaseName", db.DatabaseNamespace.DatabaseName),
-                    new KeyValuePair<string, string>("Bewit:Mongo:CollectionName", "bewitTokens"),
-                    new KeyValuePair<string, string>("Bewit:Secret", "secret"),
-                    new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
-                })
-                .Build();
-
-            return new ServiceCollection()
-                .AddBewitGeneration<object>(configuration)
-                .AddGraphQLServer()
-                .AddBewitAuthorizeDirectiveType()
-                .AddBewitAuthorization(configuration)
-                .AddQueryType(c =>
-                    c.Name("Query")
-                        .Field("foo")
-                        .Type<StringType>()
-                        .Resolver("bar")
-                        .AuthorizeBewit())
-                .Services
-                .AddBewitGeneration<object>(configuration, builder => builder.UseMongoPersistance(configuration))
                 .BuildServiceProvider();
         }
     }

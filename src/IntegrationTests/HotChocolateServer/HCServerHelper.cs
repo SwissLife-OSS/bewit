@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Bewit.Core;
-using Bewit.Extensions.HotChocolate;
+using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
 using HotChocolate;

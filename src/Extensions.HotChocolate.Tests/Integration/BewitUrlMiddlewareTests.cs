@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
+using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using FluentAssertions;
 using HotChocolate;

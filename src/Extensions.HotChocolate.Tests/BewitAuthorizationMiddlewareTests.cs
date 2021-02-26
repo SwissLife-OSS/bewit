@@ -35,7 +35,9 @@ namespace Bewit.Extensions.HotChocolate.Tests
 
             // assert
             result.MatchSnapshot(options =>
-                options.IgnoreField("Errors[0].Exception.StackTraceString"));
+                options
+                    .IgnoreField("Errors.[*].Exception.StackTraceString")
+                );
         }
 
         [Fact]

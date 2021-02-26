@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Bewit.Extensions.HotChocolate.Validation;
 using HotChocolate.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
@@ -25,7 +26,6 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IServiceProvider services = TestHelpers.CreateSchema();
             var payload = new CustomPayload { Email = "foo@bar.gmail.com" };
             var token = await TestHelpers.CreateToken(services, payload);
-
 
             // act
             IExecutionResult result = await TestHelpers.ExecuteQuery(services, token);

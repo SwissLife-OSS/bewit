@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Bewit.Extensions.HotChocolate.Validation;
 using HotChocolate;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

@@ -7,7 +7,7 @@ using Bewit.Generation;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Bewit.Extensions.HotChocolate
+namespace Bewit.Extensions.HotChocolate.Generation
 {
     public class BewitUrlMiddleware
     {

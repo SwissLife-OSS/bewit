@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Bewit.Core;
 using Bewit.Validation;
@@ -14,7 +14,8 @@ namespace Bewit.Mvc.Filter
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            var options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options =
+                configuration.GetSection("Bewit").Get<BewitOptions>();
             return services.AddBewitUrlAuthorizationFilter(options, build);
         }
 
@@ -33,7 +34,8 @@ namespace Bewit.Mvc.Filter
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            var options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options =
+                configuration.GetSection("Bewit").Get<BewitOptions>();
             return services.AddBewitFilter(options, build);
         }
 

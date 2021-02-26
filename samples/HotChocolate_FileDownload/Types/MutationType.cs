@@ -1,4 +1,4 @@
-using Bewit.Extensions.HotChocolate;
+using Bewit.Extensions.HotChocolate.Generation;
 using HotChocolate.Types;
 
 namespace Host.Types

@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Execution" Version="$(HotChocolateVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
   </ItemGroup>
 

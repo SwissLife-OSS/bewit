@@ -1,4 +1,4 @@
-﻿{
+{
   "Label": null,
   "Path": null,
   "Data": {
@@ -26,7 +26,7 @@
         "Data": null,
         "InnerException": null,
         "HelpURL": null,
-        "StackTraceString": "   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in C:\\Users\\Gilles\\source\\github\\bewit\\src\\Validation\\BewitTokenValidator.cs:line 80\n   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitTokenAsync(BewitToken`1 bewit, CancellationToken cancellationToken) in C:\\Users\\Gilles\\source\\github\\bewit\\src\\Validation\\BewitTokenValidator.cs:line 40\n   at Bewit.Extensions.HotChocolate.BewitAuthorizationMiddleware.InvokeAsync(IDirectiveContext context) in C:\\Users\\Gilles\\source\\github\\bewit\\src\\Extensions.HotChocolate\\BewitAuthorizationMiddleware.cs:line 37",
+        "StackTraceString": "   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in ***",
         "RemoteStackTraceString": null,
         "RemoteStackIndex": 0,
         "ExceptionMethod": null,
