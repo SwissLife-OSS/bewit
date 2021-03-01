@@ -1,6 +1,6 @@
 using HotChocolate.Types;
 
-namespace Bewit.Extensions.HotChocolate
+namespace Bewit.Extensions.HotChocolate.Generation
 {
     public static class ObjectFieldDescriptorExtensions
     {
@@ -16,13 +16,6 @@ namespace Bewit.Extensions.HotChocolate
         {
             return descriptor.Use<BewitUrlMiddleware>()
                 .Type<NonNullType<StringType>>();
-        }
-
-        public static IObjectFieldDescriptor AuthorizeBewit(
-            this IObjectFieldDescriptor descriptor)
-        {
-            return descriptor
-                .Directive<BewitAuthorizeDirectiveType>();
         }
     }
 }

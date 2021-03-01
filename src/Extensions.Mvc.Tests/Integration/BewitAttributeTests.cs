@@ -16,7 +16,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
     {
         private const string Secret = "ef56s$e4fs6ef1";
 
-        [Fact(Skip = "Fix test")]
+        [Fact]
         public async Task OnAuthorization_WithValidBewitForUrl_ShouldAuthorize()
         {
             //Arrange

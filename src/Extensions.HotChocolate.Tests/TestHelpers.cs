@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bewit.Core;
+using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Moq;
 using Squadron;
 
 namespace Bewit.Extensions.HotChocolate.Tests
@@ -45,76 +48,50 @@ namespace Bewit.Extensions.HotChocolate.Tests
         }
 
         public static async Task<IExecutionResult> ExecuteQuery(
-            ISchema schema, string token = null)
+            IServiceProvider services, string token = null)
         {
-            IQueryRequestBuilder requestBuilder = QueryRequestBuilder.New()
-                .SetQuery(@"{ foo }");
+            IQueryRequestBuilder requestBuilder =
+                QueryRequestBuilder.New()
+                    .SetQuery("{ foo }");
 
             if (token != null)
             {
-                requestBuilder.AddProperty(BewitTokenHeader.Value, token);
+                HttpContext httpContext = services.GetRequiredService<HttpContext>();
+                httpContext.Request.Headers.Add(BewitTokenHeader.Value, token);
             }
 
-            return await schema.MakeExecutable()
-                .ExecuteAsync(requestBuilder
-                    .Create());
+            return await services.ExecuteRequestAsync(requestBuilder.Create());
         }
 
-        public static ISchema CreateSchema(
-            IServiceProvider serviceProvider)
+        public static IServiceProvider CreateSchema()
         {
-            return SchemaBuilder.New()
-                .AddBewitAuthorizeDirectiveType()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("Bewit:Secret", "secret"),
+                    new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
+                })
+                .Build();
+
+            var httpContext = new DefaultHttpContext();
+            var httpContextAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+            httpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContext);
+
+            return new ServiceCollection()
+                .AddSingleton<HttpContext>(httpContext)
+                .AddSingleton(httpContextAccessor.Object)
+                .AddBewitGeneration<object>(configuration)
+                .AddGraphQLServer()
+                .UseBewitAuthorization(configuration)
                 .AddQueryType(c =>
                     c.Name("Query")
                         .Field("foo")
                         .Type<StringType>()
                         .Resolver("bar")
                         .AuthorizeBewit())
-                .AddServices(serviceProvider)
-                .Create();
-        }
-
-        public static IServiceProvider CreateServiceProvider()
-        {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("Bewit:Secret", "secret"),
-                    new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
-                })
-                .Build();
-
-            ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitAuthorization(configuration)
-                .AddBewitGeneration<object>(configuration)
+                .UseDefaultPipeline()
+                .Services
                 .BuildServiceProvider();
-
-            return serviceProvider;
-        }
-
-        public static IServiceProvider CreateServiceProvider(MongoResource mongoResource)
-        {
-
-            IMongoDatabase db = mongoResource.CreateDatabase();
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("Bewit:Mongo:ConnectionString", mongoResource.ConnectionString),
-                    new KeyValuePair<string, string>("Bewit:Mongo:DatabaseName", db.DatabaseNamespace.DatabaseName),
-                    new KeyValuePair<string, string>("Bewit:Mongo:CollectionName", "bewitTokens"),
-                    new KeyValuePair<string, string>("Bewit:Secret", "secret"),
-                    new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
-                })
-                .Build();
-
-            ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitAuthorization(configuration, builder =>
-                    builder.UseMongoPersistance(configuration))
-                .AddBewitGeneration<object>(configuration, builder => builder.UseMongoPersistance(configuration))
-                .BuildServiceProvider();
-
-            return serviceProvider;
         }
     }
 }

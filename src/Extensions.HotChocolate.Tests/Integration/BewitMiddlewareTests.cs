@@ -4,12 +4,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
+using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using FluentAssertions;
 using HotChocolate;
-using HotChocolate.AspNetCore;
 using HotChocolate.Configuration;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,8 +40,8 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
             //Arrange
             TestServer testServer = CreateTestServer();
             HttpClient client = testServer.CreateClient();
-            var gqlClient = new GraphQLClient(client);
-            var query = new QueryRequest(
+            GraphQLClient gqlClient = new GraphQLClient(client);
+            QueryRequest query = new QueryRequest(
                 string.Empty,
                 @"mutation giveMeAccess {
                     RequestAccess
@@ -60,39 +61,32 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
 
         private static TestServer CreateTestServer()
         {
-            ISchema schema = SchemaBuilder.New()
-                .SetOptions(new SchemaOptions
+            IWebHostBuilder hostBuilder = new WebHostBuilder()
+                .ConfigureServices(services =>
                 {
-                    StrictValidation = false
-                })
-                .AddMutationType(
-                    new ObjectType(
-                        d =>
+                    services.AddRouting();
+
+                    services.AddTransient<IBewitTokenGenerator<string>>(ctx =>
+                        new BewitTokenGenerator<string>(
+                            TimeSpan.FromMinutes(1),
+                            new HmacSha256CryptographyService("123"),
+                            new MockedVariablesProvider()));
+                    services
+                        .AddGraphQLServer()
+                        .SetOptions(new SchemaOptions { StrictValidation = false })
+                        .AddMutationType(d =>
                         {
                             d.Name("Mutation");
                             d.Field("RequestAccess")
                                 .Type<NonNullType<StringType>>()
                                 .Resolver(ctx => "foo")
                                 .UseBewitProtection<string>();
-                        }))
-                .Create();
-
-            IWebHostBuilder hostBuilder = new WebHostBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddTransient<IBewitTokenGenerator<string>>(ctx =>
-                        new BewitTokenGenerator<string>(
-                            TimeSpan.FromMinutes(1),
-                            new HmacSha256CryptographyService("123"),
-                            new MockedVariablesProvider()));
-                    services.AddGraphQL(schema);
+                        });
                 })
                 .Configure(app =>
-                    app.UseGraphQL());
+                    app.UseRouting().UseEndpoints(e => e.MapGraphQL("/")));
 
-            var testServer = new TestServer(hostBuilder);
-            return testServer;
+            return new TestServer(hostBuilder);
         }
-
     }
 }
