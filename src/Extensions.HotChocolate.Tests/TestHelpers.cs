@@ -89,6 +89,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
                         .Type<StringType>()
                         .Resolver("bar")
                         .AuthorizeBewit())
+                .UseDefaultPipeline()
                 .Services
                 .BuildServiceProvider();
         }

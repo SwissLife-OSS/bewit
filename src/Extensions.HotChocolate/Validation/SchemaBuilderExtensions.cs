@@ -54,7 +54,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
         {
             builder
                 .AddBewitAuthorizeDirectiveType()
-                //.UseRequest<BewitTokenHeaderRequestMiddleware>()
+                .UseRequest<BewitTokenHeaderRequestMiddleware>()
                 .Services
                 .AddSingleton<IBewitContext, BewitContext>()
                 .AddBewitValidation<object>(options, build);
