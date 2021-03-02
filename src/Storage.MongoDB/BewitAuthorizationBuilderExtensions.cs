@@ -1,24 +1,25 @@
 using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
 {
     public static class BewitAuthorizationBuilderExtensions
     {
-        public static BewitRegistrationBuilder UseMongoPersistance(
-            this BewitRegistrationBuilder builder,
+        public static void UseMongoPersistence(
+            this BewitPayloadBuilder builder,
             IConfiguration configuration)
         {
             BewitMongoOptions options =
                 configuration.GetSection("Bewit:Mongo").Get<BewitMongoOptions>();
 
-            return builder.UseMongoPersistance(options);
+            builder.UseMongoPersistence(options);
         }
 
-        public static BewitRegistrationBuilder UseMongoPersistance(
-            this BewitRegistrationBuilder builder,
+        public static void UseMongoPersistence(
+            this BewitPayloadBuilder builder,
             BewitMongoOptions options)
         {
             options.Validate();
@@ -28,15 +29,11 @@ namespace Bewit.Storage.MongoDB
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            var client =
-                new MongoClient(options.ConnectionString);
-            IMongoDatabase db =
-                client.GetDatabase(options.DatabaseName);
+            var client = new MongoClient(options.ConnectionString);
+            IMongoDatabase db = client.GetDatabase(options.DatabaseName);
 
-            builder.GetRepository = () => new NonceRepository(
-                db, options.CollectionName ?? nameof(Token));
-
-            return builder;
+            builder.SetRepository(() => new NonceRepository(
+                db, options.CollectionName ?? nameof(Token)));
         }
     }
 }

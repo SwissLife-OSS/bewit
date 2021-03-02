@@ -36,11 +36,11 @@ namespace Bewit.Extensions.HotChocolate.Tests
             { Secret = "badSecret", TokenDuration = TimeSpan.FromMinutes(5) };
 
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitGeneration<object>(bewitOptions)
+                .AddBewitGeneration(bewitOptions, b => b.AddPayload<string>())
                 .BuildServiceProvider();
 
-            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<object>>();
+            IBewitTokenGenerator<string> bewitGenerator = serviceProvider
+                .GetService<IBewitTokenGenerator<string>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync("badPayload", default))
@@ -80,7 +80,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             return new ServiceCollection()
                 .AddSingleton<HttpContext>(httpContext)
                 .AddSingleton(httpContextAccessor.Object)
-                .AddBewitGeneration<object>(configuration)
+                .AddBewitGeneration(configuration, b => b.AddPayload<string>())
                 .AddGraphQLServer()
                 .UseBewitAuthorization(configuration)
                 .AddQueryType(c =>

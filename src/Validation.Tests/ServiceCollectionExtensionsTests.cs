@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Bewit.Core;
 using FluentAssertions;
@@ -29,7 +29,7 @@ namespace Bewit.Validation.Tests
                 .Build();
 
             //Act
-            services.AddBewitValidation<Foo>(configuration);
+            services.AddBewitValidation(configuration, b => b.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;
@@ -61,7 +61,7 @@ namespace Bewit.Validation.Tests
                 .Build();
 
             //Act
-            Action register = () => services.AddBewitValidation<Foo>(configuration);
+            Action register = () => services.AddBewitValidation(configuration, b => b.AddPayload<Foo>());
 
             //Assert
             register.Should().Throw<ArgumentException>();
@@ -75,10 +75,10 @@ namespace Bewit.Validation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitValidation<Foo>(new BewitOptions
+            services.AddBewitValidation(new BewitOptions
             {
                 Secret = secret
-            });
+            }, b => b.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;
@@ -105,14 +105,15 @@ namespace Bewit.Validation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitValidation<Foo>(new BewitOptions
+            services.AddBewitValidation(new BewitOptions
                 {
                     Secret = secret
                 },
                 builder =>
                 {
-                    builder.GetRepository = () =>
-                        new Mock<INonceRepository>().Object;
+                    builder
+                        .AddPayload<Foo>()
+                        .SetRepository(() => new Mock<INonceRepository>().Object);
                 });
 
             //Assert
@@ -140,11 +141,11 @@ namespace Bewit.Validation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitValidation<Foo>(new BewitOptions
+            services.AddBewitValidation(new BewitOptions
                 {
                     Secret = secret
                 },
-                builder => { });
+                builder => builder.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;

@@ -1,12 +1,13 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace Bewit.Core
 {
     public class BewitRegistrationBuilder
     {
         private Func<BewitOptions, ICryptographyService> _getCryptographyService;
-
-        public Func<INonceRepository> GetRepository { get; set; }
+        private readonly List<BewitPayloadBuilder> _payloadBuilders =
+            new List<BewitPayloadBuilder>();
 
         public Func<BewitOptions, ICryptographyService> GetCryptographyService
         {
@@ -21,6 +22,16 @@ namespace Bewit.Core
                 return _getCryptographyService;
             }
             set => _getCryptographyService = value;
+        }
+
+        internal IReadOnlyList<BewitPayloadBuilder> PayloadBuilders => _payloadBuilders;
+
+        public BewitPayloadBuilder AddPayload<T>()
+        {
+            BewitPayloadBuilder payloadBuilder = new BewitPayloadBuilder().AddPayload<T>();
+            _payloadBuilders.Add(payloadBuilder);
+
+            return payloadBuilder;
         }
     }
 }

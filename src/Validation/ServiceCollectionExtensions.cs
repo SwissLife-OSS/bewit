@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,30 +7,30 @@ namespace Bewit.Validation
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.AddBewitValidation<TPayload>(configuration, build => { });
+            return services.AddBewitValidation(configuration, build => { });
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-            return services.AddBewitValidation<TPayload>(options, build);
+            return services.AddBewitValidation(options, build);
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             BewitOptions options)
         {
-            return services.AddBewitValidation<TPayload>(options, build => { });
+            return services.AddBewitValidation(options, build => { });
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
@@ -40,22 +40,29 @@ namespace Bewit.Validation
             BewitRegistrationBuilder builder = new BewitRegistrationBuilder();
             build(builder);
 
-            if (builder.GetRepository == default)
+            foreach (BewitPayloadBuilder payloadBuilder in builder.PayloadBuilders)
             {
-                services.AddTransient<IBewitTokenValidator<TPayload>>(ctx => 
-                    new BewitTokenValidator<TPayload>(
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider()
-                    ));
-            }
-            else
-            {
-                services.AddTransient<IBewitTokenValidator<TPayload>>(ctx =>
-                    new PersistedBewitTokenValidator<TPayload>(
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider(),
-                        builder.GetRepository()
-                    ));
+                if (payloadBuilder.CreateRepository == default)
+                {
+                    services.AddTransient(
+                        typeof(IBewitTokenValidator<>),
+                        serviceProvider => ActivatorUtilities.CreateInstance(
+                            serviceProvider,
+                            typeof(BewitTokenValidator<>),
+                            builder.GetCryptographyService(options),
+                            new VariablesProvider()));
+                }
+                else
+                {
+                    services.AddTransient(
+                        typeof(IBewitTokenValidator<>),
+                        serviceProvider => ActivatorUtilities.CreateInstance(
+                            serviceProvider,
+                            typeof(PersistedBewitTokenValidator<>),
+                            builder.GetCryptographyService(options),
+                            new VariablesProvider(),
+                            payloadBuilder.CreateRepository()));
+                }
             }
 
             return services;

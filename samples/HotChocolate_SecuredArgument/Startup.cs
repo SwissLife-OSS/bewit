@@ -41,10 +41,9 @@ namespace Host
             };
 
             // Add support for generating bewits in the GraphQL Api
-            services.AddBewitGeneration<string>(
+            services.AddBewitGeneration(
                 bewitOptions,
-                builder => builder.UseHmacSha256Encryption()
-            );
+                builder => builder.UseHmacSha256Encryption().AddPayload<string>());
 
              services.AddHttpContextAccessor();
 
@@ -53,7 +52,7 @@ namespace Host
                 .AddGraphQLServer()
                 .AddQueryType<QueryType>()
                 .AddType<DocumentType>()
-                /*.UseBewitAuthorization(bewitOptions)*/;
+                .UseBewitAuthorization(bewitOptions);
 
             services.AddRouting();
         }

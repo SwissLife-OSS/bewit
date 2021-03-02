@@ -7,30 +7,30 @@ namespace Bewit.Generation
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddBewitGeneration<TPayload>(
+        public static IServiceCollection AddBewitGeneration(
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.AddBewitGeneration<TPayload>(configuration, build => { });
+            return services.AddBewitGeneration(configuration, build => { });
         }
 
-        public static IServiceCollection AddBewitGeneration<TPayload>(
+        public static IServiceCollection AddBewitGeneration(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-            return services.AddBewitGeneration<TPayload>(options, build);
+            return services.AddBewitGeneration(options, build);
         }
 
-        public static IServiceCollection AddBewitGeneration<TPayload>(
+        public static IServiceCollection AddBewitGeneration(
             this IServiceCollection services,
             BewitOptions options)
         {
-            return services.AddBewitGeneration<TPayload>(options, build => { });
+            return services.AddBewitGeneration(options, build => { });
         }
 
-        public static IServiceCollection AddBewitGeneration<TPayload>(
+        public static IServiceCollection AddBewitGeneration(
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
@@ -40,24 +40,31 @@ namespace Bewit.Generation
             BewitRegistrationBuilder builder = new BewitRegistrationBuilder();
             build(builder);
 
-            if (builder.GetRepository == default)
+            foreach (BewitPayloadBuilder payloadBuilder in builder.PayloadBuilders)
             {
-                services.AddTransient<IBewitTokenGenerator<TPayload>>(ctx =>
-                    new BewitTokenGenerator<TPayload>(
-                        options.TokenDuration,
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider()
-                    ));
-            }
-            else
-            {
-                services.AddTransient<IBewitTokenGenerator<TPayload>>(ctx =>
-                    new PersistedBewitTokenGenerator<TPayload>(
-                        options.TokenDuration,
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider(),
-                        builder.GetRepository()
-                    ));
+                if (payloadBuilder.CreateRepository == default)
+                {
+                    services.AddTransient(
+                        typeof(IBewitTokenGenerator<>),
+                        serviceProvider => ActivatorUtilities.CreateInstance(
+                            serviceProvider,
+                            typeof(BewitTokenGenerator<>),
+                            options.TokenDuration,
+                            builder.GetCryptographyService(options),
+                            new VariablesProvider()));
+                }
+                else
+                {
+                    services.AddTransient(
+                        typeof(IBewitTokenGenerator<>),
+                        serviceProvider => ActivatorUtilities.CreateInstance(
+                            serviceProvider,
+                            typeof(PersistedBewitTokenGenerator<>),
+                            options.TokenDuration,
+                            builder.GetCryptographyService(options),
+                            new VariablesProvider(),
+                            payloadBuilder.CreateRepository()));
+                }
             }
 
             return services;

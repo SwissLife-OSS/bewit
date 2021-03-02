@@ -13,8 +13,7 @@ namespace Bewit.IntegrationTests.MvcServer
         internal static TestServer CreateMvcServer(
             string secret,
             string connectionString,
-            string databaseName
-            )
+            string databaseName)
         {
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
@@ -28,15 +27,13 @@ namespace Bewit.IntegrationTests.MvcServer
                             {
                                 Secret = secret
                             },
-                            builder => builder
-                                .UseHmacSha256Encryption()
-                                .UseMongoPersistance(
-                                    new BewitMongoOptions
-                                    {
-                                        ConnectionString = connectionString,
-                                        DatabaseName = databaseName
-                                    })
-                        );
+                            rb => rb.UseHmacSha256Encryption(),
+                            pb => pb.UseMongoPersistence(
+                                new BewitMongoOptions
+                                {
+                                    ConnectionString = connectionString,
+                                    DatabaseName = databaseName
+                                }));
 
                     //for payload protection, the payload can be injected into an action's parameter through the [FromBewit] Attribute
                     services
@@ -45,15 +42,13 @@ namespace Bewit.IntegrationTests.MvcServer
                             {
                                 Secret = secret
                             },
-                            builder => builder
-                                .UseHmacSha256Encryption()
-                                .UseMongoPersistance(
-                                    new BewitMongoOptions
-                                    {
-                                        ConnectionString = connectionString,
-                                        DatabaseName = databaseName
-                                    })
-                        );
+                            rb => rb.UseHmacSha256Encryption(),
+                            pb => pb.UseMongoPersistence(
+                                new BewitMongoOptions
+                                {
+                                    ConnectionString = connectionString,
+                                    DatabaseName = databaseName
+                                }));
                 })
                 .Configure(app => app.UseRouting().UseEndpoints(c => c.MapControllers()));
 

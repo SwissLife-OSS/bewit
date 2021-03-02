@@ -42,16 +42,14 @@ namespace Host
             };
 
             // Add support for generating bewits in the GraphQL Api
-            services.AddBewitGeneration<string>(
+            services.AddBewitGeneration(
                 bewitOptions,
-                builder => builder.UseHmacSha256Encryption()
-            );
+                builder => builder.UseHmacSha256Encryption().AddPayload<string>());
 
             // Add support for validating bewits in the Mvc Api
             services.AddBewitUrlAuthorizationFilter(
                 bewitOptions,
-                builder => builder.UseHmacSha256Encryption()
-            );
+                builder => builder.UseHmacSha256Encryption());
 
             // Add GraphQL Services
             services

@@ -27,14 +27,15 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                     services.AddRouting();
 
                     //for url protection
-                    services.AddBewitGeneration<string>(
+                    services.AddBewitGeneration(
                         new BewitOptions
                         {
                             Secret = secret
                         },
                         builder => builder
                             .UseHmacSha256Encryption()
-                            .UseMongoPersistance(
+                            .AddPayload<string>()
+                            .UseMongoPersistence(
                                 new BewitMongoOptions
                                 {
                                     ConnectionString = connectionString,
@@ -43,14 +44,15 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                     );
 
                     //for payload protection
-                    services.AddBewitGeneration<IDictionary<string, object>>(
+                    services.AddBewitGeneration(
                         new BewitOptions
                         {
                             Secret = secret
                         },
                         builder => builder
                             .UseHmacSha256Encryption()
-                            .UseMongoPersistance(
+                            .AddPayload<IDictionary<string, object>>()
+                            .UseMongoPersistence(
                                 new BewitMongoOptions
                                 {
                                     ConnectionString = connectionString,
