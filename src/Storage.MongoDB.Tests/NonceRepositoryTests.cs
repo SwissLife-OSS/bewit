@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +19,12 @@ namespace Bewit.Storage.MongoDB.Tests
             public int Baz { get; set; }
         }
 
+        public class Bar2<T1, T2>
+        {
+            public T1 Baz { get; set; }
+            public T2 Faz { get; set; }
+        }
+
         static NonceRepositoryTests()
         {
             NonceRepository.Initialize();
@@ -38,16 +43,16 @@ namespace Bewit.Storage.MongoDB.Tests
             var repository = new NonceRepository(database, nameof(Token));
             var token = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
-            var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
+            var nonce = new Bewit<Bar2<int, string>>(token, expirationDate, new Bar2<int, string>(), "hash");
 
             //Act
             await repository.InsertOneAsync(nonce, CancellationToken.None);
 
             //Assert
-            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
+            IMongoCollection<Bewit<Bar2<int, string>>> collection = database.GetCollection<Bewit<Bar2<int, string>>>(nameof(Token));
             var items = (
                 await collection.FindAsync(
-                    Builders<Token>.Filter.Empty,
+                    Builders<Bewit<Bar2<int, string>>>.Filter.Empty,
                     cancellationToken: CancellationToken.None)
             ).ToList();
             items.Should().ContainSingle();

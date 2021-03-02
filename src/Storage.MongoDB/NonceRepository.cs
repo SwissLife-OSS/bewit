@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
@@ -12,6 +13,13 @@ namespace Bewit.Storage.MongoDB
 
         static NonceRepository()
         {
+            ConventionRegistry.Register(
+                "bewit.conventions",
+                new ConventionPack
+                {
+                    new DiscriminatorClassMapConvention()
+                }, t => t.FullName?.StartsWith("Bewit") ?? false);
+
             BsonClassMap.RegisterClassMap<Token>(cm =>
             {
                 cm.MapIdMember(c => c.Nonce);
