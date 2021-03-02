@@ -19,11 +19,11 @@ namespace Bewit.Extensions.HotChocolate.Tests
 {
     public static class TestHelpers
     {
-        public static async Task<string> CreateToken(
-            IServiceProvider serviceProvider, object payload)
+        public static async Task<string> CreateToken<T>(
+            IServiceProvider serviceProvider, T payload)
         {
-            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<object>>();
+            IBewitTokenGenerator<T> bewitGenerator = serviceProvider
+                .GetService<IBewitTokenGenerator<T>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync(payload, default))
@@ -63,7 +63,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             return await services.ExecuteRequestAsync(requestBuilder.Create());
         }
 
-        public static IServiceProvider CreateSchema()
+        public static IServiceProvider CreateSchema<TPayload>()
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
@@ -80,15 +80,15 @@ namespace Bewit.Extensions.HotChocolate.Tests
             return new ServiceCollection()
                 .AddSingleton<HttpContext>(httpContext)
                 .AddSingleton(httpContextAccessor.Object)
-                .AddBewitGeneration(configuration, b => b.AddPayload<string>())
+                .AddBewitGeneration(configuration, b => b.AddPayload<TPayload>())
                 .AddGraphQLServer()
-                .UseBewitAuthorization(configuration)
+                .UseBewitAuthorization<TPayload>(configuration)
                 .AddQueryType(c =>
                     c.Name("Query")
                         .Field("foo")
                         .Type<StringType>()
                         .Resolver("bar")
-                        .AuthorizeBewit())
+                        .AuthorizeBewit<TPayload>())
                 .UseDefaultPipeline()
                 .Services
                 .BuildServiceProvider();

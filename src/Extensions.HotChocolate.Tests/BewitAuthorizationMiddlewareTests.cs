@@ -12,7 +12,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema<string>();
             var payload = "foo@bar.gmail.com";
             var token = await TestHelpers.CreateToken(serviceProvider, payload);
 
@@ -27,7 +27,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenWrongToken_Fail()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema<object>();
             var token = await TestHelpers.CreateBadToken();
 
             // act
@@ -44,7 +44,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenNotAuthorize_Fail()
         {
             // arrange
-            IServiceProvider serviceProvider = TestHelpers.CreateSchema();
+            IServiceProvider serviceProvider = TestHelpers.CreateSchema<object>();
 
             // act
             IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider);

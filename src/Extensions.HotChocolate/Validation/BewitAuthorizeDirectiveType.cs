@@ -2,7 +2,7 @@ using HotChocolate.Types;
 
 namespace Bewit.Extensions.HotChocolate.Validation
 {
-    public class BewitAuthorizeDirectiveType
+    public class BewitAuthorizeDirectiveType<T>
         : DirectiveType
     {
         protected override void Configure(
@@ -11,7 +11,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
             descriptor
                 .Name("authorizeBewitToken")
                 .Location(DirectiveLocation.FieldDefinition)
-                .Use<BewitAuthorizationMiddleware>();
+                .Use<BewitAuthorizationMiddleware<T>>();
         }
     }
 }

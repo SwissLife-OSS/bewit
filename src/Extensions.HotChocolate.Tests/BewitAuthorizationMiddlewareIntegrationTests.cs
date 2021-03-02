@@ -23,7 +23,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            IServiceProvider services = TestHelpers.CreateSchema();
+            IServiceProvider services = TestHelpers.CreateSchema<CustomPayload>();
             var payload = new CustomPayload { Email = "foo@bar.gmail.com" };
             var token = await TestHelpers.CreateToken(services, payload);
 

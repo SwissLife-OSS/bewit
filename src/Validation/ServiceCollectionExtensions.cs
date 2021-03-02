@@ -44,12 +44,15 @@ namespace Bewit.Validation
             services.TryAddSingleton(options);
             services.TryAddSingleton<ICryptographyService, HmacSha256CryptographyService>();
             services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
+            services.TryAddSingleton<INonceRepository, MemoryNonceRepository>();
 
             foreach (BewitPayload payloadBuilder in builder.Payloads)
             {
-                Type generator = typeof(BewitTokenValidator<>);
-                Type typedGenerator = generator.MakeGenericType(payloadBuilder.Type);
-                services.AddTransient(typeof(IBewitTokenValidator<>), typedGenerator);
+                Type implementation = typeof(BewitTokenValidator<>);
+                Type typedImplementation = implementation.MakeGenericType(payloadBuilder.Type);
+                Type service = typeof(IBewitTokenValidator<>);
+                Type typedService = service.MakeGenericType(payloadBuilder.Type);
+                services.AddTransient(typedService, typedImplementation);
             }
 
             return services;

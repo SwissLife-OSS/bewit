@@ -7,16 +7,16 @@ using HotChocolate.Resolvers;
 
 namespace Bewit.Extensions.HotChocolate.Validation
 {
-    public class BewitAuthorizationMiddleware
+    public class BewitAuthorizationMiddleware<T>
     {
         private readonly FieldDelegate _next;
         private readonly IBewitContext _bewitContext;
-        private readonly IBewitTokenValidator<object> _tokenValidator;
+        private readonly IBewitTokenValidator<T> _tokenValidator;
 
         public BewitAuthorizationMiddleware(
             FieldDelegate next,
             IBewitContext bewitContext,
-            IBewitTokenValidator<object> tokenValidator)
+            IBewitTokenValidator<T> tokenValidator)
         {
             _next = next
                 ?? throw new ArgumentNullException(nameof(next));
@@ -37,7 +37,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
                 {
                     object payload = await
                         _tokenValidator.ValidateBewitTokenAsync(
-                            new BewitToken<object>(bewitToken),
+                            new BewitToken<T>(bewitToken),
                             context.RequestAborted);
 
                     await _bewitContext.SetAsync(payload);

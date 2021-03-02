@@ -52,7 +52,7 @@ namespace Host
                 .AddGraphQLServer()
                 .AddQueryType<QueryType>()
                 .AddType<DocumentType>()
-                .UseBewitAuthorization(bewitOptions);
+                .UseBewitAuthorization<string>(bewitOptions);
 
             services.AddRouting();
         }
