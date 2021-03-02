@@ -2,6 +2,7 @@ using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
@@ -9,18 +10,19 @@ namespace Bewit.Storage.MongoDB
     public static class BewitAuthorizationBuilderExtensions
     {
         public static void UseMongoPersistence(
-            this BewitPayloadBuilder builder,
+            this BewitPayload builder,
             IConfiguration configuration)
         {
-            BewitMongoOptions options =
-                configuration.GetSection("Bewit:Mongo").Get<BewitMongoOptions>();
+            MongoNonceOptions options = configuration
+                .GetSection("Bewit:Mongo")
+                .Get<MongoNonceOptions>();
 
             builder.UseMongoPersistence(options);
         }
 
         public static void UseMongoPersistence(
-            this BewitPayloadBuilder builder,
-            BewitMongoOptions options)
+            this BewitPayload builder,
+            MongoNonceOptions options)
         {
             options.Validate();
 
@@ -29,11 +31,13 @@ namespace Bewit.Storage.MongoDB
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            var client = new MongoClient(options.ConnectionString);
-            IMongoDatabase db = client.GetDatabase(options.DatabaseName);
-
-            builder.SetRepository(() => new NonceRepository(
-                db, options.CollectionName ?? nameof(Token)));
+            builder.Services.TryAddSingleton(options);
+            builder.Services.TryAddSingleton<IMongoDatabase>(sp =>
+            {
+                var client = new MongoClient(options.ConnectionString);
+                return client.GetDatabase(options.DatabaseName);
+            });
+            builder.Services.TryAddSingleton<INonceRepository, MongoNonceRepository>();
         }
     }
 }

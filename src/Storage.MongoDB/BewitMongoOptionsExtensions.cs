@@ -5,7 +5,7 @@ namespace Bewit.Storage.MongoDB
 {
     internal static class BewitMongoOptionsExtensions
     {
-        internal static void Validate(this BewitMongoOptions options)
+        internal static void Validate(this MongoNonceOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.ConnectionString))
             {

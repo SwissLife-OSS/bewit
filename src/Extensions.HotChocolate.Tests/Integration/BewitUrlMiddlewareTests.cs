@@ -66,11 +66,9 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                 {
                     services.AddRouting();
 
-                    services.AddTransient<IBewitTokenGenerator<string>>(ctx =>
-                        new BewitTokenGenerator<string>(
-                            TimeSpan.FromMinutes(1),
-                            new HmacSha256CryptographyService("123"),
-                            new MockedVariablesProvider()));
+                    services.AddSingleton(new BewitOptions {Secret = "123"});
+                    services.AddSingleton<IVariablesProvider, MockedVariablesProvider>();
+                    services.AddTransient<IBewitTokenGenerator<string>, BewitTokenGenerator<string>>();
                     services
                         .AddGraphQLServer()
                         .SetOptions(new SchemaOptions { StrictValidation = false })

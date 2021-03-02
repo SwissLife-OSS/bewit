@@ -105,15 +105,14 @@ namespace Bewit.Generation.Tests
             var services = new ServiceCollection();
 
             //Act
+            services.AddSingleton<INonceRepository>(new Mock<INonceRepository>().Object);
             services.AddBewitGeneration(new BewitOptions
                 {
                     Secret = secret
                 },
                 builder =>
                 {
-                    builder
-                        .AddPayload<Foo>()
-                        .SetRepository(() => new Mock<INonceRepository>().Object);
+                    builder.AddPayload<Foo>();
                 });
 
             //Assert
@@ -125,7 +124,7 @@ namespace Bewit.Generation.Tests
                     serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
                 bewitTokenGenerator.Should().NotBeNull();
                 bewitTokenGenerator.Should()
-                    .BeOfType<PersistedBewitTokenGenerator<Foo>>();
+                    .BeOfType<BewitTokenGenerator<Foo>>();
             }
             finally
             {

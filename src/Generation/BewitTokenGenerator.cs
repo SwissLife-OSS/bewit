@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Text;
 using System.Threading;
@@ -8,53 +8,47 @@ using Newtonsoft.Json;
 
 namespace Bewit.Generation
 {
-    public class BewitTokenGenerator<T>: IBewitTokenGenerator<T>
+    internal class BewitTokenGenerator<T>: IBewitTokenGenerator<T>
     {
-        private readonly TimeSpan _tokenDuration = TimeSpan.FromMinutes(1);
+        private readonly TimeSpan _tokenDuration;
         private readonly ICryptographyService _cryptographyService;
         private readonly IVariablesProvider _variablesProvider;
-        
+        private readonly INonceRepository _repository;
+
         public BewitTokenGenerator(
-            TimeSpan tokenDuration, 
-            ICryptographyService cryptographyService, 
-            IVariablesProvider variablesProvider)
+            BewitOptions options, 
+            ICryptographyService cryptographyService,
+            IVariablesProvider variablesProvider,
+            INonceRepository repository)
         {
-            if (tokenDuration != default)
+            if (options == null)
             {
-                _tokenDuration = tokenDuration;
+                throw new ArgumentNullException(nameof(options));
             }
 
-            if (cryptographyService == null)
-            {
-                throw new ArgumentNullException(nameof(cryptographyService));
-            }
-
-            if (variablesProvider == null)
-            {
-                throw new ArgumentNullException(nameof(variablesProvider));
-            }
-
-            _cryptographyService = cryptographyService;
-            _variablesProvider = variablesProvider;
+            _tokenDuration = options.TokenDuration;
+            _cryptographyService = cryptographyService
+                ?? throw new ArgumentNullException(nameof(cryptographyService));
+            _variablesProvider = variablesProvider
+                ?? throw new ArgumentNullException(nameof(variablesProvider));
+            _repository = repository
+                ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task<BewitToken<T>> GenerateBewitTokenAsync(T payload,
+        public async Task<BewitToken<T>> GenerateBewitTokenAsync(
+            T payload,
             CancellationToken cancellationToken)
         {
-            Bewit<T> bewit =
-                await GenerateBewitAsync(payload, cancellationToken);
+            Bewit<T> bewit = await GenerateBewitAsync(payload, cancellationToken);
 
             // Refactor: TypeNameHandling.All
-            string serializedBewit = JsonConvert.SerializeObject(bewit);
-
-            string base64Bewit = Convert.ToBase64String(
-                Encoding.UTF8.GetBytes(serializedBewit)
-            );
+            var serializedBewit = JsonConvert.SerializeObject(bewit);
+            var base64Bewit = Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedBewit));
 
             return new BewitToken<T>(base64Bewit);
         }
 
-        protected virtual Task<Bewit<T>> GenerateBewitAsync(
+        protected async ValueTask<Bewit<T>> GenerateBewitAsync(
             T payload,
             CancellationToken cancellationToken)
         {
@@ -63,19 +57,15 @@ namespace Bewit.Generation
                 throw new ArgumentNullException(nameof(payload));
             }
 
-            string token =
-                _variablesProvider.NextToken.ToString("D",
-                    CultureInfo.InvariantCulture);
-            DateTime expirationDate =
-                _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
+            var token = _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
+            DateTime expirationDate = _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
 
-            return
-                Task.FromResult(new Bewit<T>(
-                    token,
-                    expirationDate,
-                    payload,
-                    _cryptographyService.GetHash(token, expirationDate, payload)
-                ));
+            var hash = _cryptographyService.GetHash(token, expirationDate, payload);
+            var bewit = new Bewit<T>(token, expirationDate, payload, hash);
+
+            await _repository.InsertOneAsync(bewit, cancellationToken);
+
+            return bewit;
         }
     }
 }

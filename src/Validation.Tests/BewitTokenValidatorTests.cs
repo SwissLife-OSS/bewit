@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
@@ -194,7 +194,8 @@ namespace Bewit.Validation.Tests
                 MockHelper.GetMockedCrpytoService<Foo>();
             var provider = new BewitTokenValidator<Foo>(
                 cryptoService,
-                new MockHelper.MockedVariablesProvider());
+                new MockHelper.MockedVariablesProvider(),
+                new MemoryNonceRepository());
             var payload = new Foo
             {
                 Bar = 1

@@ -20,25 +20,25 @@ namespace Bewit.Mvc.Filter
         public static IServiceCollection AddBewitUrlAuthorizationFilter(
             this IServiceCollection services,
             IConfiguration configuration,
-            Action<BewitRegistrationBuilder> registrationBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-            return services.AddBewitUrlAuthorizationFilter(options, registrationBuilder, pb => { });
+            return services.AddBewitUrlAuthorizationFilter(options, rb => { }, payloadBuilder);
         }
 
         public static IServiceCollection AddBewitUrlAuthorizationFilter(
             this IServiceCollection services,
             BewitOptions options,
-            Action<BewitRegistrationBuilder> registrationBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
-            return services.AddBewitUrlAuthorizationFilter(options, registrationBuilder, pb => { });
+            return services.AddBewitUrlAuthorizationFilter(options, rb => { }, payloadBuilder);
         }
 
         public static IServiceCollection AddBewitUrlAuthorizationFilter(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> registrationBuilder,
-            Action<BewitPayloadBuilder> payloadBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
             return services.AddBewitUrlAuthorizationFilter(options, registrationBuilder, payloadBuilder);
@@ -48,7 +48,7 @@ namespace Bewit.Mvc.Filter
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> registrationBuilder,
-            Action<BewitPayloadBuilder> payloadBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             services.AddBewitValidation(options, b =>
             {
@@ -70,25 +70,25 @@ namespace Bewit.Mvc.Filter
         public static IServiceCollection AddBewitFilter(
             this IServiceCollection services,
             IConfiguration configuration,
-            Action<BewitRegistrationBuilder> registrationBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-            return services.AddBewitFilter(options, registrationBuilder, pb => { });
+            return services.AddBewitFilter(options, rb => { }, payloadBuilder);
         }
 
         public static IServiceCollection AddBewitFilter(
             this IServiceCollection services,
             BewitOptions options,
-            Action<BewitRegistrationBuilder> registrationBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
-            return services.AddBewitFilter(options, registrationBuilder, pb => { });
+            return services.AddBewitFilter(options, rb => { }, payloadBuilder);
         }
 
         public static IServiceCollection AddBewitFilter(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> registrationBuilder,
-            Action<BewitPayloadBuilder> payloadBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
             return services.AddBewitFilter(options, registrationBuilder, payloadBuilder);
@@ -98,7 +98,7 @@ namespace Bewit.Mvc.Filter
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> registrationBuilder,
-            Action<BewitPayloadBuilder> payloadBuilder)
+            Action<BewitPayload> payloadBuilder)
         {
             services.AddBewitValidation(options, b =>
             {

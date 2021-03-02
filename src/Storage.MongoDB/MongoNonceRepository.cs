@@ -7,11 +7,11 @@ using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
 {
-    public class NonceRepository : INonceRepository
+    internal class MongoNonceRepository : INonceRepository
     {
         private readonly IMongoCollection<Token> _collection;
 
-        static NonceRepository()
+        static MongoNonceRepository()
         {
             ConventionRegistry.Register(
                 "bewit.conventions",
@@ -28,26 +28,24 @@ namespace Bewit.Storage.MongoDB
             });
         }
 
-        public NonceRepository(IMongoDatabase database, string collectionName)
+        public MongoNonceRepository(IMongoDatabase database, string collectionName)
         {
             _collection = database.GetCollection<Token>(collectionName);
         }
 
-        public async Task InsertOneAsync(
+        public async ValueTask InsertOneAsync(
             Token token, CancellationToken cancellationToken)
         {
-            await _collection.InsertOneAsync(token, new InsertOneOptions(),
-                cancellationToken);
+            await _collection.InsertOneAsync(token, cancellationToken: cancellationToken);
         }
 
-        public async Task<Token> FindOneAndDeleteAsync(
+        public async ValueTask<Token> TakeOneAsync(
             string token, CancellationToken cancellationToken)
         {
-            FilterDefinition<Token> findFilter =
-                Builders<Token>.Filter.Eq(n => n.Nonce, token);
+            FilterDefinition<Token> findFilter = Builders<Token>.Filter.Eq(n => n.Nonce, token);
 
-            return await _collection.FindOneAndDeleteAsync(findFilter,
-                new FindOneAndDeleteOptions<Token>(), cancellationToken);
+            return await _collection
+                .FindOneAndDeleteAsync(findFilter, cancellationToken: cancellationToken);
         }
 
         public static void Initialize()

@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
 
@@ -9,11 +9,11 @@ namespace Bewit.Validation.Tests
         internal BewitTokenValidatorAccessor(
             ICryptographyService cryptographyService, 
             IVariablesProvider variablesProvider) : 
-            base(cryptographyService, variablesProvider)
+            base(cryptographyService, variablesProvider, new MemoryNonceRepository())
         {
         }
 
-        internal async Task<Bewit<T>> InvokeValidateBewitAsync(
+        internal async ValueTask<Bewit<T>> InvokeValidateBewitAsync(
             Bewit<T> bewit,
             CancellationToken cancellationToken)
         {

@@ -1,37 +1,26 @@
-using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Bewit.Core
 {
     public class BewitRegistrationBuilder
     {
-        private Func<BewitOptions, ICryptographyService> _getCryptographyService;
-        private readonly List<BewitPayloadBuilder> _payloadBuilders =
-            new List<BewitPayloadBuilder>();
+        private readonly List<BewitPayload> _payloads = new List<BewitPayload>();
 
-        public Func<BewitOptions, ICryptographyService> GetCryptographyService
+        public BewitRegistrationBuilder(IServiceCollection services)
         {
-            get
-            {
-                if(_getCryptographyService == default)
-                {
-                    _getCryptographyService = (BewitOptions options) 
-                        => new HmacSha256CryptographyService(options.Secret);
-                }
-
-                return _getCryptographyService;
-            }
-            set => _getCryptographyService = value;
+            Services = services;
         }
 
-        internal IReadOnlyList<BewitPayloadBuilder> PayloadBuilders => _payloadBuilders;
+        public IServiceCollection Services { get; }
+        internal IReadOnlyList<BewitPayload> Payloads => _payloads;
 
-        public BewitPayloadBuilder AddPayload<T>()
+        public BewitPayload AddPayload<T>()
         {
-            BewitPayloadBuilder payloadBuilder = new BewitPayloadBuilder().AddPayload<T>();
-            _payloadBuilders.Add(payloadBuilder);
+            var payload = new BewitPayload(Services, typeof(T));
+            _payloads.Add(payload);
 
-            return payloadBuilder;
+            return payload;
         }
     }
 }

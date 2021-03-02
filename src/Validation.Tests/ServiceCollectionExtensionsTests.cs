@@ -105,6 +105,7 @@ namespace Bewit.Validation.Tests
             var services = new ServiceCollection();
 
             //Act
+            services.AddSingleton<INonceRepository>(new Mock<INonceRepository>().Object);
             services.AddBewitValidation(new BewitOptions
                 {
                     Secret = secret
@@ -112,8 +113,7 @@ namespace Bewit.Validation.Tests
                 builder =>
                 {
                     builder
-                        .AddPayload<Foo>()
-                        .SetRepository(() => new Mock<INonceRepository>().Object);
+                        .AddPayload<Foo>();
                 });
 
             //Assert
@@ -125,7 +125,7 @@ namespace Bewit.Validation.Tests
                     serviceProvider.GetService<IBewitTokenValidator<Foo>>();
                 bewitTokenGenerator.Should().NotBeNull();
                 bewitTokenGenerator.Should()
-                    .BeOfType<PersistedBewitTokenValidator<Foo>>();
+                    .BeOfType<BewitTokenValidator<Foo>>();
             }
             finally
             {

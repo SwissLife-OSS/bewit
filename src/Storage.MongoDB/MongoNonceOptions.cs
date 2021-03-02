@@ -1,17 +1,19 @@
 
+using Bewit.Core;
+
 namespace Bewit.Storage.MongoDB
 {
-    public class BewitMongoOptions
+    public class MongoNonceOptions : NonceOptions
     {
         /// <summary>
-        /// Connectionstring for the MongoDB instance.
+        /// Connection string for the MongoDB instance.
         /// Mandatory.
         /// </summary>
         public string ConnectionString { get; set; } //mandatory
 
         /// <summary>
         /// Name of the Database in the MongoDB instance. 
-        /// Madatory.
+        /// Mandatory.
         /// </summary>
         public string DatabaseName { get; set; } //mandatory
 
@@ -19,6 +21,6 @@ namespace Bewit.Storage.MongoDB
         /// Name of the Bewit Collection in the Mongo database. 
         /// Optional. 
         /// </summary>
-        public string CollectionName { get; set; }
+        public string CollectionName { get; set; } = nameof(Token);
     }
 }

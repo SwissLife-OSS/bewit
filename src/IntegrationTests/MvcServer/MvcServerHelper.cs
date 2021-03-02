@@ -27,9 +27,8 @@ namespace Bewit.IntegrationTests.MvcServer
                             {
                                 Secret = secret
                             },
-                            rb => rb.UseHmacSha256Encryption(),
                             pb => pb.UseMongoPersistence(
-                                new BewitMongoOptions
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName
@@ -42,9 +41,8 @@ namespace Bewit.IntegrationTests.MvcServer
                             {
                                 Secret = secret
                             },
-                            rb => rb.UseHmacSha256Encryption(),
                             pb => pb.UseMongoPersistence(
-                                new BewitMongoOptions
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName

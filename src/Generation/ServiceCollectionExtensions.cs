@@ -2,6 +2,7 @@ using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bewit.Generation
 {
@@ -37,34 +38,18 @@ namespace Bewit.Generation
         {
             options.Validate();
 
-            BewitRegistrationBuilder builder = new BewitRegistrationBuilder();
+            var builder = new BewitRegistrationBuilder(services);
             build(builder);
 
-            foreach (BewitPayloadBuilder payloadBuilder in builder.PayloadBuilders)
+            services.TryAddSingleton(options);
+            services.TryAddSingleton<ICryptographyService, HmacSha256CryptographyService>();
+            services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
+
+            foreach (BewitPayload payloadBuilder in builder.Payloads)
             {
-                if (payloadBuilder.CreateRepository == default)
-                {
-                    services.AddTransient(
-                        typeof(IBewitTokenGenerator<>),
-                        serviceProvider => ActivatorUtilities.CreateInstance(
-                            serviceProvider,
-                            typeof(BewitTokenGenerator<>),
-                            options.TokenDuration,
-                            builder.GetCryptographyService(options),
-                            new VariablesProvider()));
-                }
-                else
-                {
-                    services.AddTransient(
-                        typeof(IBewitTokenGenerator<>),
-                        serviceProvider => ActivatorUtilities.CreateInstance(
-                            serviceProvider,
-                            typeof(PersistedBewitTokenGenerator<>),
-                            options.TokenDuration,
-                            builder.GetCryptographyService(options),
-                            new VariablesProvider(),
-                            payloadBuilder.CreateRepository()));
-                }
+                Type generator = typeof(BewitTokenGenerator<>);
+                Type typedGenerator = generator.MakeGenericType(payloadBuilder.Type);
+                services.AddTransient(typeof(IBewitTokenGenerator<>), typedGenerator);
             }
 
             return services;

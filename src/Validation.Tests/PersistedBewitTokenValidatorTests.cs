@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
@@ -22,7 +22,7 @@ namespace Bewit.Validation.Tests
             Token insertedToken = new Token("724e7acc-be57-49a1-8195-46a03c6271c6", DateTime.MaxValue);
             var repository = new Mock<INonceRepository>();
             repository
-                .Setup(r => r.FindOneAndDeleteAsync(It.IsAny<string>(),
+                .Setup(r => r.TakeOneAsync(It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns((string tok, CancellationToken c) =>
                 {
@@ -30,13 +30,13 @@ namespace Bewit.Validation.Tests
                     {
                         Token tmpToken = insertedToken;
                         insertedToken = null;
-                        return Task.FromResult(tmpToken);
+                        return new ValueTask<Token>(tmpToken);
                     }
 
-                    return Task.FromResult((Token)null);
+                    return new ValueTask<Token>((Token)null);
                 });
             var provider =
-                new PersistedBewitTokenValidator<Bar>(
+                new BewitTokenValidator<Bar>(
                     MockHelper.GetMockedCrpytoService<Bar>(),
                     new MockHelper.MockedVariablesProvider(), repository.Object);
             var payload = new Bar

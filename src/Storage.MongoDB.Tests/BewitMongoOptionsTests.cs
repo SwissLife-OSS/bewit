@@ -14,7 +14,7 @@ namespace Bewit.Storage.MongoDB.Tests
             const string databaseName = "baz";
 
             //Act
-            var options = new BewitMongoOptions
+            var options = new MongoNonceOptions
             {
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,

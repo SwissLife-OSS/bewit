@@ -33,10 +33,9 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                             Secret = secret
                         },
                         builder => builder
-                            .UseHmacSha256Encryption()
                             .AddPayload<string>()
                             .UseMongoPersistence(
-                                new BewitMongoOptions
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName
@@ -50,10 +49,9 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                             Secret = secret
                         },
                         builder => builder
-                            .UseHmacSha256Encryption()
                             .AddPayload<IDictionary<string, object>>()
                             .UseMongoPersistence(
-                                new BewitMongoOptions
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName

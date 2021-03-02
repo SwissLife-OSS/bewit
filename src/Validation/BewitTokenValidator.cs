@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,23 +12,19 @@ namespace Bewit.Validation
     {
         private readonly ICryptographyService _cryptographyService;
         private readonly IVariablesProvider _variablesProvider;
+        private readonly INonceRepository _repository;
 
         public BewitTokenValidator(
             ICryptographyService cryptographyService,
-            IVariablesProvider variablesProvider)
+            IVariablesProvider variablesProvider,
+            INonceRepository repository)
         {
-            if (cryptographyService == null)
-            {
-                throw new ArgumentNullException(nameof(cryptographyService));
-            }
-
-            if (variablesProvider == null)
-            {
-                throw new ArgumentNullException(nameof(variablesProvider));
-            }
-
-            _cryptographyService = cryptographyService;
-            _variablesProvider = variablesProvider;
+            _cryptographyService = cryptographyService
+                ?? throw new ArgumentNullException(nameof(cryptographyService));
+            _variablesProvider = variablesProvider
+                ?? throw new ArgumentNullException(nameof(variablesProvider));
+            _repository = repository
+                ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public async Task<T> ValidateBewitTokenAsync(
@@ -36,28 +32,21 @@ namespace Bewit.Validation
             CancellationToken cancellationToken)
         {
             Bewit<T> bewitInternal = DeserializeBewitWithoutValidation(bewit);
-
-            Bewit<T> validatedBewit =
-                await ValidateBewitAsync(bewitInternal, cancellationToken);
+            Bewit<T> validatedBewit = await ValidateBewitAsync(bewitInternal, cancellationToken);
 
             return validatedBewit.Payload;
         }
 
         private Bewit<T> DeserializeBewitWithoutValidation(BewitToken<T> bewit)
         {
-            string base64Bewit = bewit.ToString();
-
-            string serializedBewit =
-                Encoding.UTF8.GetString(Convert.FromBase64String(base64Bewit));
+            var base64Bewit = bewit.ToString();
+            var serializedBewit = Encoding.UTF8.GetString(Convert.FromBase64String(base64Bewit));
 
             // Refactor: TypeNameHandling.All
-            Bewit<T> bewitInternal =
-                JsonConvert.DeserializeObject<Bewit<T>>(serializedBewit);
-            return bewitInternal;
+            return JsonConvert.DeserializeObject<Bewit<T>>(serializedBewit);
         }
 
-
-        protected virtual Task<Bewit<T>> ValidateBewitAsync(
+        protected async ValueTask<Bewit<T>> ValidateBewitAsync(
             Bewit<T> bewit,
             CancellationToken cancellationToken)
         {
@@ -77,7 +66,13 @@ namespace Bewit.Validation
                 throw new BewitInvalidException();
             }
 
-            return Task.FromResult(bewit);
+            Token token = await _repository.TakeOneAsync(bewit.Nonce, cancellationToken);
+            if (token != null)
+            {
+                return bewit;
+            }
+
+            throw new BewitNotFoundException();
         }
     }
 }
