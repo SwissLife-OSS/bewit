@@ -25,7 +25,7 @@ namespace Bewit.Generation.Tests
 
             //Act
             var provider = new BewitTokenGenerator<Foo>(
-                default,
+                new BewitOptions(),
                 cryptoService,
                 new MockHelper.MockedVariablesProvider(),
                 new MemoryNonceRepository());

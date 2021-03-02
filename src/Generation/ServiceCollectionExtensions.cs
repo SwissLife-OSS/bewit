@@ -31,6 +31,33 @@ namespace Bewit.Generation
             return services.AddBewitGeneration(options, build => { });
         }
 
+        public static IServiceCollection AddBewitGeneration<TPayload>(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            return services.AddBewitGeneration(configuration, build => build.AddPayload<TPayload>());
+        }
+
+        public static IServiceCollection AddBewitGeneration<TPayload>(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<BewitRegistrationBuilder> build)
+        {
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            return services.AddBewitGeneration(options, registrationBuilder =>
+            {
+                registrationBuilder.AddPayload<TPayload>();
+                build(registrationBuilder);
+            });
+        }
+
+        public static IServiceCollection AddBewitGeneration<TPayload>(
+            this IServiceCollection services,
+            BewitOptions options)
+        {
+            return services.AddBewitGeneration(options, build => build.AddPayload<TPayload>());
+        }
+
         public static IServiceCollection AddBewitGeneration(
             this IServiceCollection services,
             BewitOptions options,

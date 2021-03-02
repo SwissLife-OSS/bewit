@@ -38,7 +38,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
         public async Task InvokeAsync_WithFixedDateTime_ShouldAlwaysSendSameToken()
         {
             //Arrange
-            TestServer testServer = CreateTestServer();
+            TestServer testServer = CreateTestServer<string>();
             HttpClient client = testServer.CreateClient();
             GraphQLClient gqlClient = new GraphQLClient(client);
             QueryRequest query = new QueryRequest(
@@ -59,17 +59,16 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
             res.Data.RequestAccess.Should().Be("https://www.google.com/a/b/?c=d&bewit=eyJQYXlsb2FkIjoiL2EvYi8%252FYz1kIiwiSGFzaCI6IjlsWmpPbU5RalRtMW1JVFY2di8zbVNTQUxQV0Z3ZjVzWkN6anNyenl4cEE9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
         }
 
-        private static TestServer CreateTestServer()
+        private static TestServer CreateTestServer<TPayload>()
         {
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
                     services.AddRouting();
 
-                    services.AddSingleton(new BewitOptions {Secret = "123"});
-                    services.AddSingleton<IVariablesProvider, MockedVariablesProvider>();
-                    services.AddTransient<IBewitTokenGenerator<string>, BewitTokenGenerator<string>>();
                     services
+                        .AddSingleton<IVariablesProvider, MockedVariablesProvider>()
+                        .AddBewitGeneration<string>(new BewitOptions { Secret = "123" })
                         .AddGraphQLServer()
                         .SetOptions(new SchemaOptions { StrictValidation = false })
                         .AddMutationType(d =>

@@ -8,8 +8,9 @@ namespace Bewit.Validation.Tests
     {
         internal BewitTokenValidatorAccessor(
             ICryptographyService cryptographyService, 
-            IVariablesProvider variablesProvider) : 
-            base(cryptographyService, variablesProvider, new MemoryNonceRepository())
+            IVariablesProvider variablesProvider,
+            INonceRepository nonceRepository) : 
+            base(cryptographyService, variablesProvider, nonceRepository)
         {
         }
 

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="..\Generation\Generation.csproj" />
     <ProjectReference Include="..\Storage.MongoDB\Storage.MongoDB.csproj" />
   </ItemGroup>
 
