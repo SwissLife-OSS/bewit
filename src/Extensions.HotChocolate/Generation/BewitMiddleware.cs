@@ -4,7 +4,7 @@ using Bewit.Core;
 using Bewit.Generation;
 using HotChocolate.Resolvers;
 
-namespace Bewit.Extensions.HotChocolate
+namespace Bewit.Extensions.HotChocolate.Generation
 {
     public class BewitMiddleware<TPayload>
     {

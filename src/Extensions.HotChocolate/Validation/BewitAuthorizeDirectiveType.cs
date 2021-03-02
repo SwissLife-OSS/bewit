@@ -1,6 +1,6 @@
 using HotChocolate.Types;
 
-namespace Bewit.Extensions.HotChocolate
+namespace Bewit.Extensions.HotChocolate.Validation
 {
     public class BewitAuthorizeDirectiveType
         : DirectiveType
