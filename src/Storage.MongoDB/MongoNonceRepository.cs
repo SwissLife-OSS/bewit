@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Core;
@@ -28,9 +29,19 @@ namespace Bewit.Storage.MongoDB
             });
         }
 
-        public MongoNonceRepository(IMongoDatabase database, string collectionName)
+        public MongoNonceRepository(IMongoDatabase database, MongoNonceOptions options)
         {
-            _collection = database.GetCollection<Token>(collectionName);
+            if (database == null)
+            {
+                throw new ArgumentNullException(nameof(database));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _collection = database.GetCollection<Token>(options.CollectionName);
         }
 
         public async ValueTask InsertOneAsync(

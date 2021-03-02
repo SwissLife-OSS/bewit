@@ -22,7 +22,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithValidConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithValidConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -47,7 +47,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithMissingConnectionStringInConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithMissingConnectionStringInConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -71,7 +71,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithMissingDatabaseNameInConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithMissingDatabaseNameInConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -95,7 +95,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithOnlyMandatoryParameters_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithOnlyMandatoryParameters_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -117,7 +117,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithOptionalCollectionNameParameter_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithOptionalCollectionNameParameter_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -140,7 +140,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithBuilderNull_ShouldThrowArgumentNullException()
+        public void UseMongoPersistence_WithBuilderNull_ShouldThrowArgumentNullException()
         {
             //Arrange
             BewitPayload builder = null;

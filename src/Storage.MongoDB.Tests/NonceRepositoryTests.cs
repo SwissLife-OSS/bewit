@@ -40,7 +40,7 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new MongoNonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar2<int, string>>(token, expirationDate, new Bar2<int, string>(), "hash");
@@ -65,7 +65,7 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new MongoNonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
@@ -94,7 +94,7 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new MongoNonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
 
             //Act
