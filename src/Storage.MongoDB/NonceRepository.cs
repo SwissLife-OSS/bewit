@@ -17,7 +17,7 @@ namespace Bewit.Storage.MongoDB
                 "bewit.conventions",
                 new ConventionPack
                 {
-                    new GenericDiscriminatorClassMapConvention()
+                    new DiscriminatorClassMapConvention()
                 }, t => t.FullName?.StartsWith("Bewit") ?? false);
 
             BsonClassMap.RegisterClassMap<Token>(cm =>

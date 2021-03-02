@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Conventions;
 
 namespace Bewit.Storage.MongoDB
 {
-    internal class GenericDiscriminatorClassMapConvention : ConventionBase, IClassMapConvention
+    internal class DiscriminatorClassMapConvention : ConventionBase, IClassMapConvention
     {
         public void Apply(BsonClassMap classMap)
         {
