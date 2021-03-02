@@ -10,57 +10,50 @@ namespace Bewit.Extensions.HotChocolate.Validation
 {
     public static class SchemaBuilderExtensions
     {
-        public static IRequestExecutorBuilder AddBewitAuthorizeDirectiveType<T>(
-          this IRequestExecutorBuilder builder)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-            return builder.ConfigureSchema(b => b.AddBewitAuthorizeDirectiveType<T>());
-        }
-
-        public static ISchemaBuilder AddBewitAuthorizeDirectiveType<T>(
-            this ISchemaBuilder builder)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            return builder.AddDirectiveType<BewitAuthorizeDirectiveType<T>>();
-        }
-
-        public static IRequestExecutorBuilder UseBewitAuthorization<T>(
+        public static IRequestExecutorBuilder UseBewitAuthorization(
             this IRequestExecutorBuilder builder,
             BewitOptions options)
         {
-            return builder.UseBewitAuthorization<T>(options, build => { });
+            return builder.UseBewitAuthorization(options, build => { });
         }
 
-        public static IRequestExecutorBuilder UseBewitAuthorization<T>(
+        public static IRequestExecutorBuilder UseBewitAuthorization(
             this IRequestExecutorBuilder builder,
             IConfiguration configuration)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-
-            return builder.UseBewitAuthorization<T>(options, build => { });
+            return builder.UseBewitAuthorization(options, build => { });
         }
 
-        public static IRequestExecutorBuilder UseBewitAuthorization<T>(
+        public static IRequestExecutorBuilder UseBewitAuthorization(
+            this IRequestExecutorBuilder builder,
+            IConfiguration configuration,
+            Action<BewitRegistrationBuilder> build)
+        {
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            return builder.UseBewitAuthorization(options, build);
+        }
+
+        public static IRequestExecutorBuilder UseBewitAuthorization(
             this IRequestExecutorBuilder builder,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
             builder
-                .AddBewitAuthorizeDirectiveType<T>()
                 .UseRequest<BewitTokenHeaderRequestMiddleware>()
                 .Services
                 .AddSingleton<IBewitContext, BewitContext>()
-                .AddBewitValidation(options, bewitRegistrationBuilder =>
+                .AddBewitValidation(options, registrationBuilder =>
                 {
-                    bewitRegistrationBuilder.AddPayload<T>();
-                    build(bewitRegistrationBuilder);
+                    build(registrationBuilder);
+
+                    foreach (BewitPayloadContext context in registrationBuilder.Payloads)
+                    {
+                        Type implementation = typeof(BewitAuthorizeDirectiveType<>);
+                        Type typedImplementation = implementation.MakeGenericType(context.Type);
+
+                        builder.ConfigureSchema(b => b.AddDirectiveType(typedImplementation));
+                    }
                 });
 
             return builder;

@@ -82,7 +82,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
                 .AddSingleton(httpContextAccessor.Object)
                 .AddBewitGeneration(configuration, b => b.AddPayload<TPayload>())
                 .AddGraphQLServer()
-                .UseBewitAuthorization<TPayload>(configuration)
+                .UseBewitAuthorization(configuration, b => b.AddPayload<TPayload>())
                 .AddQueryType(c =>
                     c.Name("Query")
                         .Field("foo")

@@ -78,30 +78,30 @@ namespace Bewit.Generation
             services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
             services.TryAddSingleton<INonceRepository, DefaultNonceRepository>();
 
-            foreach (BewitPayloadContext payloadBuilder in builder.Payloads)
+            foreach (BewitPayloadContext context in builder.Payloads)
             {
-                if (payloadBuilder.CreateRepository == default)
+                if (context.CreateRepository == default)
                 {
-                    payloadBuilder.SetRepository(() => new DefaultNonceRepository());
+                    context.SetRepository(() => new DefaultNonceRepository());
                 }
 
-                if (payloadBuilder.CreateCryptographyService == default)
+                if (context.CreateCryptographyService == default)
                 {
-                    payloadBuilder.SetCryptographyService(() => new HmacSha256CryptographyService(options));
+                    context.SetCryptographyService(() => new HmacSha256CryptographyService(options));
                 }
 
-                if (payloadBuilder.CreateVariablesProvider == default)
+                if (context.CreateVariablesProvider == default)
                 {
-                    payloadBuilder.SetVariablesProvider(() => new VariablesProvider());
+                    context.SetVariablesProvider(() => new VariablesProvider());
                 }
 
                 Type implementation = typeof(BewitTokenGenerator<>);
-                Type typedImplementation = implementation.MakeGenericType(payloadBuilder.Type);
+                Type typedImplementation = implementation.MakeGenericType(context.Type);
                 Type service = typeof(IBewitTokenGenerator<>);
-                Type typedService = service.MakeGenericType(payloadBuilder.Type);
+                Type typedService = service.MakeGenericType(context.Type);
 
                 services.AddSingleton(typedService, sp => ActivatorUtilities
-                    .CreateInstance(sp, typedImplementation, payloadBuilder));
+                    .CreateInstance(sp, typedImplementation, context));
             }
 
             return services;
