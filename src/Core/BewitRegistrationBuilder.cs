@@ -5,19 +5,13 @@ namespace Bewit.Core
 {
     public class BewitRegistrationBuilder
     {
-        private readonly List<BewitPayload> _payloads = new List<BewitPayload>();
+        private readonly List<BewitPayloadContext> _payloads = new List<BewitPayloadContext>();
 
-        public BewitRegistrationBuilder(IServiceCollection services)
+        internal IReadOnlyList<BewitPayloadContext> Payloads => _payloads;
+
+        public BewitPayloadContext AddPayload<T>()
         {
-            Services = services;
-        }
-
-        public IServiceCollection Services { get; }
-        internal IReadOnlyList<BewitPayload> Payloads => _payloads;
-
-        public BewitPayload AddPayload<T>()
-        {
-            var payload = new BewitPayload(Services, typeof(T));
+            var payload = new BewitPayloadContext(typeof(T));
             _payloads.Add(payload);
 
             return payload;

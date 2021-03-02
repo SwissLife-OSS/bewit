@@ -25,7 +25,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
 
         internal static TestServer CreateServer<T>(BewitOptions options)
         {
-            NonceRepository = new MemoryNonceRepository();
+            NonceRepository = new DefaultNonceRepository();
             VariablesProvider = new MockedVariablesProvider();
 
             IWebHostBuilder hostBuilder = new WebHostBuilder()
@@ -35,10 +35,8 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
                     services
                         .AddTransient<BewitAttribute>()
                         .AddSingleton(options)
-                        .AddSingleton<INonceRepository>(NonceRepository)
-                        .AddSingleton<ICryptographyService, HmacSha256CryptographyService>()
-                        .AddSingleton<IVariablesProvider>(VariablesProvider)
-                        .AddTransient<IBewitTokenValidator<T>, BewitTokenValidator<T>>();
+                        .AddBewitValidation(options, b => b.AddPayload<T>()
+                            .SetVariablesProvider(() => VariablesProvider));
                 })
                 .Configure(app => app.UseRouting().UseEndpoints(c => c.MapControllers()));
             var server = new TestServer(hostBuilder);

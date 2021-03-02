@@ -22,13 +22,13 @@ namespace Bewit.Generation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => new DefaultNonceRepository());
 
             //Act
-            var provider = new BewitTokenGenerator<Foo>(
-                new BewitOptions(),
-                cryptoService,
-                new MockHelper.MockedVariablesProvider(),
-                new MemoryNonceRepository());
+            var provider = new BewitTokenGenerator<Foo>(new BewitOptions(), context);
 
             //Assert
             provider.Should().NotBeNull();
@@ -43,7 +43,9 @@ namespace Bewit.Generation.Tests
             {
                 // ReSharper disable once ObjectCreationAsStatement
                 new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), null, new MockHelper.MockedVariablesProvider(), new MemoryNonceRepository());
+                    new BewitOptions(), new BewitPayloadContext(typeof(string))
+                        .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                        .SetRepository(() => new DefaultNonceRepository()));
             };
 
             //Assert
@@ -62,7 +64,9 @@ namespace Bewit.Generation.Tests
             {
                 // ReSharper disable once ObjectCreationAsStatement
                 new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), cryptoService, null, new MemoryNonceRepository());
+                    new BewitOptions(), new BewitPayloadContext(typeof(string))
+                        .SetCryptographyService(() => cryptoService)
+                        .SetRepository(() => new DefaultNonceRepository()));
             };
 
             //Assert
@@ -81,7 +85,9 @@ namespace Bewit.Generation.Tests
             {
                 // ReSharper disable once ObjectCreationAsStatement
                 new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), cryptoService, new MockHelper.MockedVariablesProvider(), default);
+                    new BewitOptions(), new BewitPayloadContext(typeof(string))
+                        .SetCryptographyService(() => cryptoService)
+                        .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider()));
             };
 
             //Assert
@@ -96,13 +102,12 @@ namespace Bewit.Generation.Tests
         public async Task GenerateBewitTokenAsync_WithPayload_ShouldGenerateBewit()
         {
             //Arrange
-            ICryptographyService cryptoService =
-                MockHelper.GetMockedCrpytoService<Foo>();
-            var provider =
-                new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), cryptoService,
-                    new MockHelper.MockedVariablesProvider(),
-                    new MemoryNonceRepository());
+            ICryptographyService cryptoService = MockHelper.GetMockedCrpytoService<Foo>();
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => new DefaultNonceRepository());
+            var provider = new BewitTokenGenerator<Foo>(new BewitOptions(), context);
             var payload = new Foo
             {
                 Bar = 1
@@ -121,11 +126,12 @@ namespace Bewit.Generation.Tests
         public async Task GenerateBewitTokenAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit()
         {
             //Arrange
-            ICryptographyService cryptoService =
-                MockHelper.GetMockedCrpytoService<Foo>();
-            var provider =
-                new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), cryptoService, new MockHelper.MockedVariablesProvider2(), new MemoryNonceRepository());
+            ICryptographyService cryptoService = MockHelper.GetMockedCrpytoService<Foo>();
+            BewitPayloadContext context = new BewitPayloadContext(typeof(Foo))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider2())
+                .SetRepository(() => new DefaultNonceRepository());
+            var provider = new BewitTokenGenerator<Foo>(new BewitOptions(), context);
             var payload = new Foo
             {
                 Bar = 1
@@ -145,9 +151,11 @@ namespace Bewit.Generation.Tests
         {
             //Arrange
             ICryptographyService cryptoService = MockHelper.GetMockedCrpytoService<Foo>();
-            var provider =
-                new BewitTokenGenerator<Foo>(
-                    new BewitOptions(), cryptoService, new MockHelper.MockedVariablesProvider(), new MemoryNonceRepository());
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => new DefaultNonceRepository());
+            var provider = new BewitTokenGenerator<Foo>(new BewitOptions(), context);
             var payload = new Foo
             {
                 Bar = 5
@@ -168,12 +176,11 @@ namespace Bewit.Generation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            
-            var provider = new BewitTokenGenerator<Foo>(
-                new BewitOptions(),
-                cryptoService,
-                new MockHelper.MockedVariablesProvider(),
-                new MemoryNonceRepository());
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => new DefaultNonceRepository());
+            var provider = new BewitTokenGenerator<Foo>(new BewitOptions(), context);
 
             //Act
             Func<Task> generateBewit = async () =>

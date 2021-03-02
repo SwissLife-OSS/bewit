@@ -16,23 +16,26 @@ namespace Bewit.Generation
         private readonly INonceRepository _repository;
 
         public BewitTokenGenerator(
-            BewitOptions options, 
-            ICryptographyService cryptographyService,
-            IVariablesProvider variablesProvider,
-            INonceRepository repository)
+            BewitOptions options,
+            BewitPayloadContext context)
         {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
 
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             _tokenDuration = options.TokenDuration;
-            _cryptographyService = cryptographyService
-                ?? throw new ArgumentNullException(nameof(cryptographyService));
-            _variablesProvider = variablesProvider
-                ?? throw new ArgumentNullException(nameof(variablesProvider));
-            _repository = repository
-                ?? throw new ArgumentNullException(nameof(repository));
+            _cryptographyService = context.CreateCryptographyService?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateCryptographyService));
+            _variablesProvider = context.CreateVariablesProvider?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateVariablesProvider));
+            _repository = context.CreateRepository?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateRepository));
         }
 
         public async Task<BewitToken<T>> GenerateBewitTokenAsync(

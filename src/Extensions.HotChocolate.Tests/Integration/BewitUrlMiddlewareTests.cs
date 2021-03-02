@@ -67,8 +67,11 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                     services.AddRouting();
 
                     services
-                        .AddSingleton<IVariablesProvider, MockedVariablesProvider>()
-                        .AddBewitGeneration<string>(new BewitOptions { Secret = "123" })
+                        .AddBewitGeneration(new BewitOptions { Secret = "123" }, b =>
+                        {
+                            b.AddPayload<string>()
+                                .SetVariablesProvider(() => new MockedVariablesProvider());
+                        })
                         .AddGraphQLServer()
                         .SetOptions(new SchemaOptions { StrictValidation = false })
                         .AddMutationType(d =>

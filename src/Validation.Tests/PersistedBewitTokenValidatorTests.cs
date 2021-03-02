@@ -19,7 +19,7 @@ namespace Bewit.Validation.Tests
         public async Task ValidateBewitTokenAsync_WithLegitPayload_ShouldStoreNonceAndReturnBewitToken()
         {
             //Arrange
-            Token insertedToken = new Token("724e7acc-be57-49a1-8195-46a03c6271c6", DateTime.MaxValue);
+            Token insertedToken = Token.Create("724e7acc-be57-49a1-8195-46a03c6271c6", DateTime.MaxValue);
             var repository = new Mock<INonceRepository>();
             repository
                 .Setup(r => r.TakeOneAsync(It.IsAny<string>(),
@@ -35,10 +35,12 @@ namespace Bewit.Validation.Tests
 
                     return new ValueTask<Token>((Token)null);
                 });
+            BewitPayloadContext context = new BewitPayloadContext(typeof(Bar))
+                .SetCryptographyService(MockHelper.GetMockedCrpytoService<Bar>)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => repository.Object);
             var provider =
-                new BewitTokenValidator<Bar>(
-                    MockHelper.GetMockedCrpytoService<Bar>(),
-                    new MockHelper.MockedVariablesProvider(), repository.Object);
+                new BewitTokenValidator<Bar>(context);
             var payload = new Bar
             {
                 Baz = "foo"

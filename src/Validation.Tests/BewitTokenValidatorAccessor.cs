@@ -10,7 +10,10 @@ namespace Bewit.Validation.Tests
             ICryptographyService cryptographyService, 
             IVariablesProvider variablesProvider,
             INonceRepository nonceRepository) : 
-            base(cryptographyService, variablesProvider, nonceRepository)
+            base(new BewitPayloadContext(typeof(T))
+                .SetCryptographyService(() => cryptographyService)
+                .SetVariablesProvider(() => variablesProvider)
+                .SetRepository(() => nonceRepository))
         {
         }
 

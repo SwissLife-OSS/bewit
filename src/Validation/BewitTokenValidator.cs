@@ -14,17 +14,19 @@ namespace Bewit.Validation
         private readonly IVariablesProvider _variablesProvider;
         private readonly INonceRepository _repository;
 
-        public BewitTokenValidator(
-            ICryptographyService cryptographyService,
-            IVariablesProvider variablesProvider,
-            INonceRepository repository)
+        public BewitTokenValidator(BewitPayloadContext context)
         {
-            _cryptographyService = cryptographyService
-                ?? throw new ArgumentNullException(nameof(cryptographyService));
-            _variablesProvider = variablesProvider
-                ?? throw new ArgumentNullException(nameof(variablesProvider));
-            _repository = repository
-                ?? throw new ArgumentNullException(nameof(repository));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            _cryptographyService = context.CreateCryptographyService?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateCryptographyService));
+            _variablesProvider = context.CreateVariablesProvider?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateVariablesProvider));
+            _repository = context.CreateRepository?.Invoke()
+                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateRepository));
         }
 
         public async Task<T> ValidateBewitTokenAsync(

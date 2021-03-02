@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace Bewit.Core
@@ -10,8 +10,7 @@ namespace Bewit.Core
         }
 
         [JsonConstructor]
-        public Bewit(
-            string nonce, DateTime expirationDate, T payload, string hash)
+        public Bewit(string nonce, DateTime expirationDate, T payload, string hash)
             : base(nonce, expirationDate)
         {
             if (payload == null)

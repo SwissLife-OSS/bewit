@@ -11,7 +11,11 @@ namespace Bewit.Generation.Tests
             TimeSpan tokenDuration,
             ICryptographyService cryptographyService,
             IVariablesProvider variablesProvider)
-            : base(new BewitOptions {TokenDuration = tokenDuration}, cryptographyService, variablesProvider, new MemoryNonceRepository())
+            : base(new BewitOptions { TokenDuration = tokenDuration },
+                new BewitPayloadContext(typeof(T))
+                .SetCryptographyService(() => cryptographyService)
+                .SetVariablesProvider(() => variablesProvider)
+                .SetRepository(() => new DefaultNonceRepository()))
         {
         }
 

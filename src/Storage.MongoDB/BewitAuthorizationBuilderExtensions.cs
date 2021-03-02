@@ -1,7 +1,6 @@
 using System;
 using Bewit.Core;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
@@ -9,34 +8,33 @@ namespace Bewit.Storage.MongoDB
     public static class BewitAuthorizationBuilderExtensions
     {
         public static void UseMongoPersistence(
-            this BewitPayload builder,
+            this BewitPayloadContext context,
             IConfiguration configuration)
         {
             MongoNonceOptions options = configuration
                 .GetSection("Bewit:Mongo")
                 .Get<MongoNonceOptions>();
 
-            builder.UseMongoPersistence(options);
+            context.UseMongoPersistence(options);
         }
 
         public static void UseMongoPersistence(
-            this BewitPayload builder,
+            this BewitPayloadContext context,
             MongoNonceOptions options)
         {
             options.Validate();
 
-            if (builder == null)
+            if (context == null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw new ArgumentNullException(nameof(context));
             }
 
-            builder.Services.TryAddSingleton(options);
-            builder.Services.TryAddSingleton<IMongoDatabase>(sp =>
+            context.SetRepository(() =>
             {
                 var client = new MongoClient(options.ConnectionString);
-                return client.GetDatabase(options.DatabaseName);
+                IMongoDatabase database = client.GetDatabase(options.DatabaseName);
+                return new MongoNonceRepository(database, options);
             });
-            builder.Services.TryAddSingleton<INonceRepository, MongoNonceRepository>();
         }
     }
 }

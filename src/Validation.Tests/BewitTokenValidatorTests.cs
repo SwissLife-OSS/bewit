@@ -21,7 +21,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -50,7 +50,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -81,7 +81,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -111,7 +111,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -142,7 +142,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -173,7 +173,7 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
+            var nonceRepository = new DefaultNonceRepository();
             var provider =
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
@@ -204,11 +204,12 @@ namespace Bewit.Validation.Tests
             //Arrange
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
-            var nonceRepository = new MemoryNonceRepository();
-            var provider = new BewitTokenValidator<Foo>(
-                cryptoService,
-                new MockHelper.MockedVariablesProvider(),
-                nonceRepository);
+            var nonceRepository = new DefaultNonceRepository();
+            BewitPayloadContext context = new BewitPayloadContext(typeof(Foo))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => new MockHelper.MockedVariablesProvider())
+                .SetRepository(() => nonceRepository);
+            var provider = new BewitTokenValidator<Foo>(context);
             var payload = new Foo
             {
                 Bar = 1

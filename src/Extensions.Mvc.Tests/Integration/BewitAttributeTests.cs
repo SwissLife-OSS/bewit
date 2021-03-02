@@ -21,12 +21,11 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         {
             //Arrange
             TestServer server = TestServerHelper.CreateServer<IDictionary<string, object>>(Options);
-            var tokenGenerator =
-                new BewitTokenGenerator<IDictionary<string, object>>(
-                    Options,
-                    new HmacSha256CryptographyService(Options),
-                    TestServerHelper.VariablesProvider,
-                    TestServerHelper.NonceRepository);
+            BewitPayloadContext context = new BewitPayloadContext(typeof(IDictionary<string, object>))
+                .SetCryptographyService(() => new HmacSha256CryptographyService(Options))
+                .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
+                .SetRepository(() => TestServerHelper.NonceRepository);
+            var tokenGenerator = new BewitTokenGenerator<IDictionary<string, object>>(Options, context);
             const string id = "1",
                 firstName = "John",
                 lastName = "Smith";
