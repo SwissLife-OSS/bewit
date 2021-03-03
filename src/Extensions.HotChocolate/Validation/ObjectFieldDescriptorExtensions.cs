@@ -8,7 +8,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
             this IObjectFieldDescriptor descriptor)
         {
             return descriptor
-                .Directive<BewitAuthorizeDirectiveType<T>>();
+                .Use<BewitAuthorizationMiddleware<T>>();
         }
     }
 }

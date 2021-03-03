@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Bewit.Extensions.HotChocolate.Validation
+namespace Bewit.Extensions.HotChocolate
 {
     public interface IBewitContext
     {

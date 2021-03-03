@@ -1,8 +1,8 @@
 using System;
 using Bewit.Core;
 using Bewit.Validation;
-using HotChocolate;
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Resolvers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,10 +49,11 @@ namespace Bewit.Extensions.HotChocolate.Validation
 
                     foreach (BewitPayloadContext context in registrationBuilder.Payloads)
                     {
-                        Type implementation = typeof(BewitAuthorizeDirectiveType<>);
+                        Type implementation = typeof(BewitAuthorizationMiddleware<>);
                         Type typedImplementation = implementation.MakeGenericType(context.Type);
 
-                        builder.ConfigureSchema(b => b.AddDirectiveType(typedImplementation));
+                        builder.ConfigureSchema(b =>
+                            b.Use(FieldClassMiddlewareFactory.Create(typedImplementation)));
                     }
                 });
 

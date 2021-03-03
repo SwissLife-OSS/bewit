@@ -27,7 +27,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
         }
 
         public async Task InvokeAsync(
-            IDirectiveContext context)
+            IMiddlewareContext context)
         {
             try
             {
