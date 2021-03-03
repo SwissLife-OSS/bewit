@@ -19,7 +19,14 @@ namespace Bewit
             }
         }
 
-        public static BewitContext GetBewitContext(
+        public static T GetBewitPayload<T>(
+            this IHttpContextAccessor httpContextAccessor)
+            where T : class
+        {
+            return httpContextAccessor.GetBewitContext().Get<T>();
+        }
+
+        private static BewitContext GetBewitContext(
             this IHttpContextAccessor httpContextAccessor)
         {
             HttpContext httpContext = httpContextAccessor?.HttpContext;
