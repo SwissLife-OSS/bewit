@@ -38,7 +38,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
                         new BewitToken<T>(bewitToken),
                         context.RequestAborted);
 
-                    _httpContextAccessor.SetBewitContext(payload);
+                    _httpContextAccessor.SetBewitPayload(payload);
 
                     await _next(context);
                 }

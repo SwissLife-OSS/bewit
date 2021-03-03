@@ -7,7 +7,7 @@ namespace Bewit
     {
         private static readonly string _key = nameof(BewitContext);
 
-        public static void SetBewitContext(
+        public static void SetBewitPayload(
             this IHttpContextAccessor httpContextAccessor,
             object value)
         {
