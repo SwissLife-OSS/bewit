@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Generation;
-using Bewit.Storage.MongoDB;
-using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
 using Moq;
-using Squadron;
 
 namespace Bewit.Extensions.HotChocolate.Tests
 {

@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Bewit.Core;
 using Bewit.Validation;
 using Bewit.Validation.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;

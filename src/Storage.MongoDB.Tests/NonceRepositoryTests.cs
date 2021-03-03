@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using FluentAssertions;
 using MongoDB.Driver;
 using Squadron;

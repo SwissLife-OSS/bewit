@@ -1,4 +1,4 @@
-namespace Bewit.Storage.MongoDB
+namespace Bewit
 {
     public class NonceOptions
     {

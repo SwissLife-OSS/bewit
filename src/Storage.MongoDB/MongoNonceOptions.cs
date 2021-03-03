@@ -1,6 +1,4 @@
 
-using Bewit.Core;
-
 namespace Bewit.Storage.MongoDB
 {
     public class MongoNonceOptions : NonceOptions

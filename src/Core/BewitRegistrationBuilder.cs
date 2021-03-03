@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class BewitRegistrationBuilder
     {

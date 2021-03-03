@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bewit.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

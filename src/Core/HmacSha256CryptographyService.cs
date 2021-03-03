@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class HmacSha256CryptographyService: ICryptographyService
     {

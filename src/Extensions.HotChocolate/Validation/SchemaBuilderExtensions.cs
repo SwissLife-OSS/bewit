@@ -1,8 +1,6 @@
 using System;
-using Bewit.Core;
 using Bewit.Validation;
 using HotChocolate.Execution.Configuration;
-using HotChocolate.Resolvers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,20 +40,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
             builder
                 .UseRequest<BewitTokenHeaderRequestMiddleware>()
                 .Services
-                .AddSingleton<IBewitContext, BewitContext>()
-                .AddBewitValidation(options, registrationBuilder =>
-                {
-                    build(registrationBuilder);
-
-                    foreach (BewitPayloadContext context in registrationBuilder.Payloads)
-                    {
-                        Type implementation = typeof(BewitAuthorizationMiddleware<>);
-                        Type typedImplementation = implementation.MakeGenericType(context.Type);
-
-                        builder.ConfigureSchema(b =>
-                            b.Use(FieldClassMiddlewareFactory.Create(typedImplementation)));
-                    }
-                });
+                .AddBewitValidation(options, build);
 
             return builder;
         }

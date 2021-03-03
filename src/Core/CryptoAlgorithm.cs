@@ -1,4 +1,4 @@
-﻿namespace Bewit.Core
+namespace Bewit
 {
     public enum CryptoAlgorithm
     {

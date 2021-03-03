@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Validation.Exceptions;
 using FluentAssertions;
 using Xunit;

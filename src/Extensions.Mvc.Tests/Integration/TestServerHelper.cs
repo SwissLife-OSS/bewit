@@ -1,5 +1,4 @@
 using System;
-using Bewit.Core;
 using Bewit.Mvc.Filter;
 using Bewit.Validation;
 using Microsoft.AspNetCore.Builder;

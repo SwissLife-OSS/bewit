@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bewit.Core
+namespace Bewit
 {
     internal class DefaultNonceRepository : INonceRepository
     {

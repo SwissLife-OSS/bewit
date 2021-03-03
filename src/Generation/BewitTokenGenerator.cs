@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Newtonsoft.Json;
 
 namespace Bewit.Generation

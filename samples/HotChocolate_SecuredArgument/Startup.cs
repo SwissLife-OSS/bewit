@@ -2,18 +2,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HotChocolate;
 using HotChocolate.AspNetCore;
 using Host.Data;
 using Host.Types;
 using Bewit.Generation;
-using Bewit.Core;
 using System;
 using Host.Models;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Linq;
+using Bewit;
 using Bewit.Extensions.HotChocolate.Validation;
 
 namespace Host

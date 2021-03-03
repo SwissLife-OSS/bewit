@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class Token
     {

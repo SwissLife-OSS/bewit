@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Bewit.Extensions.HotChocolate.Validation;
-using HotChocolate;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -19,7 +18,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            var context = await services.GetService<IBewitContext>().GetAsync();
+            var context = services.GetService<IHttpContextAccessor>().GetBewitContext().Value;
 
             // assert
             Assert.Equal(payload, context);
@@ -36,8 +35,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            CustomPayload context
-                = await services.GetService<IBewitContext>().GetAsync<CustomPayload>();
+            CustomPayload context = services.GetService<IHttpContextAccessor>().GetBewitContext().Get<CustomPayload>();
 
             // assert
             Assert.NotNull(context);
@@ -55,8 +53,8 @@ namespace Bewit.Extensions.HotChocolate.Tests
             await TestHelpers.ExecuteQuery(services, token);
 
             // act, assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await services.GetService<IBewitContext>().GetAsync<WrongPayload>());
+            Assert.Throws<InvalidOperationException>(() =>
+                services.GetService<IHttpContextAccessor>().GetBewitContext().Get<WrongPayload>());
         }
     }
 

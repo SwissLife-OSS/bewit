@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Bewit.Extensions.HotChocolate.Validation;
 using HotChocolate.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
 using Squadron;
@@ -31,8 +31,8 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IExecutionResult result = await TestHelpers.ExecuteQuery(services, token);
 
             // assert
-            IBewitContext bewitContext = services.GetService<IBewitContext>();
-            CustomPayload customPayload = await bewitContext.GetAsync<CustomPayload>();
+            IHttpContextAccessor httpContextAccessor = services.GetService<IHttpContextAccessor>();
+            CustomPayload customPayload = httpContextAccessor.GetBewitContext().Get<CustomPayload>();
             new { QueryResult = result, BewitContext = customPayload }.MatchSnapshot();
         }
     }

@@ -1,5 +1,4 @@
 using System;
-using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 

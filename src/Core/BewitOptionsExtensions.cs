@@ -1,6 +1,6 @@
 using System;
 
-namespace Bewit.Core
+namespace Bewit
 {
     internal static class BewitOptionsExtensions
     {

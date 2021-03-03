@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Validation.Exceptions;
 using Newtonsoft.Json;
 

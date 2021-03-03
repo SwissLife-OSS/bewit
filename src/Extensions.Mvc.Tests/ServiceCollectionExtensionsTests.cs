@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Bewit.Core;
 using Bewit.Mvc.Filter;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;

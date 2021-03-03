@@ -1,4 +1,3 @@
-using Bewit.Core;
 using Bewit.Mvc.Filter;
 using Bewit.Storage.MongoDB;
 using Microsoft.AspNetCore.Builder;
