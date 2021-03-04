@@ -28,38 +28,43 @@ namespace Bewit.Extensions.HotChocolate.Validation
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            try
+            if (context.ContextData.TryGetValue(BewitTokenHeader.Value, out var objectToken) &&
+                objectToken is string bewitToken)
             {
-                if (context.ContextData.TryGetValue(
-                        BewitTokenHeader.Value, out var objectToken) &&
-                    objectToken is string bewitToken)
+                try
                 {
                     object payload = await _tokenValidator.ValidateBewitTokenAsync(
                         new BewitToken<T>(bewitToken),
                         context.RequestAborted);
 
                     _httpContextAccessor.SetBewitPayload(payload);
-
-                    await _next(context);
                 }
-                else
+                catch (Exception ex)
                 {
-                    context.Result = ErrorBuilder.New()
-                        .SetMessage("NotAuthorized")
-                        .SetPath(context.Path)
-                        .AddLocation(context.FieldSelection)
-                        .Build();
+                    CreateError(context, ex);
                 }
+
+                await _next(context);
             }
-            catch (Exception ex)
+            else
             {
-                context.Result = ErrorBuilder.New()
-                    .SetMessage("NotAuthorized")
-                    .SetPath(context.Path)
-                    .SetException(ex)
-                    .AddLocation(context.FieldSelection)
-                    .Build();
+                CreateError(context);
             }
+        }
+
+        private void CreateError(IMiddlewareContext context, Exception ex = default)
+        {
+            IErrorBuilder errorBuilder = ErrorBuilder.New()
+                .SetMessage("NotAuthorized")
+                .SetPath(context.Path)
+                .AddLocation(context.FieldSelection);
+
+            if (ex != default)
+            {
+                errorBuilder.SetException(ex);
+            }
+
+            context.Result = errorBuilder.Build();
         }
     }
 }
