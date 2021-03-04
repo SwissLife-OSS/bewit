@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using Bewit;
 using Bewit.Extensions.HotChocolate.Validation;
+using Bewit.Storage.MongoDB;
 
 namespace Host
 {
@@ -42,7 +43,14 @@ namespace Host
             // Add support for generating bewits in the GraphQL Api
             services.AddBewitGeneration(
                 bewitOptions,
-                builder => builder.AddPayload<string>());
+                builder =>
+                {
+                    builder.AddPayload<FooPayload>();
+                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017"
+                    });
+                });
 
              services.AddHttpContextAccessor();
 
@@ -50,8 +58,16 @@ namespace Host
             services
                 .AddGraphQLServer()
                 .AddQueryType<QueryType>()
+                .AddMutationType<MutationType>()
                 .AddType<DocumentType>()
-                .UseBewitAuthorization(bewitOptions);
+                .UseBewitAuthorization(bewitOptions, builder =>
+                {
+                    builder.AddPayload<FooPayload>();
+                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017"
+                    });
+                });
 
             services.AddRouting();
         }

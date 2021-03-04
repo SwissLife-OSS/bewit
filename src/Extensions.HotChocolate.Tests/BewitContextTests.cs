@@ -18,7 +18,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            var context = services.GetService<IHttpContextAccessor>().GetBewitContext().Value;
+            var context = services.GetService<IHttpContextAccessor>().GetBewitPayload<string>();
 
             // assert
             Assert.Equal(payload, context);
@@ -35,7 +35,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            CustomPayload context = services.GetService<IHttpContextAccessor>().GetBewitContext().Get<CustomPayload>();
+            CustomPayload context = services.GetService<IHttpContextAccessor>().GetBewitPayload<CustomPayload>();
 
             // assert
             Assert.NotNull(context);
@@ -54,7 +54,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
 
             // act, assert
             Assert.Throws<InvalidOperationException>(() =>
-                services.GetService<IHttpContextAccessor>().GetBewitContext().Get<WrongPayload>());
+                services.GetService<IHttpContextAccessor>().GetBewitPayload<WrongPayload>());
         }
     }
 

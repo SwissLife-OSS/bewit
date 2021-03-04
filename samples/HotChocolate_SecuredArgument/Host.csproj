@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
     <ProjectReference Include="..\..\src\Extensions.Mvc\Extensions.Mvc.csproj" />
+    <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>

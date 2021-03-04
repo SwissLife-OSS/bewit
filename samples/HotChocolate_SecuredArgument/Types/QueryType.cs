@@ -1,3 +1,4 @@
+using Bewit.Extensions.HotChocolate.Validation;
 using HotChocolate.Types;
 
 namespace Host.Types
@@ -7,8 +8,13 @@ namespace Host.Types
         protected override void Configure(
             IObjectTypeDescriptor<Query> descriptor)
         {
-            descriptor.Field(q => q.GetSecretDocument(default!)).Ignore();
-                /*.AuthorizeBewit()*/;
+            descriptor
+                .Field(q => q.GetSecretDocumentWithStatelessBewit(default!))
+                .AuthorizeBewit<FooPayload>();
+
+            descriptor
+                .Field(q => q.GetSecretDocumentWithStatefulBewit(default!))
+                .AuthorizeBewit<BarPayload>();
         }
     }
 }

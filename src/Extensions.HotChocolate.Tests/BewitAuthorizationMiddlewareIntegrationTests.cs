@@ -32,7 +32,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
 
             // assert
             IHttpContextAccessor httpContextAccessor = services.GetService<IHttpContextAccessor>();
-            CustomPayload customPayload = httpContextAccessor.GetBewitContext().Get<CustomPayload>();
+            CustomPayload customPayload = httpContextAccessor.GetBewitPayload<CustomPayload>();
             new { QueryResult = result, BewitContext = customPayload }.MatchSnapshot();
         }
     }

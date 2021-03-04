@@ -1,7 +1,7 @@
 
 namespace Bewit.Storage.MongoDB
 {
-    public class MongoNonceOptions : NonceOptions
+    public class MongoNonceOptions
     {
         /// <summary>
         /// Connection string for the MongoDB instance.
