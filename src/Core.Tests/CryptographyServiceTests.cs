@@ -1,5 +1,4 @@
-﻿using System;
-using Bewit.Core;
+using System;
 using FluentAssertions;
 using Xunit;
 
@@ -14,7 +13,8 @@ namespace Bewit.Tests.Core
             string secret = "esk84j85$85efsf";
 
             //Act
-            var service = new HmacSha256CryptographyService(secret);
+            var service = new HmacSha256CryptographyService(
+                new BewitOptions { Secret = secret });
 
             //Assert
             service.Should().NotBeNull();
@@ -28,7 +28,8 @@ namespace Bewit.Tests.Core
 
             //Act
             Func<HmacSha256CryptographyService> initService = () =>
-                new HmacSha256CryptographyService(secret);
+                new HmacSha256CryptographyService(
+                    new BewitOptions { Secret = secret });
 
             //Assert
             initService.Should().Throw<ArgumentException>();
@@ -42,7 +43,8 @@ namespace Bewit.Tests.Core
 
             //Act
             Func<HmacSha256CryptographyService> initService = () =>
-                new HmacSha256CryptographyService(secret);
+                new HmacSha256CryptographyService(
+                    new BewitOptions { Secret = secret });
 
             //Assert
             initService.Should().Throw<ArgumentException>();
@@ -53,7 +55,8 @@ namespace Bewit.Tests.Core
         {
             //Arrange
             string secret = "esk84j85$85efsf";
-            var service = new HmacSha256CryptographyService(secret);
+            var service = new HmacSha256CryptographyService(
+                new BewitOptions { Secret = secret });
             string token = "foo";
             DateTime expirationDate =
                 new DateTime(2017, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc);
@@ -71,7 +74,8 @@ namespace Bewit.Tests.Core
         {
             //Arrange
             string secret = "esk84j85$85efsf";
-            var service = new HmacSha256CryptographyService(secret);
+            var service = new HmacSha256CryptographyService(
+                new BewitOptions { Secret = secret });
             string token = "foo";
             DateTime expirationDate =
                 new DateTime(2017, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc);
