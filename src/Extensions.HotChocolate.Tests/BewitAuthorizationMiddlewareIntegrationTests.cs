@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Bewit.Extensions.HotChocolate.Validation;
 using HotChocolate.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
 using Squadron;
@@ -23,7 +23,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task Query_WhenAuthorize_Success()
         {
             // arrange
-            IServiceProvider services = TestHelpers.CreateSchema();
+            IServiceProvider services = TestHelpers.CreateSchema<CustomPayload>();
             var payload = new CustomPayload { Email = "foo@bar.gmail.com" };
             var token = await TestHelpers.CreateToken(services, payload);
 
@@ -31,8 +31,8 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IExecutionResult result = await TestHelpers.ExecuteQuery(services, token);
 
             // assert
-            IBewitContext bewitContext = services.GetService<IBewitContext>();
-            CustomPayload customPayload = await bewitContext.GetAsync<CustomPayload>();
+            IHttpContextAccessor httpContextAccessor = services.GetService<IHttpContextAccessor>();
+            CustomPayload customPayload = httpContextAccessor.GetBewitPayload<CustomPayload>();
             new { QueryResult = result, BewitContext = customPayload }.MatchSnapshot();
         }
     }

@@ -1,29 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Generation;
-using Bewit.Storage.MongoDB;
-using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
 using Moq;
-using Squadron;
 
 namespace Bewit.Extensions.HotChocolate.Tests
 {
     public static class TestHelpers
     {
-        public static async Task<string> CreateToken(
-            IServiceProvider serviceProvider, object payload)
+        public static async Task<string> CreateToken<T>(
+            IServiceProvider serviceProvider, T payload)
         {
-            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<object>>();
+            IBewitTokenGenerator<T> bewitGenerator = serviceProvider
+                .GetService<IBewitTokenGenerator<T>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync(payload, default))
@@ -36,11 +31,11 @@ namespace Bewit.Extensions.HotChocolate.Tests
             { Secret = "badSecret", TokenDuration = TimeSpan.FromMinutes(5) };
 
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddBewitGeneration<object>(bewitOptions)
+                .AddBewitGeneration(bewitOptions, b => b.AddPayload<string>())
                 .BuildServiceProvider();
 
-            IBewitTokenGenerator<object> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<object>>();
+            IBewitTokenGenerator<string> bewitGenerator = serviceProvider
+                .GetService<IBewitTokenGenerator<string>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync("badPayload", default))
@@ -63,7 +58,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             return await services.ExecuteRequestAsync(requestBuilder.Create());
         }
 
-        public static IServiceProvider CreateSchema()
+        public static IServiceProvider CreateSchema<TPayload>()
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new List<KeyValuePair<string, string>>
@@ -80,15 +75,15 @@ namespace Bewit.Extensions.HotChocolate.Tests
             return new ServiceCollection()
                 .AddSingleton<HttpContext>(httpContext)
                 .AddSingleton(httpContextAccessor.Object)
-                .AddBewitGeneration<object>(configuration)
+                .AddBewitGeneration(configuration, b => b.AddPayload<TPayload>())
                 .AddGraphQLServer()
-                .UseBewitAuthorization(configuration)
+                .UseBewitAuthorization(configuration, b => b.AddPayload<TPayload>())
                 .AddQueryType(c =>
                     c.Name("Query")
                         .Field("foo")
                         .Type<StringType>()
                         .Resolver("bar")
-                        .AuthorizeBewit())
+                        .AuthorizeBewit<TPayload>())
                 .UseDefaultPipeline()
                 .Services
                 .BuildServiceProvider();

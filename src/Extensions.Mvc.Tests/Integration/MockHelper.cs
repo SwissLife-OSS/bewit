@@ -1,5 +1,4 @@
 using System;
-using Bewit.Core;
 using Moq;
 
 namespace Bewit.Extensions.Mvc.Tests.Integration

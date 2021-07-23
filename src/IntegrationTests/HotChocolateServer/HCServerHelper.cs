@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using Bewit.Core;
 using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
-using HotChocolate;
 using HotChocolate.Configuration;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Builder;
@@ -27,15 +25,15 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                     services.AddRouting();
 
                     //for url protection
-                    services.AddBewitGeneration<string>(
+                    services.AddBewitGeneration(
                         new BewitOptions
                         {
                             Secret = secret
                         },
                         builder => builder
-                            .UseHmacSha256Encryption()
-                            .UseMongoPersistance(
-                                new BewitMongoOptions
+                            .AddPayload<string>()
+                            .UseMongoPersistence(
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName
@@ -43,15 +41,15 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                     );
 
                     //for payload protection
-                    services.AddBewitGeneration<IDictionary<string, object>>(
+                    services.AddBewitGeneration(
                         new BewitOptions
                         {
                             Secret = secret
                         },
                         builder => builder
-                            .UseHmacSha256Encryption()
-                            .UseMongoPersistance(
-                                new BewitMongoOptions
+                            .AddPayload<IDictionary<string, object>>()
+                            .UseMongoPersistence(
+                                new MongoNonceOptions
                                 {
                                     ConnectionString = connectionString,
                                     DatabaseName = databaseName

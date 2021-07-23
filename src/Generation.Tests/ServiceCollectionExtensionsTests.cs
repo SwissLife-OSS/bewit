@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bewit.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +28,7 @@ namespace Bewit.Generation.Tests
                 .Build();
 
             //Act
-            services.AddBewitGeneration<Foo>(configuration);
+            services.AddBewitGeneration(configuration, b => b.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;
@@ -61,7 +60,7 @@ namespace Bewit.Generation.Tests
                 .Build();
 
             //Act
-            Action register = () => services.AddBewitGeneration<Foo>(configuration);
+            Action register = () => services.AddBewitGeneration(configuration, b => b.AddPayload<Foo>());
 
             //Assert
             register.Should().Throw<ArgumentException>();
@@ -75,10 +74,10 @@ namespace Bewit.Generation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitGeneration<Foo>(new BewitOptions
+            services.AddBewitGeneration(new BewitOptions
             {
                 Secret = secret
-            });
+            }, b => b.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;
@@ -105,14 +104,14 @@ namespace Bewit.Generation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitGeneration<Foo>(new BewitOptions
+            services.AddSingleton<INonceRepository>(new Mock<INonceRepository>().Object);
+            services.AddBewitGeneration(new BewitOptions
                 {
                     Secret = secret
                 },
                 builder =>
                 {
-                    builder.GetRepository = () =>
-                        new Mock<INonceRepository>().Object;
+                    builder.AddPayload<Foo>();
                 });
 
             //Assert
@@ -124,7 +123,7 @@ namespace Bewit.Generation.Tests
                     serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
                 bewitTokenGenerator.Should().NotBeNull();
                 bewitTokenGenerator.Should()
-                    .BeOfType<PersistedBewitTokenGenerator<Foo>>();
+                    .BeOfType<BewitTokenGenerator<Foo>>();
             }
             finally
             {
@@ -140,11 +139,11 @@ namespace Bewit.Generation.Tests
             var services = new ServiceCollection();
 
             //Act
-            services.AddBewitGeneration<Foo>(new BewitOptions
+            services.AddBewitGeneration(new BewitOptions
                 {
                     Secret = secret
                 },
-                builder => { });
+                builder => builder.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;

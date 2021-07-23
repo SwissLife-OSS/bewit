@@ -1,28 +1,26 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class HmacSha256CryptographyService: ICryptographyService
     {
         private readonly string _secret;
 
-        public HmacSha256CryptographyService(string secret)
+        public HmacSha256CryptographyService(BewitOptions options)
         {
-            if (string.IsNullOrWhiteSpace(secret))
+            if (options == null)
             {
-                throw new ArgumentException(
-                    "Value cannot be null or whitespace.", nameof(secret));
+                throw new ArgumentNullException(nameof(options));
             }
 
-            _secret = secret;
+            _secret = options.Secret;
         }
 
-        public string GetHash<T>(
-            string token, DateTime expirationDate, T payload)
+        public string GetHash<T>(string token, DateTime expirationDate, T payload)
         {
             HMACSHA256 sha256 = null;
             try

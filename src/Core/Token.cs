@@ -1,16 +1,28 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class Token
     {
+        public static readonly Token Empty = new Token(string.Empty, DateTime.MinValue);
+
         public Token()
         {
         }
 
         [JsonConstructor]
-        public Token(string nonce, DateTime expirationDate)
+        protected Token(string nonce, DateTime expirationDate)
+        {
+            Nonce = nonce;
+            ExpirationDate = expirationDate;
+        }
+
+        public string Nonce { get; private set; }
+
+        public DateTime ExpirationDate { get; private set; }
+
+        public static Token Create(string nonce, DateTime expirationDate)
         {
             if (string.IsNullOrWhiteSpace(nonce))
             {
@@ -21,16 +33,11 @@ namespace Bewit.Core
             if (expirationDate == default)
             {
                 throw new ArgumentException(
-                    "Value cannot be default value for type Datetime", 
+                    "Value cannot be default value for type Datetime",
                     nameof(expirationDate));
             }
 
-            Nonce = nonce;
-            ExpirationDate = expirationDate;
+            return new Token(nonce, expirationDate);
         }
-
-        public string Nonce { get; private set; }
-
-        public DateTime ExpirationDate { get; private set; }
     }
 }

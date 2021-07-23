@@ -1,17 +1,17 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Bewit.Storage.MongoDB
 {
-    public class NonceRepository : INonceRepository
+    internal class MongoNonceRepository : INonceRepository
     {
         private readonly IMongoCollection<Token> _collection;
 
-        static NonceRepository()
+        static MongoNonceRepository()
         {
             ConventionRegistry.Register(
                 "bewit.conventions",
@@ -28,26 +28,34 @@ namespace Bewit.Storage.MongoDB
             });
         }
 
-        public NonceRepository(IMongoDatabase database, string collectionName)
+        public MongoNonceRepository(IMongoDatabase database, MongoNonceOptions options)
         {
-            _collection = database.GetCollection<Token>(collectionName);
+            if (database == null)
+            {
+                throw new ArgumentNullException(nameof(database));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            _collection = database.GetCollection<Token>(options.CollectionName);
         }
 
-        public async Task InsertOneAsync(
+        public async ValueTask InsertOneAsync(
             Token token, CancellationToken cancellationToken)
         {
-            await _collection.InsertOneAsync(token, new InsertOneOptions(),
-                cancellationToken);
+            await _collection.InsertOneAsync(token, cancellationToken: cancellationToken);
         }
 
-        public async Task<Token> FindOneAndDeleteAsync(
+        public async ValueTask<Token> TakeOneAsync(
             string token, CancellationToken cancellationToken)
         {
-            FilterDefinition<Token> findFilter =
-                Builders<Token>.Filter.Eq(n => n.Nonce, token);
+            FilterDefinition<Token> findFilter = Builders<Token>.Filter.Eq(n => n.Nonce, token);
 
-            return await _collection.FindOneAndDeleteAsync(findFilter,
-                new FindOneAndDeleteOptions<Token>(), cancellationToken);
+            return await _collection
+                .FindOneAndDeleteAsync(findFilter, cancellationToken: cancellationToken);
         }
 
         public static void Initialize()

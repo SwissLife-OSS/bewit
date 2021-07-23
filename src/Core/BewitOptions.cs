@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class BewitOptions
     {
@@ -14,6 +14,6 @@ namespace Bewit.Core
         /// Duration of the Token.
         /// Optional. Default is 60 seconds
         /// </summary>
-        public TimeSpan TokenDuration { get; set; }
+        public TimeSpan TokenDuration { get; set; } = TimeSpan.FromMinutes(1);
     }
 }

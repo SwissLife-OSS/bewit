@@ -1,5 +1,4 @@
 using System;
-using Bewit.Core;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
@@ -7,36 +6,34 @@ namespace Bewit.Storage.MongoDB
 {
     public static class BewitAuthorizationBuilderExtensions
     {
-        public static BewitRegistrationBuilder UseMongoPersistance(
-            this BewitRegistrationBuilder builder,
+        public static void UseMongoPersistence(
+            this BewitPayloadContext context,
             IConfiguration configuration)
         {
-            BewitMongoOptions options =
-                configuration.GetSection("Bewit:Mongo").Get<BewitMongoOptions>();
+            MongoNonceOptions options = configuration
+                .GetSection("Bewit:Mongo")
+                .Get<MongoNonceOptions>();
 
-            return builder.UseMongoPersistance(options);
+            context.UseMongoPersistence(options);
         }
 
-        public static BewitRegistrationBuilder UseMongoPersistance(
-            this BewitRegistrationBuilder builder,
-            BewitMongoOptions options)
+        public static void UseMongoPersistence(
+            this BewitPayloadContext context,
+            MongoNonceOptions options)
         {
             options.Validate();
 
-            if (builder == null)
+            if (context == null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw new ArgumentNullException(nameof(context));
             }
 
-            var client =
-                new MongoClient(options.ConnectionString);
-            IMongoDatabase db =
-                client.GetDatabase(options.DatabaseName);
-
-            builder.GetRepository = () => new NonceRepository(
-                db, options.CollectionName ?? nameof(Token));
-
-            return builder;
+            context.SetRepository(() =>
+            {
+                var client = new MongoClient(options.ConnectionString);
+                IMongoDatabase database = client.GetDatabase(options.DatabaseName);
+                return new MongoNonceRepository(database, options);
+            });
         }
     }
 }

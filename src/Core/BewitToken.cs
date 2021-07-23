@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public sealed class BewitToken<T>: IEquatable<BewitToken<T>>
     {

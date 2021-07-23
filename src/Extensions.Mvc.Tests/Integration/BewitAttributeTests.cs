@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Generation;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
@@ -14,18 +12,18 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitAttributeTests
     {
-        private const string Secret = "ef56s$e4fs6ef1";
+        private BewitOptions Options = new BewitOptions {Secret = "ef56s$e4fs6ef1"};
 
         [Fact]
         public async Task OnAuthorization_WithValidBewitForUrl_ShouldAuthorize()
         {
             //Arrange
-            TestServer server = TestServerHelper.CreateServer<IDictionary<string, object>>(Secret);
-            var tokenGenerator =
-                new BewitTokenGenerator<IDictionary<string, object>>(
-                    TimeSpan.FromMinutes(1),
-                    new HmacSha256CryptographyService(Secret),
-                    new TestServerHelper.MockedVariablesProvider());
+            TestServer server = TestServerHelper.CreateServer<IDictionary<string, object>>(Options);
+            BewitPayloadContext context = new BewitPayloadContext(typeof(IDictionary<string, object>))
+                .SetCryptographyService(() => new HmacSha256CryptographyService(Options))
+                .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
+                .SetRepository(() => TestServerHelper.NonceRepository);
+            var tokenGenerator = new BewitTokenGenerator<IDictionary<string, object>>(Options, context);
             const string id = "1",
                 firstName = "John",
                 lastName = "Smith";

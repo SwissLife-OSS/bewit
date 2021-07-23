@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bewit.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -21,10 +20,10 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public void UseMongoPersistance_WithValidConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithValidConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
-            var builder = new BewitRegistrationBuilder();
+            var builder = new BewitPayloadContext(typeof(object));
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
             IConfiguration configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
@@ -37,18 +36,18 @@ namespace Bewit.Storage.MongoDB.Tests
                 .Build();
 
             //Act
-            BewitRegistrationBuilder builder2 = builder.UseMongoPersistance(configuration);
+            builder.UseMongoPersistence(configuration);
 
             //Assert
-            builder2.Should().Be(builder);
-            builder2.GetRepository.Should().NotBeNull();
+            builder.Should().Be(builder);
+            builder.CreateRepository.Should().NotBeNull();
         }
 
         [Fact]
-        public void UseMongoPersistance_WithMissingConnectionStringInConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithMissingConnectionStringInConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
-            var builder = new BewitRegistrationBuilder();
+            var builder = new BewitPayloadContext(typeof(object));
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
             IConfiguration configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
@@ -61,17 +60,17 @@ namespace Bewit.Storage.MongoDB.Tests
                 .Build();
 
             //Act
-            Func<BewitRegistrationBuilder> builder2 = () => builder.UseMongoPersistance(configuration);
+            Action builder2 = () => builder.UseMongoPersistence(configuration);
 
             //Assert
             builder2.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public void UseMongoPersistance_WithMissingDatabaseNameInConfiguration_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithMissingDatabaseNameInConfiguration_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
-            var builder = new BewitRegistrationBuilder();
+            var builder = new BewitPayloadContext(typeof(object));
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
             IConfiguration configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
@@ -84,22 +83,22 @@ namespace Bewit.Storage.MongoDB.Tests
                 .Build();
 
             //Act
-            Func<BewitRegistrationBuilder> builder2 = () => builder.UseMongoPersistance(configuration);
+            Action builder2 = () => builder.UseMongoPersistence(configuration);
 
             //Assert
             builder2.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public void UseMongoPersistance_WithOnlyMandatoryParameters_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithOnlyMandatoryParameters_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
-            var builder = new BewitRegistrationBuilder();
+            var builder = new BewitPayloadContext(typeof(object));
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
 
             //Act
-            BewitRegistrationBuilder builder2 = builder.UseMongoPersistance(
-                new BewitMongoOptions
+            builder.UseMongoPersistence(
+                new MongoNonceOptions
                 {
                     ConnectionString = _mongoResource.ConnectionString,
                     DatabaseName = collection.Database.DatabaseNamespace.DatabaseName
@@ -107,20 +106,20 @@ namespace Bewit.Storage.MongoDB.Tests
             );
 
             //Assert
-            builder2.Should().Be(builder);
-            builder2.GetRepository.Should().NotBeNull();
+            builder.Should().Be(builder);
+            builder.CreateRepository.Should().NotBeNull();
         }
 
         [Fact]
-        public void UseMongoPersistance_WithOptionalCollectionNameParameter_ShouldInitAndReturnMongoNonceRepository()
+        public void UseMongoPersistence_WithOptionalCollectionNameParameter_ShouldInitAndReturnMongoNonceRepository()
         {
             //Arrange
-            var builder = new BewitRegistrationBuilder();
+            var builder = new BewitPayloadContext(typeof(object));
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
 
             //Act
-            BewitRegistrationBuilder builder2 = builder.UseMongoPersistance(
-                new BewitMongoOptions
+            builder.UseMongoPersistence(
+                new MongoNonceOptions
                 {
                     ConnectionString = _mongoResource.ConnectionString,
                     DatabaseName = collection.Database.DatabaseNamespace.DatabaseName,
@@ -129,21 +128,21 @@ namespace Bewit.Storage.MongoDB.Tests
             );
 
             //Assert
-            builder2.Should().Be(builder);
-            builder2.GetRepository.Should().NotBeNull();
+            builder.Should().Be(builder);
+            builder.CreateRepository.Should().NotBeNull();
         }
 
         [Fact]
-        public void UseMongoPersistance_WithBuilderNull_ShouldThrowArgumentNullException()
+        public void UseMongoPersistence_WithBuilderNull_ShouldThrowArgumentNullException()
         {
             //Arrange
-            BewitRegistrationBuilder builder = null;
+            BewitPayloadContext context = null;
             IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
 
             //Act
-            Func<BewitRegistrationBuilder> useRepository = ()
-                => builder.UseMongoPersistance(
-                    new BewitMongoOptions
+            Action useRepository = ()
+                => context.UseMongoPersistence(
+                    new MongoNonceOptions
                     {
                         ConnectionString = _mongoResource.ConnectionString,
                         DatabaseName = collection.Database.DatabaseNamespace.DatabaseName

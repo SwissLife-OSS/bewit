@@ -1,6 +1,5 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 
 namespace Bewit.Validation.Tests
 {
@@ -8,12 +7,16 @@ namespace Bewit.Validation.Tests
     {
         internal BewitTokenValidatorAccessor(
             ICryptographyService cryptographyService, 
-            IVariablesProvider variablesProvider) : 
-            base(cryptographyService, variablesProvider)
+            IVariablesProvider variablesProvider,
+            INonceRepository nonceRepository) : 
+            base(new BewitPayloadContext(typeof(T))
+                .SetCryptographyService(() => cryptographyService)
+                .SetVariablesProvider(() => variablesProvider)
+                .SetRepository(() => nonceRepository))
         {
         }
 
-        internal async Task<Bewit<T>> InvokeValidateBewitAsync(
+        internal async ValueTask<Bewit<T>> InvokeValidateBewitAsync(
             Bewit<T> bewit,
             CancellationToken cancellationToken)
         {

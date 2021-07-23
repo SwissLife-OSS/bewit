@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using FluentAssertions;
 using MongoDB.Driver;
 using Squadron;
@@ -27,7 +26,7 @@ namespace Bewit.Storage.MongoDB.Tests
 
         static NonceRepositoryTests()
         {
-            NonceRepository.Initialize();
+            MongoNonceRepository.Initialize();
         }
 
         public NonceRepositoryTests(MongoResource mongoResource)
@@ -40,7 +39,7 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new NonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar2<int, string>>(token, expirationDate, new Bar2<int, string>(), "hash");
@@ -65,7 +64,7 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new NonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
             var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
@@ -75,7 +74,7 @@ namespace Bewit.Storage.MongoDB.Tests
 
             //Act
             Token returnedNonce =
-                await repository.FindOneAndDeleteAsync(token,
+                await repository.TakeOneAsync(token,
                     CancellationToken.None);
 
             //Assert
@@ -94,12 +93,12 @@ namespace Bewit.Storage.MongoDB.Tests
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            var repository = new NonceRepository(database, nameof(Token));
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions());
             var token = "myToken";
 
             //Act
             Token returnedNonce =
-                await repository.FindOneAndDeleteAsync(token,
+                await repository.TakeOneAsync(token,
                     CancellationToken.None);
 
             //Assert

@@ -1,26 +1,19 @@
-﻿using System;
+using System.Collections.Generic;
 
-namespace Bewit.Core
+namespace Bewit
 {
     public class BewitRegistrationBuilder
     {
-        private Func<BewitOptions, ICryptographyService> _getCryptographyService;
+        private readonly List<BewitPayloadContext> _payloads = new List<BewitPayloadContext>();
 
-        public Func<INonceRepository> GetRepository { get; set; }
+        internal IReadOnlyList<BewitPayloadContext> Payloads => _payloads;
 
-        public Func<BewitOptions, ICryptographyService> GetCryptographyService
+        public BewitPayloadContext AddPayload<T>()
         {
-            get
-            {
-                if(_getCryptographyService == default)
-                {
-                    _getCryptographyService = (BewitOptions options) 
-                        => new HmacSha256CryptographyService(options.Secret);
-                }
+            var payload = new BewitPayloadContext(typeof(T));
+            _payloads.Add(payload);
 
-                return _getCryptographyService;
-            }
-            set => _getCryptographyService = value;
+            return payload;
         }
     }
 }

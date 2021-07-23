@@ -2,8 +2,8 @@
   <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
-    <AssemblyName>Bewit.MongoDB.Tests</AssemblyName>
-    <RootNamespace>Bewit.MongoDB.Tests</RootNamespace>
+    <AssemblyName>Bewit.Validation.Tests</AssemblyName>
+    <RootNamespace>Bewit.Validation.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

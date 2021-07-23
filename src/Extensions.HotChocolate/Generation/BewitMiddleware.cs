@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Generation;
 using HotChocolate.Resolvers;
 

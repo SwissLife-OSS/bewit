@@ -1,61 +1,73 @@
-﻿using System;
-using Bewit.Core;
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bewit.Validation
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.AddBewitValidation<TPayload>(configuration, build => { });
+            return services.AddBewitValidation(configuration, build => { });
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
-            return services.AddBewitValidation<TPayload>(options, build);
+            return services.AddBewitValidation(options, build);
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             BewitOptions options)
         {
-            return services.AddBewitValidation<TPayload>(options, build => { });
+            return services.AddBewitValidation(options, build => { });
         }
 
-        public static IServiceCollection AddBewitValidation<TPayload>(
+        public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
             options.Validate();
-
-            BewitRegistrationBuilder builder = new BewitRegistrationBuilder();
+            
+            var builder = new BewitRegistrationBuilder();
             build(builder);
 
-            if (builder.GetRepository == default)
+            services.TryAddSingleton(options);
+            services.TryAddSingleton<ICryptographyService, HmacSha256CryptographyService>();
+            services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
+
+            foreach (BewitPayloadContext context in builder.Payloads)
             {
-                services.AddTransient<IBewitTokenValidator<TPayload>>(ctx => 
-                    new BewitTokenValidator<TPayload>(
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider()
-                    ));
-            }
-            else
-            {
-                services.AddTransient<IBewitTokenValidator<TPayload>>(ctx =>
-                    new PersistedBewitTokenValidator<TPayload>(
-                        builder.GetCryptographyService(options),
-                        new VariablesProvider(),
-                        builder.GetRepository()
-                    ));
+                if (context.CreateRepository == default)
+                {
+                    context.SetRepository(() => new DefaultNonceRepository());
+                }
+
+                if (context.CreateCryptographyService == default)
+                {
+                    context.SetCryptographyService(() => new HmacSha256CryptographyService(options));
+                }
+
+                if (context.CreateVariablesProvider == default)
+                {
+                    context.SetVariablesProvider(() => new VariablesProvider());
+                }
+
+                Type implementation = typeof(BewitTokenValidator<>);
+                Type typedImplementation = implementation.MakeGenericType(context.Type);
+                Type service = typeof(IBewitTokenValidator<>);
+                Type typedService = service.MakeGenericType(context.Type);
+
+                services.AddSingleton(typedService, sp => ActivatorUtilities
+                    .CreateInstance(sp, typedImplementation, context));
             }
 
             return services;

@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Generation;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
@@ -15,13 +14,13 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitUrlAuthorizationAttributeTests
     {
-        private const string Secret = "456";
+        private BewitOptions Options = new BewitOptions {Secret = "456"};
 
         [Fact]
         public async Task SampleGetRequest_NoBewitProtectionOnRoute_ShouldPass()
         {
             //Arrange
-            TestServer server = TestServerHelper.CreateServer<string>(Secret);
+            TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/NoBewitProtection";
             HttpClient client = server.CreateClient();
 
@@ -39,14 +38,14 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithValidBewitForUrl_ShouldAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Secret);
-            TestServer server = TestServerHelper.CreateServer<string>(Secret);
+            var cryptoService = new HmacSha256CryptographyService(Options);
+            TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/WithBewitProtection";
-            var tokenGenerator =
-                new BewitTokenGenerator<string>(
-                    TimeSpan.FromMinutes(1),
-                    cryptoService,
-                    new TestServerHelper.MockedVariablesProvider());
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
+                .SetRepository(() => TestServerHelper.NonceRepository);
+            var tokenGenerator = new BewitTokenGenerator<string>(Options, context);
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(
                     url.ToLowerInvariant(),
@@ -73,14 +72,14 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithDifferentUrl_ShouldNotAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Secret);
-            TestServer server = TestServerHelper.CreateServer<string>(Secret);
+            var cryptoService = new HmacSha256CryptographyService(Options);
+            TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/SomeBewitProtectedUrl";
-            var tokenGenerator =
-                new BewitTokenGenerator<string>(
-                    TimeSpan.FromMinutes(1),
-                    cryptoService,
-                    new TestServerHelper.MockedVariablesProvider());
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
+                .SetRepository(() => TestServerHelper.NonceRepository);
+            var tokenGenerator = new BewitTokenGenerator<string>(Options, context);
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(url.ToLowerInvariant(),
                     CancellationToken.None);
@@ -105,14 +104,14 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithAlteredPayloadForUrl_ShouldNotAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Secret);
-            TestServer server = TestServerHelper.CreateServer<string>(Secret);
+            var cryptoService = new HmacSha256CryptographyService(Options);
+            TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/SomeBewitProtectedUrl";
-            var tokenGenerator =
-                new BewitTokenGenerator<string>(
-                    TimeSpan.FromMinutes(1),
-                    cryptoService,
-                    new TestServerHelper.MockedVariablesProvider());
+            BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                .SetCryptographyService(() => cryptoService)
+                .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
+                .SetRepository(() => TestServerHelper.NonceRepository);
+            var tokenGenerator = new BewitTokenGenerator<string>(Options, context);
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(url.ToLowerInvariant(),
                     CancellationToken.None);

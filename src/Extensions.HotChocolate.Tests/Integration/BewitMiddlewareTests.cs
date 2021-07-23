@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Bewit.Core;
 using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using FluentAssertions;
-using HotChocolate;
 using HotChocolate.Configuration;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Builder;
@@ -66,11 +64,12 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                 {
                     services.AddRouting();
 
+                    BewitPayloadContext context = new BewitPayloadContext(typeof(string))
+                        .SetCryptographyService(() => new HmacSha256CryptographyService(new BewitOptions {Secret = "123"}))
+                        .SetVariablesProvider(() => new MockedVariablesProvider())
+                        .SetRepository(() => new DefaultNonceRepository());
                     services.AddTransient<IBewitTokenGenerator<string>>(ctx =>
-                        new BewitTokenGenerator<string>(
-                            TimeSpan.FromMinutes(1),
-                            new HmacSha256CryptographyService("123"),
-                            new MockedVariablesProvider()));
+                        new BewitTokenGenerator<string>(new BewitOptions(), context));
                     services
                         .AddGraphQLServer()
                         .SetOptions(new SchemaOptions { StrictValidation = false })

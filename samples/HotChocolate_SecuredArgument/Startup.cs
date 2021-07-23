@@ -2,19 +2,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HotChocolate;
 using HotChocolate.AspNetCore;
 using Host.Data;
 using Host.Types;
 using Bewit.Generation;
-using Bewit.Core;
 using System;
 using Host.Models;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Linq;
+using Bewit;
 using Bewit.Extensions.HotChocolate.Validation;
+using Bewit.Storage.MongoDB;
 
 namespace Host
 {
@@ -41,10 +41,16 @@ namespace Host
             };
 
             // Add support for generating bewits in the GraphQL Api
-            services.AddBewitGeneration<string>(
+            services.AddBewitGeneration(
                 bewitOptions,
-                builder => builder.UseHmacSha256Encryption()
-            );
+                builder =>
+                {
+                    builder.AddPayload<FooPayload>();
+                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017"
+                    });
+                });
 
              services.AddHttpContextAccessor();
 
@@ -52,8 +58,16 @@ namespace Host
             services
                 .AddGraphQLServer()
                 .AddQueryType<QueryType>()
+                .AddMutationType<MutationType>()
                 .AddType<DocumentType>()
-                /*.UseBewitAuthorization(bewitOptions)*/;
+                .UseBewitAuthorization(bewitOptions, builder =>
+                {
+                    builder.AddPayload<FooPayload>();
+                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017"
+                    });
+                });
 
             services.AddRouting();
         }

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Bewit.Extensions.HotChocolate.Validation;
-using HotChocolate;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -13,13 +12,13 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task BewitContext_GetStringPayload_Success()
         {
             // arrange
-            IServiceProvider services = TestHelpers.CreateSchema();
+            IServiceProvider services = TestHelpers.CreateSchema<string>();
             var payload = "foo@bar.gmail.com";
             var token = await TestHelpers.CreateToken(services, payload);
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            var context = await services.GetService<IBewitContext>().GetAsync();
+            var context = services.GetService<IHttpContextAccessor>().GetBewitPayload<string>();
 
             // assert
             Assert.Equal(payload, context);
@@ -29,15 +28,14 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task BewitContext_GetObjectPayload_Success()
         {
             // arrange
-            IServiceProvider services = TestHelpers.CreateSchema();
+            IServiceProvider services = TestHelpers.CreateSchema<CustomPayload>();
             var payloadContent = "foo@bar.gmail.com";
             var payload = new CustomPayload { Email = payloadContent };
             var token = await TestHelpers.CreateToken(services, payload);
             await TestHelpers.ExecuteQuery(services, token);
 
             // act
-            CustomPayload context
-                = await services.GetService<IBewitContext>().GetAsync<CustomPayload>();
+            CustomPayload context = services.GetService<IHttpContextAccessor>().GetBewitPayload<CustomPayload>();
 
             // assert
             Assert.NotNull(context);
@@ -48,15 +46,15 @@ namespace Bewit.Extensions.HotChocolate.Tests
         public async Task BewitContext_GetWrongTypePayload_Fail()
         {
             // arrange
-            IServiceProvider services = TestHelpers.CreateSchema();
+            IServiceProvider services = TestHelpers.CreateSchema<string>();
             // Refactor: Create here a CustomPayload when BewitContext is done right.
             var payload = "foo@bar.gmail.com";
             var token = await TestHelpers.CreateToken(services, payload);
             await TestHelpers.ExecuteQuery(services, token);
 
             // act, assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await services.GetService<IBewitContext>().GetAsync<WrongPayload>());
+            Assert.Throws<InvalidOperationException>(() =>
+                services.GetService<IHttpContextAccessor>().GetBewitPayload<WrongPayload>());
         }
     }
 

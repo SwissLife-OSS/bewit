@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
-namespace Bewit.Core
+namespace Bewit
 {
-    public class VariablesProvider : IVariablesProvider
+    internal class VariablesProvider : IVariablesProvider
     {
         public DateTime UtcNow => DateTime.UtcNow;
         public Guid NextToken => Guid.NewGuid();
