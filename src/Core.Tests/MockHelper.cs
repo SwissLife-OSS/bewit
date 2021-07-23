@@ -1,5 +1,4 @@
-﻿using System;
-using Bewit.Core;
+using System;
 using Moq;
 using Newtonsoft.Json;
 

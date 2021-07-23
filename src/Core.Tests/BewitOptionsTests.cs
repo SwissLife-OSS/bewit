@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Bewit.Core;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Xunit;
@@ -25,14 +24,14 @@ namespace Bewit.Tests.Core
             //Assert
             options.Should().NotBeNull();
             options.Secret.Should().Be(secret);
-            options.TokenDuration.Should().Be(default);
+            options.TokenDuration.Should().Be(TimeSpan.FromMinutes(1));
         }
 
         [Fact]
         public void FromConfiguration_WithAllKeys_ShouldBindAllKeys()
         {
             //Arrange
-            var config = new ConfigurationBuilder()
+            IConfiguration config = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
                     new KeyValuePair<string, string>("Secret", "123"),

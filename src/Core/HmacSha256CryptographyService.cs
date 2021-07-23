@@ -17,6 +17,11 @@ namespace Bewit
                 throw new ArgumentNullException(nameof(options));
             }
 
+            if (string.IsNullOrWhiteSpace(options.Secret))
+            {
+                throw new ArgumentNullException(nameof(options.Secret));
+            }
+
             _secret = options.Secret;
         }
 
