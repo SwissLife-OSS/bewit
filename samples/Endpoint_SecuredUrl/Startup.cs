@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Bewit.Generation;
 using System;
 using System.Collections.Generic;
 using Bewit;
 using System.Text;
-using Bewit.Endpoint;
+using Bewit.Http.Endpoint;
+using Bewit.Generation;
 
 namespace Host
 {

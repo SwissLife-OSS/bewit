@@ -7,11 +7,10 @@ using Bewit.Validation;
 using Bewit.Validation.Exceptions;
 using Microsoft.AspNetCore.Http;
 
-namespace Bewit.Endpoint
+namespace Bewit.Http.Endpoint
 {
     public class BewitEndpointMiddleware
     {
-
         private readonly RequestDelegate _next;
 
         private readonly IBewitTokenValidator<string> _tokenValidator;

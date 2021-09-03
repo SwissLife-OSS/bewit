@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 
-namespace Bewit.Endpoint
+namespace Bewit.Http.Endpoint
 {
     public static class EndpointConventionBuilderExtensions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Bewit.Endpoint
+namespace Bewit.Http.Endpoint
 {
     public sealed class BewitEndpointAttribute : Attribute
     {

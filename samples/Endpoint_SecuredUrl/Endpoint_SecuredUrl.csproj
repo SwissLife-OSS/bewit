@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
-    <ProjectReference Include="..\..\src\Extensions.Endpoint\Extensions.Endpoint.csproj" />
+    <ProjectReference Include="..\..\src\Generation\Generation.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.Http\Extensions.Http.csproj" />
     <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
   </ItemGroup>
 

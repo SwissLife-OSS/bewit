@@ -5,21 +5,18 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RootNamespace>Bewit.Endpoint</RootNamespace>
-    <AssemblyName>Bewit.Endpoint</AssemblyName>
-    <PackageId>Bewit.Endpoint</PackageId>
+    <RootNamespace>Bewit.Http</RootNamespace>
+    <AssemblyName>Bewit.Http</AssemblyName>
+    <PackageId>Bewit.Http</PackageId>
   </PropertyGroup>
 
-
   <ItemGroup>
-      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Validation\Validation.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
-
-
 
 </Project>

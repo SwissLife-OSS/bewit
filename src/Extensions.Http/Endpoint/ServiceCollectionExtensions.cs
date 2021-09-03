@@ -2,7 +2,7 @@ using Bewit.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.Endpoint
+namespace Bewit.Http.Endpoint
 {
     public static class ServiceCollectionExtensions
     {
