@@ -54,6 +54,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HotChocolate_SecuredArgumen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{6930BCB3-241E-4986-8CC8-DDF84D535B0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.Endpoint", "Extensions.Endpoint\Extensions.Endpoint.csproj", "{A6D010C3-0B64-4088-B603-45F743D3F7F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -244,6 +246,18 @@ Global
 		{6930BCB3-241E-4986-8CC8-DDF84D535B0C}.Release|x64.Build.0 = Release|Any CPU
 		{6930BCB3-241E-4986-8CC8-DDF84D535B0C}.Release|x86.ActiveCfg = Release|Any CPU
 		{6930BCB3-241E-4986-8CC8-DDF84D535B0C}.Release|x86.Build.0 = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|x64.Build.0 = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Debug|x86.Build.0 = Debug|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|x64.ActiveCfg = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|x64.Build.0 = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|x86.ActiveCfg = Release|Any CPU
+		{A6D010C3-0B64-4088-B603-45F743D3F7F1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

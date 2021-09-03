@@ -27,12 +27,12 @@ namespace Bewit.Mvc.Filter
         }
 
         private async Task OnAuthorizationAsync(
-            AuthorizationFilterContext context, 
+            AuthorizationFilterContext context,
             CancellationToken cancellationToken)
         {
             const string bewitQueryStringParameter = "bewit";
 
-            IBewitTokenValidator<string> tokenGenerator =
+            IBewitTokenValidator<string> tokenValidator =
                 GetBewitTokenValidator(context);
 
             string path = GetRelativeUrl(context, bewitQueryStringParameter);
@@ -48,7 +48,7 @@ namespace Bewit.Mvc.Filter
 
                 try
                 {
-                    payload = await tokenGenerator.ValidateBewitTokenAsync(
+                    payload = await tokenValidator.ValidateBewitTokenAsync(
                         new BewitToken<string>(bewitToken),
                         cancellationToken);
                 }

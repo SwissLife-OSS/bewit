@@ -30,13 +30,23 @@ namespace Bewit.Validation
             return services.AddBewitValidation(options, build => { });
         }
 
+        public static IServiceCollection AddBewitValidation<TPayload>(
+            this IServiceCollection services,
+            BewitOptions options)
+        {
+            return services.AddBewitValidation(options, builder =>
+            {
+                builder.AddPayload<TPayload>();
+            });
+        }
+
         public static IServiceCollection AddBewitValidation(
             this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
             options.Validate();
-            
+
             var builder = new BewitRegistrationBuilder();
             build(builder);
 
