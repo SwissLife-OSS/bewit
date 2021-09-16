@@ -31,9 +31,9 @@ namespace Bewit.Http.Endpoint
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var endpoint = context.GetEndpoint();
+            BewitEndpointAttribute endpointAttribute =
+                context.GetEndpoint()?.Metadata.GetMetadata<BewitEndpointAttribute>();
 
-            var endpointAttribute = endpoint?.Metadata.GetMetadata<BewitEndpointAttribute>();
             if (endpointAttribute == null)
             {
                 await _next(context);
