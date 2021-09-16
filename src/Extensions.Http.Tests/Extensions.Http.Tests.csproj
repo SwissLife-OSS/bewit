@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
+
+  <PropertyGroup>
+    <AssemblyName>Bewit.Extensions.Http.Tests</AssemblyName>
+    <RootNamespace>Bewit.Extensions.Http.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Generation\Generation.csproj" />
+    <ProjectReference Include="..\Extensions.Http\Extensions.Http.csproj" />
+    <ProjectReference Include="..\Validation\Validation.csproj" />
+  </ItemGroup>
+
+  <!--For Visual Studio for Mac Test Explorer we need this reference here-->
+  <ItemGroup>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+  </ItemGroup>
+
+</Project>

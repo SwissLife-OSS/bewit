@@ -14,8 +14,6 @@ namespace Host
 
     public class Startup
     {
-        //private static readonly string PublicAuthorizationPolicy = "PublicPolicy";
-
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -28,6 +26,8 @@ namespace Host
 
             // Add support for generating bewits
             services.AddBewitGeneration<string>(bewitOptions);
+
+            // Add support for endpoint authorization
             services.AddBewitEndpointAuthorization(bewitOptions);
 
             services.AddRouting();

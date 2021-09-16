@@ -12,11 +12,13 @@ namespace Bewit.Http.Endpoint
         {
             return services.AddBewitValidation<string>(options);
         }
+
         public static IServiceCollection AddBewitEndpointAuthorization(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+
             return services.AddBewitEndpointAuthorization(options);
         }
     }

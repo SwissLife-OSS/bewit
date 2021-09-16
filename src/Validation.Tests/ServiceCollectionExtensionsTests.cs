@@ -106,9 +106,9 @@ namespace Bewit.Validation.Tests
             //Act
             services.AddSingleton<INonceRepository>(new Mock<INonceRepository>().Object);
             services.AddBewitValidation(new BewitOptions
-                {
-                    Secret = secret
-                },
+            {
+                Secret = secret
+            },
                 builder =>
                 {
                     builder
@@ -141,9 +141,9 @@ namespace Bewit.Validation.Tests
 
             //Act
             services.AddBewitValidation(new BewitOptions
-                {
-                    Secret = secret
-                },
+            {
+                Secret = secret
+            },
                 builder => builder.AddPayload<Foo>());
 
             //Assert
