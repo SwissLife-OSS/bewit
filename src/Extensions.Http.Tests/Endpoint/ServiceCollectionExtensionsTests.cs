@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Bewit.Mvc.Filter;
+using Bewit.Http.Endpoint;
+using Bewit.Validation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,7 @@ namespace Bewit.Extensions.Http.Tests
     public class ServiceCollectionExtensionsTests
     {
         [Fact]
-        public void AddBewitEndpointAuthorization_WithConfiguration__ShouldAddBewitTokenValidatorForString()
+        public void AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString()
         {
             //Arrange
             var services = new ServiceCollection();
@@ -29,11 +30,11 @@ namespace Bewit.Extensions.Http.Tests
             try
             {
                 serviceProvider = services.BuildServiceProvider();
-                IBewitTokenValidator<Foo> bewitTokenGenerator =
-                    serviceProvider.GetService<IBewitTokenValidator<Foo>>();
+                IBewitTokenValidator<string> bewitTokenGenerator =
+                    serviceProvider.GetService<IBewitTokenValidator<string>>();
                 bewitTokenGenerator.Should().NotBeNull();
                 bewitTokenGenerator.Should()
-                    .BeOfType<BewitTokenValidator<Foo>>();
+                    .BeOfType<BewitTokenValidator<string>>();
             }
             finally
             {
