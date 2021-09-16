@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Endpoint_SecuredUrl", "Endpoint_SecuredUrl\Endpoint_SecuredUrl.csproj", "{A996E7A2-AE3C-48F6-99A6-4A1C766C9B25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Endpoint_SecuredUrl", "Endpoint_SecuredUrl\Host.csproj", "{A996E7A2-AE3C-48F6-99A6-4A1C766C9B25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotChocolate_FileDownload", "HotChocolate_FileDownload\HotChocolate_FileDownload.csproj", "{E722242C-7970-44F6-97CD-F48BD91D4757}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotChocolate_FileDownload", "HotChocolate_FileDownload\Host.csproj", "{E722242C-7970-44F6-97CD-F48BD91D4757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotChocolate_SecuredArgument", "HotChocolate_SecuredArgument\HotChocolate_SecuredArgument.csproj", "{9DE5DCB0-048C-4F5C-B243-3669BD894DC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotChocolate_SecuredArgument", "HotChocolate_SecuredArgument\Host.csproj", "{9DE5DCB0-048C-4F5C-B243-3669BD894DC4}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
