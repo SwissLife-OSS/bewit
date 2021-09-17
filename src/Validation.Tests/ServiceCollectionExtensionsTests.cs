@@ -109,11 +109,10 @@ namespace Bewit.Validation.Tests
             {
                 Secret = secret
             },
-                builder =>
-                {
-                    builder
-                        .AddPayload<Foo>();
-                });
+            builder =>
+            {
+                builder.AddPayload<Foo>();
+            });
 
             //Assert
             ServiceProvider serviceProvider = null;
@@ -144,7 +143,7 @@ namespace Bewit.Validation.Tests
             {
                 Secret = secret
             },
-                builder => builder.AddPayload<Foo>());
+            builder => builder.AddPayload<Foo>());
 
             //Assert
             ServiceProvider serviceProvider = null;
