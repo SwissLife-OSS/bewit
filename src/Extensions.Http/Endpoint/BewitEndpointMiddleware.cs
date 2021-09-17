@@ -43,12 +43,10 @@ namespace Bewit.Http.Endpoint
 
             const string bewitQueryStringParameter = "bewit";
 
-            string path = GetRelativeUrl(context, bewitQueryStringParameter);
-
             string bewitToken =
                 context.Request.Query[bewitQueryStringParameter];
 
-            if (bewitToken == null)
+            if (string.IsNullOrEmpty(bewitToken))
             {
                 Unauthorize(context);
 
@@ -72,7 +70,9 @@ namespace Bewit.Http.Endpoint
                 return;
             }
 
-            if (!string.Equals(path, payload,
+            string url = GetRelativeUrl(context, bewitQueryStringParameter);
+
+            if (!string.Equals(url, payload,
                 StringComparison.CurrentCultureIgnoreCase))
             {
                 Unauthorize(context);
