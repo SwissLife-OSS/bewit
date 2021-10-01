@@ -62,7 +62,7 @@ namespace Host
                         BewitToken<string> token =
                             await generator.GenerateBewitTokenAsync($"/download/{id}", default);
 
-                        string html = @$"<html><a href=""/download/{id}?bewit={(string)token}"">download</a>
+                        string html = @$"<html><a href=""/download/{id}?bewit={token}"">download</a>
                                         <br>{(string)token}</html>";
 
                         var bytes = Encoding.UTF8.GetBytes(html);
