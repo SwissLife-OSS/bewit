@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Bewit.Validation
 {
-    public class BewitTokenValidator<T>: IBewitTokenValidator<T>
+    public class BewitTokenValidator<T> : IBewitTokenValidator<T>
     {
         private readonly ICryptographyService _cryptographyService;
         private readonly IVariablesProvider _variablesProvider;
@@ -51,6 +51,11 @@ namespace Bewit.Validation
             Bewit<T> bewit,
             CancellationToken cancellationToken)
         {
+            if (bewit is null)
+            {
+                throw new BewitNotFoundException();
+            }
+
             if (bewit.ExpirationDate < _variablesProvider.UtcNow)
             {
                 throw new BewitExpiredException();

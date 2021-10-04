@@ -52,6 +52,16 @@ namespace Bewit.Generation
 
         public static IServiceCollection AddBewitGeneration<TPayload>(
             this IServiceCollection services,
+            BewitOptions options)
+        {
+            return services.AddBewitGeneration(options, registrationBuilder =>
+            {
+                registrationBuilder.AddPayload<TPayload>();
+            });
+        }
+
+        public static IServiceCollection AddBewitGeneration<TPayload>(
+            this IServiceCollection services,
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
