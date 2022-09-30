@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
-using HotChocolate.Configuration;
+using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
