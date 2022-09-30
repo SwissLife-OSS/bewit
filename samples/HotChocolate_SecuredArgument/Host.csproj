@@ -3,9 +3,6 @@
   <PropertyGroup>
     <AssemblyName>Host</AssemblyName>
     <RootNamespace>Host</RootNamespace>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
