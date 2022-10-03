@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
     <RootNamespace>Bewit.Validation</RootNamespace>
     <AssemblyName>Bewit.Validation</AssemblyName>
     <PackageId>Bewit.Validation</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

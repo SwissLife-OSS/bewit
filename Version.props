@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <HotChocolateVersion>12.12.1</HotChocolateVersion>
-    <SquadronVersion>0.17.0</SquadronVersion>
-    <xUnitVersion>2.4.1</xUnitVersion>
+    <MongoDBVersion>2.9.3</MongoDBVersion>
     <MicrosoftExtensionsVersion>6.0.0</MicrosoftExtensionsVersion>
   </PropertyGroup>
 

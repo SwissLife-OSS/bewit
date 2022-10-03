@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
     <RootNamespace>Bewit.Extensions.HotChocolate</RootNamespace>
     <AssemblyName>Bewit.Extensions.HotChocolate</AssemblyName>
     <PackageId>Bewit.Extensions.HotChocolate</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

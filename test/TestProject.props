@@ -1,10 +1,5 @@
 <Project>
 
-  <PropertyGroup>
-    <TargetFrameworks>$(TestProjectTargetFrameworks)</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>Full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -17,14 +12,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="xunit" Version="$(xUnitVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitVersion)">
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="Snapshooter.Xunit" Version="0.7.1" />
+    <PackageReference Include="Squadron.MongoDB" Version="0.17.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />

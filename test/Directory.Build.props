@@ -1,3 +1,4 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\'))" />
+  <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory.TrimEnd('\').TrimEnd('/')), 'TestProject.props'))" />
 </Project>
