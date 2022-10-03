@@ -16,8 +16,8 @@
   <Import Project="$(CCPackageProps)" Condition="Exists('$(CCPackageProps)')"/>
 
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-  
+
 </Project>

@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <AssemblyName>Host</AssemblyName>
+    <AssemblyName>HotChocolate.SecuredArgument</AssemblyName>
     <RootNamespace>Host</RootNamespace>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.8" />
-    <PackageReference Include="HotChocolate.Data" Version="11.0.8" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Data" Version="$(HotChocolateVersion)" />
   </ItemGroup>
 
   <ItemGroup>

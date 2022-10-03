@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Bewit.Extensions.HotChocolate.Generation;
 using Bewit.Generation;
 using FluentAssertions;
-using HotChocolate.Configuration;
+using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
