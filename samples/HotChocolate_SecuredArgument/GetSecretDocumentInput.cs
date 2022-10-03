@@ -1,15 +1,8 @@
 namespace Host
 {
-    public class GetSecretDocumentInput
-    {
-        public string Name { get; set; }
-        public string BewitToken { get; set; }
-    }
+    public record GetSecretDocumentInput(string Name, string BewitToken);
 
-    public class CreateBewitTokenInput
-    {
-        public TokenType TokenType { get; set; }
-    }
+    public record CreateBewitTokenInput(TokenType TokenType);
 
     public enum TokenType
     {

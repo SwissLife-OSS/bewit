@@ -85,13 +85,15 @@ namespace Host
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            using (Stream stream =
-                assembly.GetManifestResourceStream(resourceName))
+            using Stream? stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream is { })
             {
                 byte[] ba = new byte[stream.Length];
                 int valuesRead = stream.Read(ba, 0, ba.Length);
                 return ba.Take(valuesRead).ToArray();
             }
+
+            return Array.Empty<byte>();
         }
     }
 }

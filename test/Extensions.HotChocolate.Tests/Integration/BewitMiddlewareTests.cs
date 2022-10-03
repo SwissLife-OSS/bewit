@@ -78,7 +78,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                             d.Name("Mutation");
                             d.Field("RequestAccess")
                                 .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "foo")
+                                .Resolve(ctx => "foo")
                                 .UseBewitProtection<string>();
                         });
                 })

@@ -50,6 +50,11 @@ namespace Host
                     {
                         ConnectionString = "mongodb://localhost:27017"
                     });
+                    builder.AddPayload<BazPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017",
+                        NonceUsage = NonceUsage.ReUse
+                    });
                 });
 
              services.AddHttpContextAccessor();
@@ -87,19 +92,6 @@ namespace Host
                     endpoints.MapGraphQL(path: "/")
                         .WithOptions(new GraphQLServerOptions { EnableSchemaRequests = true });
                 });
-        }
-
-        private byte[] ReadEmbeddedResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream =
-                assembly.GetManifestResourceStream(resourceName))
-            {
-                byte[] ba = new byte[stream.Length];
-                int valuesRead = stream.Read(ba, 0, ba.Length);
-                return ba.Take(valuesRead).ToArray();
-            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Bewit.Storage.MongoDB
 {
     internal class MongoNonceRepository : INonceRepository
     {
+        private readonly MongoNonceOptions _options;
         private readonly IMongoCollection<Token> _collection;
 
         static MongoNonceRepository()
@@ -35,11 +36,7 @@ namespace Bewit.Storage.MongoDB
                 throw new ArgumentNullException(nameof(database));
             }
 
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _collection = database.GetCollection<Token>(options.CollectionName);
         }
 
@@ -54,8 +51,15 @@ namespace Bewit.Storage.MongoDB
         {
             FilterDefinition<Token> findFilter = Builders<Token>.Filter.Eq(n => n.Nonce, token);
 
+            if (_options.NonceUsage == NonceUsage.OneTime)
+            {
+                return await _collection
+                    .FindOneAndDeleteAsync(findFilter, cancellationToken: cancellationToken);
+            }
+
             return await _collection
-                .FindOneAndDeleteAsync(findFilter, cancellationToken: cancellationToken);
+                .Find(findFilter)
+                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
 
         public static void Initialize()

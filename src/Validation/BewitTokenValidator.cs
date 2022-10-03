@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Validation.Exceptions;
 using Newtonsoft.Json;
+#nullable enable
 
 namespace Bewit.Validation
 {
@@ -72,7 +73,7 @@ namespace Bewit.Validation
                 throw new BewitInvalidException();
             }
 
-            Token token = await _repository.TakeOneAsync(bewit.Nonce, cancellationToken);
+            Token? token = await _repository.TakeOneAsync(bewit.Nonce, cancellationToken);
             if (token != null)
             {
                 return bewit;

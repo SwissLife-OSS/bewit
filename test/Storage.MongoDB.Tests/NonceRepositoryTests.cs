@@ -60,7 +60,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public async Task FindOneAndDeleteAsync_WithExistingNonceDerivate_ShouldRetrieveAndDeleteNonce()
+        public async Task TakeOneAsync_WithExistingNonceDerivate_ShouldRetrieveAndDeleteNonce()
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
@@ -89,7 +89,7 @@ namespace Bewit.Storage.MongoDB.Tests
         }
 
         [Fact]
-        public async Task FindOneAndDeleteAsync_WithNonExistingNonceDerivate_ShouldRetrieveAndDeleteNonce()
+        public async Task TakeOneAsync_WithNonExistingNonceDerivate_ShouldRetrieveAndDeleteNonce()
         {
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
@@ -110,6 +110,38 @@ namespace Bewit.Storage.MongoDB.Tests
             ).ToList();
             items.Should().BeEmpty();
             returnedNonce.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task TakeOneAsync_WithNonceReUse_ShouldRetrieveAndKeepNonce()
+        {
+            //Arrange
+            IMongoDatabase database = _mongoResource.CreateDatabase();
+            var repository = new MongoNonceRepository(database, new MongoNonceOptions
+            {
+                NonceUsage = NonceUsage.ReUse
+            });
+            var token = "myToken";
+            DateTime expirationDate = DateTime.UtcNow.AddMinutes(5);
+            var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
+            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
+            await collection.InsertOneAsync(
+                nonce, new InsertOneOptions(), CancellationToken.None);
+
+            //Act
+            Token returnedNonce =
+                await repository.TakeOneAsync(token,
+                    CancellationToken.None);
+
+            //Assert
+            var items = (
+                await collection.FindAsync(
+                    Builders<Token>.Filter.Empty,
+                    cancellationToken: CancellationToken.None)
+            ).ToList();
+            items.Should().NotBeEmpty();
+            returnedNonce.Nonce.Should().Be(token);
+            returnedNonce.ExpirationDate.Date.Should().Be(expirationDate.Date);
         }
     }
 }
