@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
     <AssemblyName>Bewit.Validation.Tests</AssemblyName>
@@ -7,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Validation\Validation.csproj" />
+    <ProjectReference Include="..\..\src\Validation\Validation.csproj" />
   </ItemGroup>
 
 </Project>

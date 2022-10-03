@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
     <AssemblyName>Bewit.Storage.MongoDB.Tests</AssemblyName>
@@ -7,10 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Squadron.Mongo" Version="$(SquadronVersion)" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Storage.MongoDB\Storage.MongoDB.csproj" />
+    <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>

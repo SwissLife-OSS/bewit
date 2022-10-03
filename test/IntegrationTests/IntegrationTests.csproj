@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCTestProjectProps)" Condition="Exists('$(CCTestProjectProps)')" />
 
   <PropertyGroup>
     <AssemblyName>Bewit.IntegrationTests</AssemblyName>
@@ -7,17 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Generation\Generation.csproj" />
-    <ProjectReference Include="..\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
-    <ProjectReference Include="..\Storage.MongoDB\Storage.MongoDB.csproj" />
-    <ProjectReference Include="..\Extensions.Mvc\Extensions.Mvc.csproj" />
-    <ProjectReference Include="..\Validation\Validation.csproj" />
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\Generation\Generation.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.Mvc\Extensions.Mvc.csproj" />
+    <ProjectReference Include="..\..\src\Validation\Validation.csproj" />
+    <ProjectReference Include="..\..\src\Core\Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Squadron.Mongo" Version="$(SquadronVersion)" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
   </ItemGroup>
 
