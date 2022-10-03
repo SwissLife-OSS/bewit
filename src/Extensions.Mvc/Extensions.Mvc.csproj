@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
     <RootNamespace>Bewit.Extensions.Mvc</RootNamespace>
     <AssemblyName>Bewit.Extensions.Mvc</AssemblyName>
     <PackageId>Bewit.Extensions.Mvc</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Bewit.Storage.MongoDB.Tests</AssemblyName>
+    <RootNamespace>Bewit.Storage.MongoDB.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
+  </ItemGroup>
+
+</Project>

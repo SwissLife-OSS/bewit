@@ -57,7 +57,7 @@ namespace Bewit.Extensions.HotChocolate.Validation
             IErrorBuilder errorBuilder = ErrorBuilder.New()
                 .SetMessage("NotAuthorized")
                 .SetPath(context.Path)
-                .AddLocation(context.FieldSelection);
+                .AddLocation(context.Selection.SyntaxNode);
 
             if (ex != default)
             {

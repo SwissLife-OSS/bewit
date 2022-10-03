@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Bewit.IntegrationTests</AssemblyName>
+    <RootNamespace>Bewit.IntegrationTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Generation\Generation.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.HotChocolate\Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="..\..\src\Storage.MongoDB\Storage.MongoDB.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.Mvc\Extensions.Mvc.csproj" />
+    <ProjectReference Include="..\..\src\Validation\Validation.csproj" />
+    <ProjectReference Include="..\..\src\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+  </ItemGroup>
+
+</Project>

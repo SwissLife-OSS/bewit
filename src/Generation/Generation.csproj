@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
     <RootNamespace>Bewit.Generation</RootNamespace>
     <AssemblyName>Bewit.Generation</AssemblyName>
     <PackageId>Bewit.Generation</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

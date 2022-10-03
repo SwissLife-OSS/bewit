@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Bewit.Extensions.Http.Tests</AssemblyName>
+    <RootNamespace>Bewit.Extensions.Http.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Generation\Generation.csproj" />
+    <ProjectReference Include="..\..\src\Extensions.Http\Extensions.Http.csproj" />
+    <ProjectReference Include="..\..\src\Validation\Validation.csproj" />
+  </ItemGroup>
+
+</Project>
