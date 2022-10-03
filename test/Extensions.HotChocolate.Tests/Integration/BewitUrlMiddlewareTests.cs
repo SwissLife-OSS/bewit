@@ -77,7 +77,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                             d.Name("Mutation");
                             d.Field("RequestAccess")
                                 .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "https://www.google.com/a/b/?c=d")
+                                .Resolve(ctx => "https://www.google.com/a/b/?c=d")
                                 .UseBewitUrlProtection();
                         });
                 })

@@ -82,7 +82,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
                     c.Name("Query")
                         .Field("foo")
                         .Type<StringType>()
-                        .Resolver("bar")
+                        .Resolve("bar")
                         .AuthorizeBewit<TPayload>())
                 .UseDefaultPipeline()
                 .Services
