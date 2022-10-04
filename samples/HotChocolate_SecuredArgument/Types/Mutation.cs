@@ -27,7 +27,7 @@ namespace Host.Types
                         .ToString();
                 case TokenType.BarPayload:
                     return (await _barPayloadGenerator
-                            .GenerateBewitTokenAsync(new BarPayload(), default))
+                            .GenerateIdentifiableBewitTokenAsync(new BarPayload(), "abc", default))
                         .ToString();
                 default:
                     throw new InvalidOperationException();

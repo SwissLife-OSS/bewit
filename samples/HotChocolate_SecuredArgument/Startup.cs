@@ -48,16 +48,17 @@ namespace Host
                     builder.AddPayload<FooPayload>();
                     builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
                     {
-                        ConnectionString = "mongodb://localhost:27017"
+                        ConnectionString = "mongodb://localhost:27017",
+                        DatabaseName = "bewit_secured_argument"
                     });
                     builder.AddPayload<BazPayload>().UseMongoPersistence(new MongoNonceOptions
                     {
                         ConnectionString = "mongodb://localhost:27017",
-                        NonceUsage = NonceUsage.ReUse
+                        DatabaseName = "bewit_secured_argument"
                     });
                 });
 
-             services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
 
             // Add GraphQL Services
             services
@@ -65,14 +66,18 @@ namespace Host
                 .AddQueryType<QueryType>()
                 .AddMutationType<MutationType>()
                 .AddType<DocumentType>()
+                .InitializeOnStartup()
                 .UseBewitAuthorization(bewitOptions, builder =>
                 {
                     builder.AddPayload<FooPayload>();
                     builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
                     {
-                        ConnectionString = "mongodb://localhost:27017"
+                        ConnectionString = "mongodb://localhost:27017",
+                        NonceUsage = NonceUsage.ReUse,
+                        DatabaseName = "bewit_secured_argument"
                     });
-                });
+                })
+                .UseDefaultPipeline();
 
             services.AddRouting();
         }
