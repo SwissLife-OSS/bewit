@@ -122,9 +122,9 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
                 Encoding.UTF8.GetString(Convert.FromBase64String((string)bewitToken));
             Bewit<string> bewitInternal =
                 JsonConvert.DeserializeObject<Bewit<string>>(serializedBewit);
+            var token = Token.Create(bewitInternal.Token.Nonce, bewitInternal.Token.ExpirationDate);
             var newBewitInternal = new Bewit<string>(
-                bewitInternal.Nonce,
-                bewitInternal.ExpirationDate,
+                token,
                 url.ToLowerInvariant(),
                 bewitInternal.Hash);
             serializedBewit = JsonConvert.SerializeObject(newBewitInternal);

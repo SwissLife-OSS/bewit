@@ -40,22 +40,23 @@ namespace Bewit.Storage.MongoDB.Tests
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
             var repository = new MongoNonceRepository(database, new MongoNonceOptions());
-            var token = "myToken";
+            var nextToken = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
-            var nonce = new Bewit<Bar2<int, string>>(token, expirationDate, new Bar2<int, string>(), "hash");
+            var token = Token.Create(nextToken, expirationDate);
+            var nonce = new Bewit<Bar2<int, string>>(token, new Bar2<int, string>(), "hash");
 
             //Act
-            await repository.InsertOneAsync(nonce, CancellationToken.None);
+            await repository.InsertOneAsync(nonce.Token, CancellationToken.None);
 
             //Assert
-            IMongoCollection<Bewit<Bar2<int, string>>> collection = database.GetCollection<Bewit<Bar2<int, string>>>(nameof(Token));
+            IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
             var items = (
                 await collection.FindAsync(
-                    Builders<Bewit<Bar2<int, string>>>.Filter.Empty,
+                    Builders<Token>.Filter.Empty,
                     cancellationToken: CancellationToken.None)
             ).ToList();
             items.Should().ContainSingle();
-            items.First().Nonce.Should().Be(token);
+            items.First().Nonce.Should().Be(nextToken);
             items.First().ExpirationDate.Date.Should().Be(expirationDate.Date);
         }
 
@@ -65,16 +66,17 @@ namespace Bewit.Storage.MongoDB.Tests
             //Arrange
             IMongoDatabase database = _mongoResource.CreateDatabase();
             var repository = new MongoNonceRepository(database, new MongoNonceOptions());
-            var token = "myToken";
+            var nextToken = "myToken";
             DateTime expirationDate = DateTime.UtcNow;
-            var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
+            var token = Token.Create(nextToken, expirationDate);
+            var nonce = new Bewit<Bar>(token, new Bar(), "hash");
             IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
             await collection.InsertOneAsync(
-                nonce, new InsertOneOptions(), CancellationToken.None);
+                nonce.Token, new InsertOneOptions(), CancellationToken.None);
 
             //Act
             Token returnedNonce =
-                await repository.TakeOneAsync(token,
+                await repository.TakeOneAsync(nextToken,
                     CancellationToken.None);
 
             //Assert
@@ -84,7 +86,7 @@ namespace Bewit.Storage.MongoDB.Tests
                     cancellationToken: CancellationToken.None)
             ).ToList();
             items.Should().BeEmpty();
-            returnedNonce.Nonce.Should().Be(token);
+            returnedNonce.Nonce.Should().Be(nextToken);
             returnedNonce.ExpirationDate.Date.Should().Be(expirationDate.Date);
         }
 
@@ -121,16 +123,17 @@ namespace Bewit.Storage.MongoDB.Tests
             {
                 NonceUsage = NonceUsage.ReUse
             });
-            var token = "myToken";
+            var nextToken = "myToken";
             DateTime expirationDate = DateTime.UtcNow.AddMinutes(5);
-            var nonce = new Bewit<Bar>(token, expirationDate, new Bar(), "hash");
+            var token = Token.Create(nextToken, expirationDate);
+            var nonce = new Bewit<Bar>(token, new Bar(), "hash");
             IMongoCollection<Token> collection = database.GetCollection<Token>(nameof(Token));
             await collection.InsertOneAsync(
-                nonce, new InsertOneOptions(), CancellationToken.None);
+                nonce.Token, new InsertOneOptions(), CancellationToken.None);
 
             //Act
             Token returnedNonce =
-                await repository.TakeOneAsync(token,
+                await repository.TakeOneAsync(nextToken,
                     CancellationToken.None);
 
             //Assert
@@ -140,7 +143,7 @@ namespace Bewit.Storage.MongoDB.Tests
                     cancellationToken: CancellationToken.None)
             ).ToList();
             items.Should().NotBeEmpty();
-            returnedNonce.Nonce.Should().Be(token);
+            returnedNonce.Nonce.Should().Be(nextToken);
             returnedNonce.ExpirationDate.Date.Should().Be(expirationDate.Date);
         }
     }

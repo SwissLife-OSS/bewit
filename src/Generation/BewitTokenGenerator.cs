@@ -41,7 +41,13 @@ namespace Bewit.Generation
             T payload,
             CancellationToken cancellationToken)
         {
-            Bewit<T> bewit = await GenerateBewitAsync(payload, cancellationToken);
+            if (payload == null)
+            {
+                throw new ArgumentNullException(nameof(payload));
+            }
+
+            Bewit<T> bewit = CreateBewit(payload);
+            await _repository.InsertOneAsync(bewit.Token, cancellationToken);
 
             // Refactor: TypeNameHandling.All
             var serializedBewit = JsonConvert.SerializeObject(bewit);
@@ -50,8 +56,9 @@ namespace Bewit.Generation
             return new BewitToken<T>(base64Bewit);
         }
 
-        protected async ValueTask<Bewit<T>> GenerateBewitAsync(
+        public Task<BewitToken<T>> GenerateIdentifiableBewitTokenAsync(
             T payload,
+            string identifier,
             CancellationToken cancellationToken)
         {
             if (payload == null)
@@ -59,15 +66,20 @@ namespace Bewit.Generation
                 throw new ArgumentNullException(nameof(payload));
             }
 
-            var token = _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
+            // TODO use an identifiable token when create the bewit
+            Bewit<T> bewit = CreateBewit(payload);
+
+            return default;
+        }
+
+        private Bewit<T> CreateBewit(T payload)
+        {
+            var nextToken = _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
             DateTime expirationDate = _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
 
-            var hash = _cryptographyService.GetHash(token, expirationDate, payload);
-            var bewit = new Bewit<T>(token, expirationDate, payload, hash);
-
-            await _repository.InsertOneAsync(bewit, cancellationToken);
-
-            return bewit;
+            var hash = _cryptographyService.GetHash(nextToken, expirationDate, payload);
+            var token = Token.Create(nextToken, expirationDate);
+            return new Bewit<T>(token, payload, hash);
         }
     }
 }

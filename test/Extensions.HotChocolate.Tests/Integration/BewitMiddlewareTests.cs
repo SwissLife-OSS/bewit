@@ -54,7 +54,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
 
             //Assert
             res.Data.Should().NotBeNull();
-            res.Data.RequestAccess.Should().Be("eyJQYXlsb2FkIjoiZm9vIiwiSGFzaCI6Ildka3JYeGZJWVZmT0tGNmorVXZHRlIrYnluVXQzZmpKcUY4TEtLZ09rT2s9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
+            res.Data.RequestAccess.Should().Be("eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOiJmb28iLCJIYXNoIjoiV2Rrclh4ZklZVmZPS0Y2aitVdkdGUitieW5VdDNmakpxRjhMS0tnT2tPaz0ifQ==");
         }
 
         private static TestServer CreateTestServer()

@@ -120,7 +120,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            ((string)bewit).Should().Be("eyJQYXlsb2FkIjp7IkJhciI6MX0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTctMDEtMDFUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhclwiOjF9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
+            ((string)bewit).Should().Be("eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmFyIjoxfSwiSGFzaCI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNl9fMjAxNy0wMS0wMVQwMTowMjowMS4wMDEwMDAwWl9fe1wiQmFyXCI6MX0ifQ==");
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            ((string)bewit).Should().Be("eyJQYXlsb2FkIjp7IkJhciI6MX0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTgtMDYtMDZUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhclwiOjF9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTgtMDYtMDZUMDE6MDI6MDEuMDAxWiJ9");
+            ((string)bewit).Should().Be("eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxOC0wNi0wNlQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmFyIjoxfSwiSGFzaCI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNl9fMjAxOC0wNi0wNlQwMTowMjowMS4wMDEwMDAwWl9fe1wiQmFyXCI6MX0ifQ==");
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            ((string)bewit).Should().Be("eyJQYXlsb2FkIjp7IkJhciI6NX0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTctMDEtMDFUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhclwiOjV9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
+            ((string)bewit).Should().Be("eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmFyIjo1fSwiSGFzaCI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNl9fMjAxNy0wMS0wMVQwMTowMjowMS4wMDEwMDAwWl9fe1wiQmFyXCI6NX0ifQ==");
         }
 
         [Fact]
@@ -219,8 +219,8 @@ namespace Bewit.Generation.Tests
 
             //Assert
             var bewit = GetBewitFromToken(token);
-            bewit.Nonce.Should().Be(variableProvider.NextToken.ToString());
-            bewit.ExpirationDate.Should()
+            bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
+            bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
             bewit.Payload.Should().BeEquivalentTo(payload);
             bewit.Hash.Should()
@@ -250,8 +250,8 @@ namespace Bewit.Generation.Tests
 
             //Assert
             var bewit = GetBewitFromToken(token);
-            bewit.Nonce.Should().Be(variableProvider.NextToken.ToString());
-            bewit.ExpirationDate.Should()
+            bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
+            bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
             bewit.Payload.Should().BeEquivalentTo(payload);
             bewit.Hash.Should()
@@ -281,8 +281,8 @@ namespace Bewit.Generation.Tests
 
             //Assert
             var bewit = GetBewitFromToken(token);
-            bewit.Nonce.Should().Be(variableProvider.NextToken.ToString());
-            bewit.ExpirationDate.Should()
+            bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
+            bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
             bewit.Payload.Should().BeEquivalentTo(payload);
             bewit.Hash.Should()
