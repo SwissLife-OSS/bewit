@@ -235,7 +235,7 @@ namespace Bewit.Validation.Tests
             await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             var bewitToken = new BewitToken<Foo>(
-                "eyJQYXlsb2FkIjp7IkJhciI6MX0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTctMDEtMDFUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhclwiOjF9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
+                "eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmFyIjoxfSwiSGFzaCI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNl9fMjAxNy0wMS0wMVQwMTowMjowMS4wMDEwMDAwWl9fe1wiQmFyXCI6MX0ifQ==");
 
             //Act
             Foo payload2 =
