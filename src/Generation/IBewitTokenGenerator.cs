@@ -8,10 +8,5 @@ namespace Bewit.Generation
         Task<BewitToken<T>> GenerateBewitTokenAsync(
             T payload,
             CancellationToken cancellationToken);
-
-        Task<BewitToken<T>> GenerateIdentifiableBewitTokenAsync(
-            T payload,
-            string identifier,
-            CancellationToken cancellationToken);
     }
 }

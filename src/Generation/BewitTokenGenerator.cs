@@ -7,7 +7,9 @@ using Newtonsoft.Json;
 
 namespace Bewit.Generation
 {
-    internal class BewitTokenGenerator<T>: IBewitTokenGenerator<T>
+    internal class BewitTokenGenerator<T>:
+        IBewitTokenGenerator<T>,
+        IIdentifiableBewitTokenGenerator<T>
     {
         private readonly TimeSpan _tokenDuration;
         private readonly ICryptographyService _cryptographyService;

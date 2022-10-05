@@ -7,11 +7,11 @@ namespace Host.Types
     public class Mutation
     {
         private readonly IBewitTokenGenerator<FooPayload> _fooPayloadGenerator;
-        private readonly IBewitTokenGenerator<BarPayload> _barPayloadGenerator;
+        private readonly IIdentifiableBewitTokenGenerator<BarPayload> _barPayloadGenerator;
 
         public Mutation(
             IBewitTokenGenerator<FooPayload> fooPayloadGenerator,
-            IBewitTokenGenerator<BarPayload> barPayloadGenerator)
+            IIdentifiableBewitTokenGenerator<BarPayload> barPayloadGenerator)
         {
             _fooPayloadGenerator = fooPayloadGenerator;
             _barPayloadGenerator = barPayloadGenerator;
