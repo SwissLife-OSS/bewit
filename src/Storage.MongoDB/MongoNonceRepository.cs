@@ -38,6 +38,9 @@ namespace Bewit.Storage.MongoDB
 
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _collection = database.GetCollection<Token>(options.CollectionName);
+
+            _collection.Indexes.CreateOne(new CreateIndexModel<Token>(
+                Builders<Token>.IndexKeys.Ascending(nameof(IdentifiableToken.Identifier))));
         }
 
         public async ValueTask InsertOneAsync(
@@ -47,7 +50,8 @@ namespace Bewit.Storage.MongoDB
         }
 
         public async ValueTask<Token> TakeOneAsync(
-            string token, CancellationToken cancellationToken)
+            string token,
+            CancellationToken cancellationToken)
         {
             FilterDefinition<Token> findFilter = Builders<Token>.Filter.Eq(n => n.Nonce, token);
 
@@ -60,6 +64,16 @@ namespace Bewit.Storage.MongoDB
             return await _collection
                 .Find(findFilter)
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        }
+
+        public async ValueTask DeleteIdentifier(
+            string identifier,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Token> findFilter = Builders<Token>.Filter
+                .Eq(nameof(IdentifiableToken.Identifier), identifier);
+
+            await _collection.DeleteManyAsync(findFilter, cancellationToken);
         }
 
         public static void Initialize()

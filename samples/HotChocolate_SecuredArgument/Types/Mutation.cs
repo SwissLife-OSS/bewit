@@ -1,4 +1,4 @@
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Generation;
 
@@ -17,21 +17,27 @@ namespace Host.Types
             _barPayloadGenerator = barPayloadGenerator;
         }
 
-        public async Task<string> CreateBewitToken(CreateBewitTokenInput input)
+        public async Task<string> InvalidateBewitTokens(
+            string identifier,
+            CancellationToken cancellationToken)
         {
-            switch (input.TokenType)
-            {
-                case TokenType.FooPayload:
-                    return (await _fooPayloadGenerator
-                            .GenerateBewitTokenAsync(new FooPayload(), default))
-                        .ToString();
-                case TokenType.BarPayload:
-                    return (await _barPayloadGenerator
-                            .GenerateIdentifiableBewitTokenAsync(new BarPayload(), "abc", default))
-                        .ToString();
-                default:
-                    throw new InvalidOperationException();
-            }
+            await _barPayloadGenerator.InvalidateIdentifier(identifier, cancellationToken);
+
+            return identifier;
+        }
+
+        public async Task<string> CreateBewitToken(string value)
+        {
+            return (await _fooPayloadGenerator
+                    .GenerateBewitTokenAsync(new FooPayload {Value = value}, default))
+                .ToString();
+        }
+
+        public async Task<string> CreateIdentifiableBewitToken(string identifier)
+        {
+            return (await _barPayloadGenerator
+                    .GenerateIdentifiableBewitTokenAsync(new BarPayload(), identifier, default))
+                .ToString();
         }
     }
 }

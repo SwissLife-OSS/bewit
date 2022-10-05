@@ -9,4 +9,8 @@ public interface IIdentifiableBewitTokenGenerator<T>
         T payload,
         string identifier,
         CancellationToken cancellationToken);
+
+    Task InvalidateIdentifier(
+        string identifier,
+        CancellationToken cancellationToken);
 }

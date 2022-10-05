@@ -9,9 +9,6 @@ using Bewit.Generation;
 using System;
 using Host.Models;
 using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
 using Bewit;
 using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Storage.MongoDB;
@@ -63,9 +60,10 @@ namespace Host
             // Add GraphQL Services
             services
                 .AddGraphQLServer()
-                .AddQueryType<QueryType>()
-                .AddMutationType<MutationType>()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
                 .AddType<DocumentType>()
+                .AddMutationConventions()
                 .InitializeOnStartup()
                 .UseBewitAuthorization(bewitOptions, builder =>
                 {

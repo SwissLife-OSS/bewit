@@ -57,6 +57,13 @@ namespace Bewit.Generation
             return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
         }
 
+        public async Task InvalidateIdentifier(
+            string identifier,
+            CancellationToken cancellationToken)
+        {
+            await _repository.DeleteIdentifier(identifier, cancellationToken);
+        }
+
         private async Task<BewitToken<T>> GenerateBewitTokenImplAsync(
             T payload,
             Token token,

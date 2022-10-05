@@ -9,5 +9,7 @@ namespace Bewit
         ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken);
 
         ValueTask<Token?> TakeOneAsync(string token, CancellationToken cancellationToken);
+
+        ValueTask DeleteIdentifier(string identifier, CancellationToken cancellationToken);
     }
 }
