@@ -30,6 +30,7 @@
     <PackageTags>SwissLife .Net Security HotChocolate Download MongoDb</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://github.com/SwissLife-OSS/bewit/raw/master/logo.png</PackageIconUrl>
+    <NoWarn>NU5125;NU5048</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
