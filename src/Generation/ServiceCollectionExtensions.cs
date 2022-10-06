@@ -104,17 +104,16 @@ namespace Bewit.Generation
                     context.SetVariablesProvider(() => new VariablesProvider());
                 }
 
-                Type implementation = typeof(BewitTokenGenerator<>);
-                Type typedImplementation = implementation.MakeGenericType(context.Type);
-                Type bewitTokenGenerator = typeof(IBewitTokenGenerator<>);
-                Type bewitTokenGeneratorService = bewitTokenGenerator.MakeGenericType(context.Type);
-                Type identifiableBewitTokenGenerator = typeof(IIdentifiableBewitTokenGenerator<>);
-                Type identifiableBewitTokenGeneratorService = identifiableBewitTokenGenerator.MakeGenericType(context.Type);
+                Type typedImplementation = typeof(BewitTokenGenerator<>).MakeGenericType(context.Type);
+                Type bewitTokenGenerator = typeof(IBewitTokenGenerator<>).MakeGenericType(context.Type);
+                Type identifiableBewitTokenGenerator = typeof(IIdentifiableBewitTokenGenerator<>).MakeGenericType(context.Type);
 
-                services.AddSingleton(bewitTokenGeneratorService, sp =>
+                services.AddSingleton(typedImplementation, sp =>
                     ActivatorUtilities.CreateInstance(sp, typedImplementation, context));
-                services.AddSingleton(identifiableBewitTokenGeneratorService, sp =>
-                    ActivatorUtilities.CreateInstance(sp, typedImplementation, context));
+                services.AddSingleton(bewitTokenGenerator, sp =>
+                    sp.GetRequiredService(typedImplementation));
+                services.AddSingleton(identifiableBewitTokenGenerator, sp =>
+                    sp.GetRequiredService(typedImplementation));
             }
 
             return services;
