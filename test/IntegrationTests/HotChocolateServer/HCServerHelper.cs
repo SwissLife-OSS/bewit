@@ -63,16 +63,16 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                             d.Name("Mutation");
                             d.Field("RequestAccessToken")
                                 .Type<NonNullType<StringType>>()
-                                .Resolver(ctx => "foo")
+                                .Resolve(ctx => "foo")
                                 .UseBewitProtection<string>();
                             d.Field("RequestAccessUrlWithQueryString")
                                 .Type<NonNullType<StringType>>()
-                                .Resolver(ctx =>
+                                .Resolve(ctx =>
                                     "http://foo.bar/api/dummy/WithBewitProtection?foo=bar&baz=qux")
                                 .UseBewitUrlProtection();
                             d.Field("RequestAccessUrl")
                                 .Type<NonNullType<StringType>>()
-                                .Resolver(ctx =>
+                                .Resolve(ctx =>
                                     "http://foo.bar/api/dummy/WithBewitProtection")
                                 .UseBewitUrlProtection();
                         });

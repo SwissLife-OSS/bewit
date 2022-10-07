@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Validation.Exceptions;
 using Newtonsoft.Json;
+#nullable enable
 
 namespace Bewit.Validation
 {
@@ -56,14 +57,14 @@ namespace Bewit.Validation
                 throw new BewitNotFoundException();
             }
 
-            if (bewit.ExpirationDate < _variablesProvider.UtcNow)
+            if (bewit.Token.ExpirationDate < _variablesProvider.UtcNow)
             {
                 throw new BewitExpiredException();
             }
 
             var hashToMatch = _cryptographyService.GetHash(
-                bewit.Nonce,
-                bewit.ExpirationDate,
+                bewit.Token.Nonce,
+                bewit.Token.ExpirationDate,
                 bewit.Payload);
 
             if (!string.Equals(hashToMatch, bewit.Hash,
@@ -72,7 +73,7 @@ namespace Bewit.Validation
                 throw new BewitInvalidException();
             }
 
-            Token token = await _repository.TakeOneAsync(bewit.Nonce, cancellationToken);
+            Token? token = await _repository.TakeOneAsync(bewit.Token.Nonce, cancellationToken);
             if (token != null)
             {
                 return bewit;

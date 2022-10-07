@@ -3,42 +3,26 @@ using Newtonsoft.Json;
 
 namespace Bewit
 {
-    public class Bewit<T> : Token
+    public class Bewit<T>
     {
         public Bewit()
         {
         }
 
         [JsonConstructor]
-        public Bewit(string nonce, DateTime expirationDate, T payload, string hash)
-            : base(nonce, expirationDate)
+        public Bewit(Token token, T payload, string hash)
         {
-            if (string.IsNullOrWhiteSpace(nonce))
-            {
-                throw new ArgumentException(
-                    "Value cannot be null or whitespace.", nameof(nonce));
-            }
-
-            if (expirationDate == default)
-            {
-                throw new ArgumentException(
-                    "Value cannot be default value for type Datetime",
-                    nameof(expirationDate));
-            }
-
-            if (payload == null)
-            {
-                throw new ArgumentNullException(nameof(payload));
-            }
-
             if (string.IsNullOrWhiteSpace(hash))
             {
                 throw new ArgumentException(nameof(hash));
             }
 
-            Payload = payload;
+            Token = token ?? throw new ArgumentNullException(nameof(token));
+            Payload = payload ?? throw new ArgumentNullException(nameof(payload));
             Hash = hash;
         }
+
+        public Token Token { get; }
 
         public T Payload { get; }
 

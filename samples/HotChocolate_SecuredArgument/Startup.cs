@@ -9,9 +9,6 @@ using Bewit.Generation;
 using System;
 using Host.Models;
 using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
 using Bewit;
 using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Storage.MongoDB;
@@ -48,26 +45,37 @@ namespace Host
                     builder.AddPayload<FooPayload>();
                     builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
                     {
-                        ConnectionString = "mongodb://localhost:27017"
+                        ConnectionString = "mongodb://localhost:27017",
+                        DatabaseName = "bewit_secured_argument"
+                    });
+                    builder.AddPayload<BazPayload>().UseMongoPersistence(new MongoNonceOptions
+                    {
+                        ConnectionString = "mongodb://localhost:27017",
+                        DatabaseName = "bewit_secured_argument"
                     });
                 });
 
-             services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
 
             // Add GraphQL Services
             services
                 .AddGraphQLServer()
-                .AddQueryType<QueryType>()
-                .AddMutationType<MutationType>()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
                 .AddType<DocumentType>()
+                .AddMutationConventions()
+                .InitializeOnStartup()
                 .UseBewitAuthorization(bewitOptions, builder =>
                 {
                     builder.AddPayload<FooPayload>();
                     builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
                     {
-                        ConnectionString = "mongodb://localhost:27017"
+                        ConnectionString = "mongodb://localhost:27017",
+                        NonceUsage = NonceUsage.ReUse,
+                        DatabaseName = "bewit_secured_argument"
                     });
-                });
+                })
+                .UseDefaultPipeline();
 
             services.AddRouting();
         }
@@ -87,19 +95,6 @@ namespace Host
                     endpoints.MapGraphQL(path: "/")
                         .WithOptions(new GraphQLServerOptions { EnableSchemaRequests = true });
                 });
-        }
-
-        private byte[] ReadEmbeddedResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream =
-                assembly.GetManifestResourceStream(resourceName))
-            {
-                byte[] ba = new byte[stream.Length];
-                int valuesRead = stream.Read(ba, 0, ba.Length);
-                return ba.Take(valuesRead).ToArray();
-            }
         }
     }
 }

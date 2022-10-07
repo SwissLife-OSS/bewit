@@ -13,9 +13,9 @@ namespace Host.Data
             _documents = documents;
         }
 
-        public Document? GetDocument(string name)
+        public Document GetDocument(string name)
         {
-            return _documents.SingleOrDefault(d => d.Name == name);
+            return _documents.Single(d => d.Name == name);
         }
 
         public IReadOnlyList<Document> GetDocuments()

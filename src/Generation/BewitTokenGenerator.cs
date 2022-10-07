@@ -7,7 +7,9 @@ using Newtonsoft.Json;
 
 namespace Bewit.Generation
 {
-    internal class BewitTokenGenerator<T>: IBewitTokenGenerator<T>
+    internal class BewitTokenGenerator<T>:
+        IBewitTokenGenerator<T>,
+        IIdentifiableBewitTokenGenerator<T>
     {
         private readonly TimeSpan _tokenDuration;
         private readonly ICryptographyService _cryptographyService;
@@ -37,11 +39,43 @@ namespace Bewit.Generation
                 ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateRepository));
         }
 
-        public async Task<BewitToken<T>> GenerateBewitTokenAsync(
+        public Task<BewitToken<T>> GenerateBewitTokenAsync(
             T payload,
             CancellationToken cancellationToken)
         {
-            Bewit<T> bewit = await GenerateBewitAsync(payload, cancellationToken);
+            var token = Token.Create(CreateNextToken(), CreateExpirationDate());
+            return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
+
+        }
+
+        public Task<BewitToken<T>> GenerateIdentifiableBewitTokenAsync(
+            T payload,
+            string identifier,
+            CancellationToken cancellationToken)
+        {
+            var token = new IdentifiableToken(identifier, CreateNextToken(), CreateExpirationDate());
+            return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
+        }
+
+        public async Task InvalidateIdentifier(
+            string identifier,
+            CancellationToken cancellationToken)
+        {
+            await _repository.DeleteIdentifier(identifier, cancellationToken);
+        }
+
+        private async Task<BewitToken<T>> GenerateBewitTokenImplAsync(
+            T payload,
+            Token token,
+            CancellationToken cancellationToken)
+        {
+            if (payload == null)
+            {
+                throw new ArgumentNullException(nameof(payload));
+            }
+
+            Bewit<T> bewit = CreateBewit(token, payload);
+            await _repository.InsertOneAsync(bewit.Token, cancellationToken);
 
             // Refactor: TypeNameHandling.All
             var serializedBewit = JsonConvert.SerializeObject(bewit);
@@ -50,24 +84,16 @@ namespace Bewit.Generation
             return new BewitToken<T>(base64Bewit);
         }
 
-        protected async ValueTask<Bewit<T>> GenerateBewitAsync(
-            T payload,
-            CancellationToken cancellationToken)
+        private string CreateNextToken() =>
+            _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
+
+        private DateTime CreateExpirationDate() =>
+            _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
+
+        private Bewit<T> CreateBewit(Token token, T payload)
         {
-            if (payload == null)
-            {
-                throw new ArgumentNullException(nameof(payload));
-            }
-
-            var token = _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
-            DateTime expirationDate = _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
-
-            var hash = _cryptographyService.GetHash(token, expirationDate, payload);
-            var bewit = new Bewit<T>(token, expirationDate, payload, hash);
-
-            await _repository.InsertOneAsync(bewit, cancellationToken);
-
-            return bewit;
+            var hash = _cryptographyService.GetHash(token.Nonce, token.ExpirationDate, payload);
+            return new Bewit<T>(token, payload, hash);
         }
     }
 }

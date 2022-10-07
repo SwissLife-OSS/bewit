@@ -31,20 +31,7 @@ namespace Bewit.Generation.Tests
             services.AddBewitGeneration(configuration, b => b.AddPayload<Foo>());
 
             //Assert
-            ServiceProvider serviceProvider = null;
-            try
-            {
-                serviceProvider = services.BuildServiceProvider();
-                IBewitTokenGenerator<Foo> bewitTokenGenerator =
-                    serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
-                bewitTokenGenerator.Should().NotBeNull();
-                bewitTokenGenerator.Should()
-                    .BeOfType<BewitTokenGenerator<Foo>>();
-            }
-            finally
-            {
-                serviceProvider?.Dispose();
-            }
+            AssertRegisteredServices(services);
         }
 
         [Fact]
@@ -80,20 +67,7 @@ namespace Bewit.Generation.Tests
             }, b => b.AddPayload<Foo>());
 
             //Assert
-            ServiceProvider serviceProvider = null;
-            try
-            {
-                serviceProvider = services.BuildServiceProvider();
-                IBewitTokenGenerator<Foo> bewitTokenGenerator =
-                    serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
-                bewitTokenGenerator.Should().NotBeNull();
-                bewitTokenGenerator.Should()
-                    .BeOfType<BewitTokenGenerator<Foo>>();
-            }
-            finally
-            {
-                serviceProvider?.Dispose();
-            }
+            AssertRegisteredServices(services);
         }
 
         [Fact]
@@ -115,20 +89,7 @@ namespace Bewit.Generation.Tests
                 });
 
             //Assert
-            ServiceProvider serviceProvider = null;
-            try
-            {
-                serviceProvider = services.BuildServiceProvider();
-                IBewitTokenGenerator<Foo> bewitTokenGenerator =
-                    serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
-                bewitTokenGenerator.Should().NotBeNull();
-                bewitTokenGenerator.Should()
-                    .BeOfType<BewitTokenGenerator<Foo>>();
-            }
-            finally
-            {
-                serviceProvider?.Dispose();
-            }
+            AssertRegisteredServices(services);
         }
 
         [Fact]
@@ -146,15 +107,30 @@ namespace Bewit.Generation.Tests
                 builder => builder.AddPayload<Foo>());
 
             //Assert
+            AssertRegisteredServices(services);
+        }
+
+        private static void AssertRegisteredServices(ServiceCollection services)
+        {
             ServiceProvider serviceProvider = null;
             try
             {
                 serviceProvider = services.BuildServiceProvider();
+
                 IBewitTokenGenerator<Foo> bewitTokenGenerator =
                     serviceProvider.GetService<IBewitTokenGenerator<Foo>>();
                 bewitTokenGenerator.Should().NotBeNull();
                 bewitTokenGenerator.Should()
                     .BeOfType<BewitTokenGenerator<Foo>>();
+
+                IIdentifiableBewitTokenGenerator<Foo> identifiableBewitTokenGenerator =
+                    serviceProvider.GetService<IIdentifiableBewitTokenGenerator<Foo>>();
+                identifiableBewitTokenGenerator.Should().NotBeNull();
+                identifiableBewitTokenGenerator.Should()
+                    .BeOfType<BewitTokenGenerator<Foo>>();
+
+                bewitTokenGenerator.Should().BeSameAs(identifiableBewitTokenGenerator);
+
             }
             finally
             {

@@ -55,7 +55,7 @@ namespace Host
                     endpoints.MapGet("/opensesame/{id:int}", async c =>
                     {
                         var generator =
-                            c.RequestServices.GetService<IBewitTokenGenerator<string>>();
+                            c.RequestServices.GetRequiredService<IBewitTokenGenerator<string>>();
 
                         var id = c.Request.RouteValues.GetValueOrDefault("id");
 

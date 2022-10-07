@@ -9,7 +9,7 @@ namespace Host.Types
         protected override void Configure(IObjectTypeDescriptor<Document> descriptor)
         {
             descriptor.Field("bewit")
-                .Resolver(ctx => ctx.Parent<Document>().Name)
+                .Resolve(ctx => ctx.Parent<Document>().Name)
                 .UseBewitProtection<string>();
         }
     }

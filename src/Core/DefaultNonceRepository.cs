@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +17,11 @@ namespace Bewit
         public ValueTask<Token> TakeOneAsync(string token, CancellationToken cancellationToken)
         {
             return EmptyToken;
+        }
+
+        public ValueTask DeleteIdentifier(string identifier, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException("Only stateful bewit support invalidation");
         }
     }
 }

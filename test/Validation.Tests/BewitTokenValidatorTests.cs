@@ -29,12 +29,14 @@ namespace Bewit.Validation.Tests
                 Bar = 1
             };
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc), 
+                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2017-01-01T01:02:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Bewit<Foo> bewit2 = await provider.InvokeValidateBewitAsync(bewit, CancellationToken.None);
@@ -58,12 +60,14 @@ namespace Bewit.Validation.Tests
                 Bar = 1
             };
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc),
+                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-zjzgjc6271c6__2017-01-01T01:02:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Func<Task> validateBewit = async () =>
@@ -85,15 +89,17 @@ namespace Bewit.Validation.Tests
                 new BewitTokenValidatorAccessor<Foo>(
                     cryptoService, new MockHelper.MockedVariablesProvider(), nonceRepository);
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc),
+                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 new Foo
                 {
                     Bar = 2
                 },
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2017-01-01T01:02:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Func<Task> validateBewit = async () =>
@@ -119,12 +125,14 @@ namespace Bewit.Validation.Tests
                 Bar = 1
             };
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2029, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc),
+                new DateTime(2029, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2017-01-01T01:02:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Func<Task> validateBewit = async () =>
@@ -150,12 +158,14 @@ namespace Bewit.Validation.Tests
                 Bar = 1
             };
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "esfesf",
-                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc),
+                new DateTime(2017, 1, 1, 1, 2, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2017-01-01T01:02:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Func<Task> validateBewit = async () =>
@@ -181,12 +191,14 @@ namespace Bewit.Validation.Tests
                 Bar = 1
             };
 
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2016, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc), 
+                new DateTime(2016, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2016-01-01T01:01:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             //Act
             Func<Task> validateBewit = async () => await
@@ -213,15 +225,17 @@ namespace Bewit.Validation.Tests
             {
                 Bar = 1
             };
-            var bewit = new Bewit<Foo>(
+            var token = Token.Create(
                 "724e7acc-be57-49a1-8195-46a03c6271c6",
-                new DateTime(2016, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc),
+                new DateTime(2016, 1, 1, 1, 1, 1, 1, DateTimeKind.Utc));
+            var bewit = new Bewit<Foo>(
+                token,
                 payload,
                 "724e7acc-be57-49a1-8195-46a03c6271c6__2016-01-01T01:01:01.0010000Z__{\"Bar\":1}");
-            await nonceRepository.InsertOneAsync(bewit, default);
+            await nonceRepository.InsertOneAsync(bewit.Token, default);
 
             var bewitToken = new BewitToken<Foo>(
-                "eyJQYXlsb2FkIjp7IkJhciI6MX0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTctMDEtMDFUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhclwiOjF9IiwiTm9uY2UiOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzYiLCJFeHBpcmF0aW9uRGF0ZSI6IjIwMTctMDEtMDFUMDE6MDI6MDEuMDAxWiJ9");
+                "eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmFyIjoxfSwiSGFzaCI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNl9fMjAxNy0wMS0wMVQwMTowMjowMS4wMDEwMDAwWl9fe1wiQmFyXCI6MX0ifQ==");
 
             //Act
             Foo payload2 =

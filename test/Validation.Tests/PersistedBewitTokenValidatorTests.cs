@@ -45,7 +45,7 @@ namespace Bewit.Validation.Tests
                 Baz = "foo"
             };
 
-            BewitToken<Bar> token = new BewitToken<Bar>("eyJQYXlsb2FkIjp7IkJheiI6ImZvbyJ9LCJIYXNoIjoiNzI0ZTdhY2MtYmU1Ny00OWExLTgxOTUtNDZhMDNjNjI3MWM2X18yMDE3LTAxLTAxVDAxOjAyOjAxLjAwMTAwMDBaX197XCJCYXpcIjpcImZvb1wifSIsIk5vbmNlIjoiNzI0ZTdhY2MtYmU1Ny00OWExLTgxOTUtNDZhMDNjNjI3MWM2IiwiRXhwaXJhdGlvbkRhdGUiOiIyMDE3LTAxLTAxVDAxOjAyOjAxLjAwMVoifQ==");
+            BewitToken<Bar> token = new BewitToken<Bar>("eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOnsiQmF6IjoiZm9vIn0sIkhhc2giOiI3MjRlN2FjYy1iZTU3LTQ5YTEtODE5NS00NmEwM2M2MjcxYzZfXzIwMTctMDEtMDFUMDE6MDI6MDEuMDAxMDAwMFpfX3tcIkJhelwiOlwiZm9vXCJ9In0=");
 
             //Act
             Bar payload2 =

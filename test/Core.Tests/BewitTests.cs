@@ -15,21 +15,22 @@ namespace Bewit.Tests.Core
         public void Constructor_AllParamsSet_ShouldInitializeProperly()
         {
             //Arrange
-            string token = "bar";
-            DateTime expirationDate = DateTime.UtcNow; 
+            string nextToken = "bar";
+            DateTime expirationDate = DateTime.UtcNow;
             Foo payload = new Foo
             {
                 Bar = 1
             };
             string hash = "123";
+            var token = Token.Create(nextToken, expirationDate);
 
             //Act
-            var bewit = new Bewit<Foo>(token, expirationDate, payload, hash);
-            
+            var bewit = new Bewit<Foo>(token, payload, hash);
+
             //Assert
             bewit.Should().NotBeNull();
-            bewit.Nonce.Should().Be(token);
-            bewit.ExpirationDate.Should().Be(expirationDate);
+            bewit.Token.Nonce.Should().Be(nextToken);
+            bewit.Token.ExpirationDate.Should().Be(expirationDate);
             bewit.Payload.Should().BeEquivalentTo(payload);
             bewit.Hash.Should().Be(hash);
         }
@@ -38,8 +39,8 @@ namespace Bewit.Tests.Core
         public void Constructor_TokenNull_ShouldThrow()
         {
             //Arrange
-            string token = null;
-            DateTime expirationDate = DateTime.UtcNow; 
+            string nextToken = null;
+            DateTime expirationDate = DateTime.UtcNow;
             Foo payload = new Foo
             {
                 Bar = 1
@@ -48,7 +49,7 @@ namespace Bewit.Tests.Core
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(Token.Create(nextToken, expirationDate), payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -58,8 +59,8 @@ namespace Bewit.Tests.Core
         public void Constructor_TokenWhitespace_ShouldThrow()
         {
             //Arrange
-            string token = " ";
-            DateTime expirationDate = DateTime.UtcNow; 
+            string nextToken = " ";
+            DateTime expirationDate = DateTime.UtcNow;
             Foo payload = new Foo
             {
                 Bar = 1
@@ -68,7 +69,7 @@ namespace Bewit.Tests.Core
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(Token.Create(nextToken, expirationDate), payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -78,8 +79,8 @@ namespace Bewit.Tests.Core
         public void Constructor_DateTimeDefault_ShouldThrow()
         {
             //Arrange
-            string token = "bar";
-            DateTime expirationDate = default; 
+            string nextToken = "bar";
+            DateTime expirationDate = default;
             Foo payload = new Foo
             {
                 Bar = 1
@@ -88,7 +89,7 @@ namespace Bewit.Tests.Core
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(Token.Create(nextToken, expirationDate), payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -98,14 +99,15 @@ namespace Bewit.Tests.Core
         public void Constructor_payloadNull_ShouldThrow()
         {
             //Arrange
-            string token = "bar";
+            string nextToken = "bar";
             DateTime expirationDate = DateTime.UtcNow;
             Foo payload = null;
             string hash = "123";
+            var token = Token.Create(nextToken, expirationDate);
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(token, payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -115,17 +117,18 @@ namespace Bewit.Tests.Core
         public void Constructor_HashNull_ShouldThrow()
         {
             //Arrange
-            string token = "bar";
-            DateTime expirationDate = DateTime.UtcNow; 
+            string nextToken = "bar";
+            DateTime expirationDate = DateTime.UtcNow;
             Foo payload = new Foo
             {
                 Bar = 1
             };
             string hash = null;
+            var token = Token.Create(nextToken, expirationDate);
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(token, payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -135,17 +138,18 @@ namespace Bewit.Tests.Core
         public void Constructor_HashWhitespace_ShouldThrow()
         {
             //Arrange
-            string token = "bar";
-            DateTime expirationDate = DateTime.UtcNow; 
+            string nextToken = "bar";
+            DateTime expirationDate = DateTime.UtcNow;
             Foo payload = new Foo
             {
                 Bar = 1
             };
             string hash = " ";
+            var token = Token.Create(nextToken, expirationDate);
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, expirationDate, payload, hash);
+                new Bewit<Foo>(token, payload, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();

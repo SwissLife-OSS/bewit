@@ -23,13 +23,13 @@ namespace Host
         public Document GetSecretDocumentWithStatelessBewit(
             GetSecretDocumentInput input)
         {
-            return _repository.GetDocument(input.Name)!;
+            return _repository.GetDocument(input.Name);
         }
 
         public Document GetSecretDocumentWithStatefulBewit(
             GetSecretDocumentInput input)
         {
-            return _repository.GetDocument(input.Name)!;
+            return _repository.GetDocument(input.Name);
         }
     }
 }
