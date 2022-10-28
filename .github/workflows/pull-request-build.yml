@@ -14,3 +14,8 @@ jobs:
           chmod 755 ./build.cmd
           chmod 755 ./build.sh
           ./build.cmd Test --skip
+      - uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: test-results
+          path: /output/test-results/*.trx
