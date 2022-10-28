@@ -8,13 +8,13 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run './build.cmd'
         run: |
           chmod 755 ./build.cmd
           chmod 755 ./build.sh
           ./build.cmd Test --skip
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: success() || failure()
         with:
           name: test-results
