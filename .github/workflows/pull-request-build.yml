@@ -11,4 +11,5 @@ jobs:
       - name: Run './build.cmd'
         run: |
           chmod 755 ./build.cmd
+          chmod 755 ./build.sh
           ./build.cmd
