@@ -18,4 +18,4 @@ jobs:
         if: success() || failure()
         with:
           name: test-results
-          path: /output/test-results/*.trx
+          path: output/test-results/*.trx
