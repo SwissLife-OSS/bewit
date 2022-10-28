@@ -1,10 +1,10 @@
-name: PR
+name: Pull Request
 
 on: [push]
 
 jobs:
   ubuntu-latest:
-    name: ubuntu-latest
+    name: build.cmd Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
