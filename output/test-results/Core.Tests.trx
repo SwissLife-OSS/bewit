@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2e1617de-3d44-448b-932d-c466c3c7eadb" name="Gabriel Lucaci@LAPTOP-193JPKT0 2022-10-28 14:10:27" runUser="LAPTOP-193JPKT0\Gabriel Lucaci" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2022-10-28T14:10:27.4925986+02:00" queuing="2022-10-28T14:10:27.4925990+02:00" start="2022-10-28T14:10:25.0360922+02:00" finish="2022-10-28T14:10:27.5615121+02:00" />
+  <TestSettings name="default" id="6c7b2d6b-9a56-4da7-86c3-f8a959ee96ef">
+    <Deployment runDeploymentRoot="Gabriel_Lucaci_LAPTOP-193JPKT0_2022-10-28_14_10_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6a9d33a2-c15a-415a-9d0c-2a118ca4b83f" testId="31f56aa8-bee4-3601-3e8b-da7e6cee1173" testName="Bewit.Tests.Core.CryptographyServiceTests.GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash" computerName="LAPTOP-193JPKT0" duration="00:00:00.0005446" startTime="2022-10-28T14:10:27.4388193+02:00" endTime="2022-10-28T14:10:27.4388193+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a9d33a2-c15a-415a-9d0c-2a118ca4b83f" />
+    <UnitTestResult executionId="19345202-9945-4925-b89a-d1941df39a8a" testId="e81d7190-d0d5-5b6c-44e6-ce1ba18510cb" testName="Bewit.Tests.Core.BewitTests.Constructor_HashWhitespace_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0007958" startTime="2022-10-28T14:10:27.4548997+02:00" endTime="2022-10-28T14:10:27.4548998+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="19345202-9945-4925-b89a-d1941df39a8a" />
+    <UnitTestResult executionId="e8669ee0-a7d0-4553-b433-b02428ccc34e" testId="9f5b0d50-adbd-99e8-a286-52d43e3c818c" testName="Bewit.Tests.Core.BewitTests.Constructor_payloadNull_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0006702" startTime="2022-10-28T14:10:27.4549829+02:00" endTime="2022-10-28T14:10:27.4549830+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8669ee0-a7d0-4553-b433-b02428ccc34e" />
+    <UnitTestResult executionId="4a0717c6-172c-4475-8076-abd7caf76425" testId="b027f647-2373-dbd4-d13c-a53a4e5b8003" testName="Bewit.Tests.Core.BewitTests.Constructor_TokenWhitespace_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0007112" startTime="2022-10-28T14:10:27.4548164+02:00" endTime="2022-10-28T14:10:27.4548165+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a0717c6-172c-4475-8076-abd7caf76425" />
+    <UnitTestResult executionId="8ae18e28-7b68-4ba0-98b8-40a1b20daee6" testId="3336b1c4-9aee-00f3-1e09-5c94eeb3eb71" testName="Bewit.Tests.Core.BewitOptionsTests.Constructor_OnlyMandatoryParameters_ShouldConstruct" computerName="LAPTOP-193JPKT0" duration="00:00:00.0003985" startTime="2022-10-28T14:10:27.4389352+02:00" endTime="2022-10-28T14:10:27.4389352+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ae18e28-7b68-4ba0-98b8-40a1b20daee6" />
+    <UnitTestResult executionId="b81cda83-f1fc-4aff-8f46-7c2e34e7d910" testId="1e3d9d2c-a9ac-47b2-1136-3eb87fcf2c2b" testName="Bewit.Tests.Core.BewitOptionsTests.FromConfiguration_WithAllKeys_ShouldBindAllKeys" computerName="LAPTOP-193JPKT0" duration="00:00:00.0042439" startTime="2022-10-28T14:10:27.4388806+02:00" endTime="2022-10-28T14:10:27.4388807+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b81cda83-f1fc-4aff-8f46-7c2e34e7d910" />
+    <UnitTestResult executionId="d9f7875b-ed8a-43fe-949d-89cd4a3ed2b2" testId="b28ceb67-8902-c0ca-7788-c7c27692c0ff" testName="Bewit.Tests.Core.BewitTests.Constructor_TokenNull_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0008315" startTime="2022-10-28T14:10:27.4547458+02:00" endTime="2022-10-28T14:10:27.4547459+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9f7875b-ed8a-43fe-949d-89cd4a3ed2b2" />
+    <UnitTestResult executionId="626a53d7-3fb4-41c0-b117-c6cc73d7de20" testId="0ad4a9f8-1af5-d334-d571-3b14a32996b0" testName="Bewit.Tests.Core.BewitTests.Constructor_AllParamsSet_ShouldInitializeProperly" computerName="LAPTOP-193JPKT0" duration="00:00:00.0313296" startTime="2022-10-28T14:10:27.4435132+02:00" endTime="2022-10-28T14:10:27.4435134+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="626a53d7-3fb4-41c0-b117-c6cc73d7de20" />
+    <UnitTestResult executionId="8b62f7f5-0dce-4ddf-b047-4e508f1c4128" testId="f2b843ed-5787-fd20-f42a-eca4e4bbe27a" testName="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecret_ShouldConstruct" computerName="LAPTOP-193JPKT0" duration="00:00:00.0002613" startTime="2022-10-28T14:10:27.4390116+02:00" endTime="2022-10-28T14:10:27.4390117+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b62f7f5-0dce-4ddf-b047-4e508f1c4128" />
+    <UnitTestResult executionId="0d0953c6-046b-46cc-8319-ed4d3f7e9b12" testId="9bd6f295-6e38-43cc-0dd3-cfca8d24defc" testName="Bewit.Tests.Core.BewitOptionsTests.Constructor_WithTokenDurationInitialization_ShouldConstruct" computerName="LAPTOP-193JPKT0" duration="00:00:00.0094891" startTime="2022-10-28T14:10:27.4300576+02:00" endTime="2022-10-28T14:10:27.4301166+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0d0953c6-046b-46cc-8319-ed4d3f7e9b12" />
+    <UnitTestResult executionId="42873ced-8269-49cf-8611-2a8a349763bc" testId="856d9af2-7243-7552-dfb3-7557fb81e8ed" testName="Bewit.Tests.Core.BewitTests.Constructor_DateTimeDefault_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0006394" startTime="2022-10-28T14:10:27.4550596+02:00" endTime="2022-10-28T14:10:27.4550597+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42873ced-8269-49cf-8611-2a8a349763bc" />
+    <UnitTestResult executionId="d1388041-0029-4ca6-96e0-eeb0b5b9d254" testId="8f76711d-d4d7-57fc-d13e-48dfaff40693" testName="Bewit.Tests.Core.CryptographyServiceTests.GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash2" computerName="LAPTOP-193JPKT0" duration="00:00:00.0124073" startTime="2022-10-28T14:10:27.4371366+02:00" endTime="2022-10-28T14:10:27.4371367+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1388041-0029-4ca6-96e0-eeb0b5b9d254" />
+    <UnitTestResult executionId="55cc0d0b-27b5-41ef-a46d-cc87d8a3ca8a" testId="026d5fde-d581-7064-5fcc-34b260714984" testName="Bewit.Tests.Core.BewitTests.Constructor_HashNull_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0007898" startTime="2022-10-28T14:10:27.4546475+02:00" endTime="2022-10-28T14:10:27.4546476+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55cc0d0b-27b5-41ef-a46d-cc87d8a3ca8a" />
+    <UnitTestResult executionId="4796c8d1-188e-41b2-9417-5e414a7111b5" testId="0078ee93-1ec1-3317-4f8f-d10baa9dc858" testName="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecretWhitespacesOnly_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0058910" startTime="2022-10-28T14:10:27.4389619+02:00" endTime="2022-10-28T14:10:27.4389620+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4796c8d1-188e-41b2-9417-5e414a7111b5" />
+    <UnitTestResult executionId="eccc5ca2-3547-41d3-9ac6-9b611331b681" testId="43c593f5-b322-0095-8842-ae6c634b9aa5" testName="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecretNull_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0006614" startTime="2022-10-28T14:10:27.4390563+02:00" endTime="2022-10-28T14:10:27.4390563+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eccc5ca2-3547-41d3-9ac6-9b611331b681" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_payloadNull_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="9f5b0d50-adbd-99e8-a286-52d43e3c818c">
+      <Execution id="e8669ee0-a7d0-4553-b433-b02428ccc34e" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_payloadNull_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitOptionsTests.Constructor_OnlyMandatoryParameters_ShouldConstruct" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="3336b1c4-9aee-00f3-1e09-5c94eeb3eb71">
+      <Execution id="8ae18e28-7b68-4ba0-98b8-40a1b20daee6" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitOptionsTests" name="Constructor_OnlyMandatoryParameters_ShouldConstruct" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecret_ShouldConstruct" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="f2b843ed-5787-fd20-f42a-eca4e4bbe27a">
+      <Execution id="8b62f7f5-0dce-4ddf-b047-4e508f1c4128" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.CryptographyServiceTests" name="Constructor_WithSecret_ShouldConstruct" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_HashNull_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="026d5fde-d581-7064-5fcc-34b260714984">
+      <Execution id="55cc0d0b-27b5-41ef-a46d-cc87d8a3ca8a" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_HashNull_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_TokenNull_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="b28ceb67-8902-c0ca-7788-c7c27692c0ff">
+      <Execution id="d9f7875b-ed8a-43fe-949d-89cd4a3ed2b2" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_TokenNull_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.CryptographyServiceTests.GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="31f56aa8-bee4-3601-3e8b-da7e6cee1173">
+      <Execution id="6a9d33a2-c15a-415a-9d0c-2a118ca4b83f" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.CryptographyServiceTests" name="GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecretNull_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="43c593f5-b322-0095-8842-ae6c634b9aa5">
+      <Execution id="eccc5ca2-3547-41d3-9ac6-9b611331b681" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.CryptographyServiceTests" name="Constructor_WithSecretNull_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_AllParamsSet_ShouldInitializeProperly" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="0ad4a9f8-1af5-d334-d571-3b14a32996b0">
+      <Execution id="626a53d7-3fb4-41c0-b117-c6cc73d7de20" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_AllParamsSet_ShouldInitializeProperly" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_HashWhitespace_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="e81d7190-d0d5-5b6c-44e6-ce1ba18510cb">
+      <Execution id="19345202-9945-4925-b89a-d1941df39a8a" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_HashWhitespace_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitOptionsTests.FromConfiguration_WithAllKeys_ShouldBindAllKeys" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="1e3d9d2c-a9ac-47b2-1136-3eb87fcf2c2b">
+      <Execution id="b81cda83-f1fc-4aff-8f46-7c2e34e7d910" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitOptionsTests" name="FromConfiguration_WithAllKeys_ShouldBindAllKeys" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_TokenWhitespace_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="b027f647-2373-dbd4-d13c-a53a4e5b8003">
+      <Execution id="4a0717c6-172c-4475-8076-abd7caf76425" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_TokenWhitespace_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitTests.Constructor_DateTimeDefault_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="856d9af2-7243-7552-dfb3-7557fb81e8ed">
+      <Execution id="42873ced-8269-49cf-8611-2a8a349763bc" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitTests" name="Constructor_DateTimeDefault_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.BewitOptionsTests.Constructor_WithTokenDurationInitialization_ShouldConstruct" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="9bd6f295-6e38-43cc-0dd3-cfca8d24defc">
+      <Execution id="0d0953c6-046b-46cc-8319-ed4d3f7e9b12" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.BewitOptionsTests" name="Constructor_WithTokenDurationInitialization_ShouldConstruct" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.CryptographyServiceTests.Constructor_WithSecretWhitespacesOnly_ShouldThrow" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="0078ee93-1ec1-3317-4f8f-d10baa9dc858">
+      <Execution id="4796c8d1-188e-41b2-9417-5e414a7111b5" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.CryptographyServiceTests" name="Constructor_WithSecretWhitespacesOnly_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Tests.Core.CryptographyServiceTests.GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash2" storage="c:\repos\bewit\test\core.tests\bin\debug\net6.0\bewit.tests.dll" id="8f76711d-d4d7-57fc-d13e-48dfaff40693">
+      <Execution id="d1388041-0029-4ca6-96e0-eeb0b5b9d254" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Core.Tests\bin\Debug\net6.0\Bewit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Tests.Core.CryptographyServiceTests" name="GetHash_WithAllParamsAndStringPayload_ShouldAlwaysGenerateSameHash2" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="31f56aa8-bee4-3601-3e8b-da7e6cee1173" executionId="6a9d33a2-c15a-415a-9d0c-2a118ca4b83f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e81d7190-d0d5-5b6c-44e6-ce1ba18510cb" executionId="19345202-9945-4925-b89a-d1941df39a8a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f5b0d50-adbd-99e8-a286-52d43e3c818c" executionId="e8669ee0-a7d0-4553-b433-b02428ccc34e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b027f647-2373-dbd4-d13c-a53a4e5b8003" executionId="4a0717c6-172c-4475-8076-abd7caf76425" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3336b1c4-9aee-00f3-1e09-5c94eeb3eb71" executionId="8ae18e28-7b68-4ba0-98b8-40a1b20daee6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e3d9d2c-a9ac-47b2-1136-3eb87fcf2c2b" executionId="b81cda83-f1fc-4aff-8f46-7c2e34e7d910" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b28ceb67-8902-c0ca-7788-c7c27692c0ff" executionId="d9f7875b-ed8a-43fe-949d-89cd4a3ed2b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ad4a9f8-1af5-d334-d571-3b14a32996b0" executionId="626a53d7-3fb4-41c0-b117-c6cc73d7de20" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2b843ed-5787-fd20-f42a-eca4e4bbe27a" executionId="8b62f7f5-0dce-4ddf-b047-4e508f1c4128" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9bd6f295-6e38-43cc-0dd3-cfca8d24defc" executionId="0d0953c6-046b-46cc-8319-ed4d3f7e9b12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="856d9af2-7243-7552-dfb3-7557fb81e8ed" executionId="42873ced-8269-49cf-8611-2a8a349763bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8f76711d-d4d7-57fc-d13e-48dfaff40693" executionId="d1388041-0029-4ca6-96e0-eeb0b5b9d254" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="026d5fde-d581-7064-5fcc-34b260714984" executionId="55cc0d0b-27b5-41ef-a46d-cc87d8a3ca8a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0078ee93-1ec1-3317-4f8f-d10baa9dc858" executionId="4796c8d1-188e-41b2-9417-5e414a7111b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43c593f5-b322-0095-8842-ae6c634b9aa5" executionId="eccc5ca2-3547-41d3-9ac6-9b611331b681" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="15" executed="15" passed="15" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.1 (64-bit .NET 6.0.9)&#xD;
+[xUnit.net 00:00:01.35]   Discovering: Bewit.Tests&#xD;
+[xUnit.net 00:00:01.41]   Discovered:  Bewit.Tests&#xD;
+[xUnit.net 00:00:01.41]   Starting:    Bewit.Tests&#xD;
+[xUnit.net 00:00:01.55]   Finished:    Bewit.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

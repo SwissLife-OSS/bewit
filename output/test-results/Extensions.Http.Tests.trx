@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="de8a0f6f-8f2d-44fc-9b79-d9f8bd1f243a" name="Gabriel Lucaci@LAPTOP-193JPKT0 2022-10-28 14:10:39" runUser="LAPTOP-193JPKT0\Gabriel Lucaci" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2022-10-28T14:10:39.2831726+02:00" queuing="2022-10-28T14:10:39.2831730+02:00" start="2022-10-28T14:10:36.7634603+02:00" finish="2022-10-28T14:10:39.2963300+02:00" />
+  <TestSettings name="default" id="3ef3bcc3-091c-4c5b-beb6-4ce9ab65d44b">
+    <Deployment runDeploymentRoot="Gabriel_Lucaci_LAPTOP-193JPKT0_2022-10-28_14_10_39" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f5160158-26bf-44f6-89fe-8b53922ccb38" testId="a0f38235-5deb-aa1b-168b-640fa83724d3" testName="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_InValidBewitToken_StatusCodeShouldBe_Forbidden" computerName="LAPTOP-193JPKT0" duration="00:00:00.0029753" startTime="2022-10-28T14:10:39.1697635+02:00" endTime="2022-10-28T14:10:39.1697637+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5160158-26bf-44f6-89fe-8b53922ccb38" />
+    <UnitTestResult executionId="3cb6a0dc-6676-40a0-b48c-7fed3b367659" testId="7498d695-d503-4576-1b7d-03ca86bc9222" testName="Bewit.Extensions.Http.Tests.EndpointConventionBuilderExtensionsTests.AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" computerName="LAPTOP-193JPKT0" duration="00:00:00.0077592" startTime="2022-10-28T14:10:39.0452445+02:00" endTime="2022-10-28T14:10:39.0452962+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3cb6a0dc-6676-40a0-b48c-7fed3b367659" />
+    <UnitTestResult executionId="954a55c2-06d9-4086-8659-8c072273de60" testId="139d7e6b-ee9d-99ad-2a16-611ac00325ee" testName="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesNotMatch_StatusCodeShouldBe_Forbidden" computerName="LAPTOP-193JPKT0" duration="00:00:00.0015202" startTime="2022-10-28T14:10:39.1723410+02:00" endTime="2022-10-28T14:10:39.1723413+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="954a55c2-06d9-4086-8659-8c072273de60" />
+    <UnitTestResult executionId="fe0a1b79-cb26-48c3-869d-4a2b9f45a84d" testId="675d2161-adc2-066a-b389-352b79f8ac1a" testName="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithoutBewitEndpointAttribute_StatusCodeShouldBe_Ok" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009489" startTime="2022-10-28T14:10:39.1707676+02:00" endTime="2022-10-28T14:10:39.1707678+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fe0a1b79-cb26-48c3-869d-4a2b9f45a84d" />
+    <UnitTestResult executionId="c98db022-a1a9-41d0-954d-16992a5d7aa8" testId="acf1af29-84aa-d251-3784-2489623ad1ba" testName="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_NoBewitTokenInUrl_StatusCodeShouldBe_Forbidden" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009630" startTime="2022-10-28T14:10:39.1733566+02:00" endTime="2022-10-28T14:10:39.1733569+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c98db022-a1a9-41d0-954d-16992a5d7aa8" />
+    <UnitTestResult executionId="e75e8ac6-ffbd-4f80-879c-e5cd70cbda9f" testId="df7f3d37-5ff4-98fb-5db9-793901fa855b" testName="Bewit.Extensions.Http.Tests.ServiceCollectionExtensionsTests.AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" computerName="LAPTOP-193JPKT0" duration="00:00:00.0274214" startTime="2022-10-28T14:10:39.0600426+02:00" endTime="2022-10-28T14:10:39.0600429+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e75e8ac6-ffbd-4f80-879c-e5cd70cbda9f" />
+    <UnitTestResult executionId="4cf276d3-ac91-47d1-9921-4946b258e6d5" testId="c5a06f2e-4685-b366-5295-76d1d939ae9e" testName="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesMatch_StatusCodeShouldBe_Ok" computerName="LAPTOP-193JPKT0" duration="00:00:00.1347474" startTime="2022-10-28T14:10:39.1666783+02:00" endTime="2022-10-28T14:10:39.1666786+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cf276d3-ac91-47d1-9921-4946b258e6d5" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithoutBewitEndpointAttribute_StatusCodeShouldBe_Ok" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="675d2161-adc2-066a-b389-352b79f8ac1a">
+      <Execution id="fe0a1b79-cb26-48c3-869d-4a2b9f45a84d" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests" name="BewitEndpointMiddlewareInvokeTest_WithoutBewitEndpointAttribute_StatusCodeShouldBe_Ok" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Http.Tests.ServiceCollectionExtensionsTests.AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="df7f3d37-5ff4-98fb-5db9-793901fa855b">
+      <Execution id="e75e8ac6-ffbd-4f80-879c-e5cd70cbda9f" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Http.Tests.ServiceCollectionExtensionsTests" name="AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" />
+    </UnitTest>
+    <UnitTest name="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_NoBewitTokenInUrl_StatusCodeShouldBe_Forbidden" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="acf1af29-84aa-d251-3784-2489623ad1ba">
+      <Execution id="c98db022-a1a9-41d0-954d-16992a5d7aa8" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests" name="BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_NoBewitTokenInUrl_StatusCodeShouldBe_Forbidden" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Http.Tests.EndpointConventionBuilderExtensionsTests.AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="7498d695-d503-4576-1b7d-03ca86bc9222">
+      <Execution id="3cb6a0dc-6676-40a0-b48c-7fed3b367659" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Http.Tests.EndpointConventionBuilderExtensionsTests" name="AddBewitEndpointAuthorization_WithConfiguration_ShouldAddBewitTokenValidatorForString" />
+    </UnitTest>
+    <UnitTest name="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesMatch_StatusCodeShouldBe_Ok" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="c5a06f2e-4685-b366-5295-76d1d939ae9e">
+      <Execution id="4cf276d3-ac91-47d1-9921-4946b258e6d5" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests" name="BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesMatch_StatusCodeShouldBe_Ok" />
+    </UnitTest>
+    <UnitTest name="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesNotMatch_StatusCodeShouldBe_Forbidden" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="139d7e6b-ee9d-99ad-2a16-611ac00325ee">
+      <Execution id="954a55c2-06d9-4086-8659-8c072273de60" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests" name="BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_ValidBewitToken_PayloadDoesNotMatch_StatusCodeShouldBe_Forbidden" />
+    </UnitTest>
+    <UnitTest name="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests.BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_InValidBewitToken_StatusCodeShouldBe_Forbidden" storage="c:\repos\bewit\test\extensions.http.tests\bin\debug\net6.0\bewit.extensions.http.tests.dll" id="a0f38235-5deb-aa1b-168b-640fa83724d3">
+      <Execution id="f5160158-26bf-44f6-89fe-8b53922ccb38" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Http.Tests\bin\Debug\net6.0\Bewit.Extensions.Http.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="SwissLife.ESignature.GraphQL.Tests.BewitEndpointMiddlewareTests" name="BewitEndpointMiddlewareInvokeTest_WithBewitEndpointAttribute_InValidBewitToken_StatusCodeShouldBe_Forbidden" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a0f38235-5deb-aa1b-168b-640fa83724d3" executionId="f5160158-26bf-44f6-89fe-8b53922ccb38" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7498d695-d503-4576-1b7d-03ca86bc9222" executionId="3cb6a0dc-6676-40a0-b48c-7fed3b367659" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="139d7e6b-ee9d-99ad-2a16-611ac00325ee" executionId="954a55c2-06d9-4086-8659-8c072273de60" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="675d2161-adc2-066a-b389-352b79f8ac1a" executionId="fe0a1b79-cb26-48c3-869d-4a2b9f45a84d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acf1af29-84aa-d251-3784-2489623ad1ba" executionId="c98db022-a1a9-41d0-954d-16992a5d7aa8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df7f3d37-5ff4-98fb-5db9-793901fa855b" executionId="e75e8ac6-ffbd-4f80-879c-e5cd70cbda9f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5a06f2e-4685-b366-5295-76d1d939ae9e" executionId="4cf276d3-ac91-47d1-9921-4946b258e6d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.1 (64-bit .NET 6.0.9)&#xD;
+[xUnit.net 00:00:01.25]   Discovering: Bewit.Extensions.Http.Tests&#xD;
+[xUnit.net 00:00:01.31]   Discovered:  Bewit.Extensions.Http.Tests&#xD;
+[xUnit.net 00:00:01.31]   Starting:    Bewit.Extensions.Http.Tests&#xD;
+[xUnit.net 00:00:01.54]   Finished:    Bewit.Extensions.Http.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
