@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="593eb9b1-faba-4eda-b265-7f419be7ba15" name="Gabriel Lucaci@LAPTOP-193JPKT0 2022-10-28 14:10:43" runUser="LAPTOP-193JPKT0\Gabriel Lucaci" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2022-10-28T14:10:43.6954174+02:00" queuing="2022-10-28T14:10:43.6954179+02:00" start="2022-10-28T14:10:40.4468792+02:00" finish="2022-10-28T14:10:43.7104707+02:00" />
+  <TestSettings name="default" id="fb5760fb-9775-4b35-96a1-80157a1ddde0">
+    <Deployment runDeploymentRoot="Gabriel_Lucaci_LAPTOP-193JPKT0_2022-10-28_14_10_43" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9064a5b8-9378-4a9d-8860-047cf3e9f65a" testId="d221d5bb-c6c1-7ab7-f5d5-6fed51c7d8fb" testName="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitUrlAuthorizationFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" computerName="LAPTOP-193JPKT0" duration="00:00:00.0171870" startTime="2022-10-28T14:10:43.2083990+02:00" endTime="2022-10-28T14:10:43.2084697+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9064a5b8-9378-4a9d-8860-047cf3e9f65a" />
+    <UnitTestResult executionId="907d97fe-4d6a-49c1-8bd0-c1bc0bd70487" testId="c16f2982-fc6a-0497-92b5-0ba151104471" testName="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" computerName="LAPTOP-193JPKT0" duration="00:00:00.0018976" startTime="2022-10-28T14:10:43.2175125+02:00" endTime="2022-10-28T14:10:43.2175126+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="907d97fe-4d6a-49c1-8bd0-c1bc0bd70487" />
+    <UnitTestResult executionId="2feefb00-d23b-4c3f-8987-01d318a19f39" testId="748cd942-5494-cddd-286d-28d0163f3a8c" testName="Bewit.Extensions.Mvc.Tests.Integration.BewitAttributeTests.OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" computerName="LAPTOP-193JPKT0" duration="00:00:00.3092897" startTime="2022-10-28T14:10:43.4992695+02:00" endTime="2022-10-28T14:10:43.4992699+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2feefb00-d23b-4c3f-8987-01d318a19f39" />
+    <UnitTestResult executionId="c26cf2d8-c5b6-4ae7-b5ef-2b99a76d7386" testId="63cd8f6d-7554-c128-3918-a04077988e93" testName="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" computerName="LAPTOP-193JPKT0" duration="00:00:00.0215189" startTime="2022-10-28T14:10:43.5335510+02:00" endTime="2022-10-28T14:10:43.5335512+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c26cf2d8-c5b6-4ae7-b5ef-2b99a76d7386" />
+    <UnitTestResult executionId="20f8dc9d-a050-49d4-bcb8-7ada455ccce9" testId="985ec275-5f53-7f7d-08b2-f5dbee5df40b" testName="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.SampleGetRequest_NoBewitProtectionOnRoute_ShouldPass" computerName="LAPTOP-193JPKT0" duration="00:00:00.0152549" startTime="2022-10-28T14:10:43.5661155+02:00" endTime="2022-10-28T14:10:43.5661159+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20f8dc9d-a050-49d4-bcb8-7ada455ccce9" />
+    <UnitTestResult executionId="7010dd0a-8e48-4f45-9459-2a2a02f384f0" testId="037b3d3b-9440-4d80-d3ca-2f8c78dbc4ec" testName="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitUrlAuthorizationFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" computerName="LAPTOP-193JPKT0" duration="00:00:00.0014115" startTime="2022-10-28T14:10:43.2176501+02:00" endTime="2022-10-28T14:10:43.2176501+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7010dd0a-8e48-4f45-9459-2a2a02f384f0" />
+    <UnitTestResult executionId="a1137cfd-82e9-4fd4-a681-a1470a3519c6" testId="ce72795b-6ec4-0231-66f6-e15839fa6b23" testName="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithAlteredPayloadForUrl_ShouldNotAuthorize" computerName="LAPTOP-193JPKT0" duration="00:00:00.3283178" startTime="2022-10-28T14:10:43.5118864+02:00" endTime="2022-10-28T14:10:43.5118870+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a1137cfd-82e9-4fd4-a681-a1470a3519c6" />
+    <UnitTestResult executionId="7da76804-84d5-44cc-bf32-09f540b5235e" testId="289d6f49-fe7d-bd0e-b578-07a49282a217" testName="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" computerName="LAPTOP-193JPKT0" duration="00:00:00.0022610" startTime="2022-10-28T14:10:43.2177145+02:00" endTime="2022-10-28T14:10:43.2177146+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7da76804-84d5-44cc-bf32-09f540b5235e" />
+    <UnitTestResult executionId="327ab91b-1ada-4850-a798-7a0f43548ba0" testId="4518c71e-33bd-a5de-0ad2-7ff5de0033b5" testName="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithDifferentUrl_ShouldNotAuthorize" computerName="LAPTOP-193JPKT0" duration="00:00:00.0170386" startTime="2022-10-28T14:10:43.5507226+02:00" endTime="2022-10-28T14:10:43.5507228+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="327ab91b-1ada-4850-a798-7a0f43548ba0" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithDifferentUrl_ShouldNotAuthorize" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="4518c71e-33bd-a5de-0ad2-7ff5de0033b5">
+      <Execution id="327ab91b-1ada-4850-a798-7a0f43548ba0" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests" name="OnAuthorization_WithDifferentUrl_ShouldNotAuthorize" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.SampleGetRequest_NoBewitProtectionOnRoute_ShouldPass" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="985ec275-5f53-7f7d-08b2-f5dbee5df40b">
+      <Execution id="20f8dc9d-a050-49d4-bcb8-7ada455ccce9" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests" name="SampleGetRequest_NoBewitProtectionOnRoute_ShouldPass" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="289d6f49-fe7d-bd0e-b578-07a49282a217">
+      <Execution id="7da76804-84d5-44cc-bf32-09f540b5235e" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests" name="AddBewitFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.Integration.BewitAttributeTests.OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="748cd942-5494-cddd-286d-28d0163f3a8c">
+      <Execution id="2feefb00-d23b-4c3f-8987-01d318a19f39" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.Integration.BewitAttributeTests" name="OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithAlteredPayloadForUrl_ShouldNotAuthorize" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="ce72795b-6ec4-0231-66f6-e15839fa6b23">
+      <Execution id="a1137cfd-82e9-4fd4-a681-a1470a3519c6" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests" name="OnAuthorization_WithAlteredPayloadForUrl_ShouldNotAuthorize" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitUrlAuthorizationFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="d221d5bb-c6c1-7ab7-f5d5-6fed51c7d8fb">
+      <Execution id="9064a5b8-9378-4a9d-8860-047cf3e9f65a" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests" name="AddBewitUrlAuthorizationFilter_WithConfiguration_ShouldRegisterBewitUrlAuthorizationFilter" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests.OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="63cd8f6d-7554-c128-3918-a04077988e93">
+      <Execution id="c26cf2d8-c5b6-4ae7-b5ef-2b99a76d7386" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.Integration.BewitUrlAuthorizationAttributeTests" name="OnAuthorization_WithValidBewitForUrl_ShouldAuthorize" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="c16f2982-fc6a-0497-92b5-0ba151104471">
+      <Execution id="907d97fe-4d6a-49c1-8bd0-c1bc0bd70487" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests" name="AddBewitFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" />
+    </UnitTest>
+    <UnitTest name="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests.AddBewitUrlAuthorizationFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" storage="c:\repos\bewit\test\extensions.mvc.tests\bin\debug\net6.0\bewit.extensions.mvc.tests.dll" id="037b3d3b-9440-4d80-d3ca-2f8c78dbc4ec">
+      <Execution id="7010dd0a-8e48-4f45-9459-2a2a02f384f0" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Extensions.Mvc.Tests\bin\Debug\net6.0\Bewit.Extensions.Mvc.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Extensions.Mvc.Tests.ServiceCollectionExtensionsTests" name="AddBewitUrlAuthorizationFilter_WithOptions_ShouldRegisterBewitUrlAuthorizationFilter" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d221d5bb-c6c1-7ab7-f5d5-6fed51c7d8fb" executionId="9064a5b8-9378-4a9d-8860-047cf3e9f65a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c16f2982-fc6a-0497-92b5-0ba151104471" executionId="907d97fe-4d6a-49c1-8bd0-c1bc0bd70487" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="748cd942-5494-cddd-286d-28d0163f3a8c" executionId="2feefb00-d23b-4c3f-8987-01d318a19f39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63cd8f6d-7554-c128-3918-a04077988e93" executionId="c26cf2d8-c5b6-4ae7-b5ef-2b99a76d7386" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="985ec275-5f53-7f7d-08b2-f5dbee5df40b" executionId="20f8dc9d-a050-49d4-bcb8-7ada455ccce9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="037b3d3b-9440-4d80-d3ca-2f8c78dbc4ec" executionId="7010dd0a-8e48-4f45-9459-2a2a02f384f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce72795b-6ec4-0231-66f6-e15839fa6b23" executionId="a1137cfd-82e9-4fd4-a681-a1470a3519c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="289d6f49-fe7d-bd0e-b578-07a49282a217" executionId="7da76804-84d5-44cc-bf32-09f540b5235e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4518c71e-33bd-a5de-0ad2-7ff5de0033b5" executionId="327ab91b-1ada-4850-a798-7a0f43548ba0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.01] xUnit.net VSTest Adapter v2.4.1 (64-bit .NET 6.0.9)&#xD;
+[xUnit.net 00:00:01.71]   Discovering: Bewit.Extensions.Mvc.Tests&#xD;
+[xUnit.net 00:00:01.77]   Discovered:  Bewit.Extensions.Mvc.Tests&#xD;
+[xUnit.net 00:00:01.77]   Starting:    Bewit.Extensions.Mvc.Tests&#xD;
+[xUnit.net 00:00:02.25]   Finished:    Bewit.Extensions.Mvc.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="27ca36a9-f706-4e67-81b9-0f1beef38198" name="Gabriel Lucaci@LAPTOP-193JPKT0 2022-10-28 14:10:47" runUser="LAPTOP-193JPKT0\Gabriel Lucaci" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2022-10-28T14:10:47.0753408+02:00" queuing="2022-10-28T14:10:47.0753412+02:00" start="2022-10-28T14:10:44.8837954+02:00" finish="2022-10-28T14:10:47.1318580+02:00" />
+  <TestSettings name="default" id="bc6bc00e-b44a-4c89-853a-f14a5caa8c89">
+    <Deployment runDeploymentRoot="Gabriel_Lucaci_LAPTOP-193JPKT0_2022-10-28_14_10_47" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8d884be3-e402-4bc3-bbb9-7721803574b5" testId="ebbb3cd4-b7b2-e409-68e9-9fc59bd94e4f" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithPayload_ShouldGenerateBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0016512" startTime="2022-10-28T14:10:47.0382998+02:00" endTime="2022-10-28T14:10:47.0382998+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d884be3-e402-4bc3-bbb9-7721803574b5" />
+    <UnitTestResult executionId="42dec544-5bab-42f3-8301-16e1aeb73d23" testId="d9849357-a868-c84d-814b-d77205e6cb1a" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithPayload_ShouldGenerateBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0017869" startTime="2022-10-28T14:10:47.0459437+02:00" endTime="2022-10-28T14:10:47.0459440+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42dec544-5bab-42f3-8301-16e1aeb73d23" />
+    <UnitTestResult executionId="74201d0a-2140-4c73-82f6-5cb6e5253933" testId="f83defa3-8f57-a414-fb7a-18e4495b102f" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0015621" startTime="2022-10-28T14:10:47.0420942+02:00" endTime="2022-10-28T14:10:47.0420945+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="74201d0a-2140-4c73-82f6-5cb6e5253933" />
+    <UnitTestResult executionId="ea261c61-41b0-43eb-8bb2-81c1121e6deb" testId="6cce68dc-b54b-8710-4faa-98289db88e51" testName="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithValidConfiguration_ShouldAddBewitTokenGeneratorForMyPayload" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009528" startTime="2022-10-28T14:10:47.0317037+02:00" endTime="2022-10-28T14:10:47.0317038+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea261c61-41b0-43eb-8bb2-81c1121e6deb" />
+    <UnitTestResult executionId="be58e0ba-2986-4718-abd2-bb010f3b9057" testId="049af83b-2415-d516-fdb0-98ef3ebdf212" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithDifferentPayload_ShouldGenerateDifferentBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0018296" startTime="2022-10-28T14:10:47.0332698+02:00" endTime="2022-10-28T14:10:47.0332700+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be58e0ba-2986-4718-abd2-bb010f3b9057" />
+    <UnitTestResult executionId="58bb7ef0-0cd5-40c7-bfc3-638139c71711" testId="56381e7d-5447-fa2f-e0f9-c246e6425c69" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_WithAllMandatoryOptions_ShouldInit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009147" startTime="2022-10-28T14:10:47.0404788+02:00" endTime="2022-10-28T14:10:47.0404790+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58bb7ef0-0cd5-40c7-bfc3-638139c71711" />
+    <UnitTestResult executionId="9a2cc01b-13d1-456a-899d-c3e8d32c56c7" testId="046a4722-5a95-99e2-5c64-67fdd3683159" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingCryptoService_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0004452" startTime="2022-10-28T14:10:47.0363927+02:00" endTime="2022-10-28T14:10:47.0363929+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a2cc01b-13d1-456a-899d-c3e8d32c56c7" />
+    <UnitTestResult executionId="7e1642fe-c8c2-49c3-8a50-bc3e5818f830" testId="a1307ab4-ca8b-591d-3150-7253adfa2f1c" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.1551588" startTime="2022-10-28T14:10:47.0317872+02:00" endTime="2022-10-28T14:10:47.0317872+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e1642fe-c8c2-49c3-8a50-bc3e5818f830" />
+    <UnitTestResult executionId="57638287-a170-4021-a0ca-62a2a3ad0acc" testId="a21739f3-0dbe-48bd-bc2b-1d11ccb08e20" testName="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithMyPayload_ShouldAddBewitTokenGeneratorForMyPayload" computerName="LAPTOP-193JPKT0" duration="00:00:00.0004574" startTime="2022-10-28T14:10:47.0316658+02:00" endTime="2022-10-28T14:10:47.0316659+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57638287-a170-4021-a0ca-62a2a3ad0acc" />
+    <UnitTestResult executionId="6afdaa75-08f8-4cb1-bb60-2feea3702525" testId="984c66aa-4f3a-cb4c-7ee0-b557cb729717" testName="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithPersistance_ShouldAddPersistedBewitTokenGenerator" computerName="LAPTOP-193JPKT0" duration="00:00:00.1123514" startTime="2022-10-28T14:10:46.9906595+02:00" endTime="2022-10-28T14:10:46.9906929+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6afdaa75-08f8-4cb1-bb60-2feea3702525" />
+    <UnitTestResult executionId="50643694-33d7-4325-9b5b-17e54f6b9066" testId="f506fbe9-635e-3d98-e698-1e59c2ae4a62" testName="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithEmptyBuilder_ShouldAddBewitTokenGeneratorForMyPayload" computerName="LAPTOP-193JPKT0" duration="00:00:00.0002903" startTime="2022-10-28T14:10:47.0317449+02:00" endTime="2022-10-28T14:10:47.0317450+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50643694-33d7-4325-9b5b-17e54f6b9066" />
+    <UnitTestResult executionId="48e0f15b-3bc7-45fa-bfd3-fc20db2e54d1" testId="2fe4e015-e9fb-5fba-6236-8e589754a8c1" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithNullPayload_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0025666" startTime="2022-10-28T14:10:47.0358950+02:00" endTime="2022-10-28T14:10:47.0358952+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48e0f15b-3bc7-45fa-bfd3-fc20db2e54d1" />
+    <UnitTestResult executionId="95713ae5-9c76-4eb7-add0-404c5ecae744" testId="fa8e9a3d-7338-7db0-bbe9-fa17b75f6f1d" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithDifferentPayload_ShouldGenerateBewit" computerName="LAPTOP-193JPKT0" duration="00:00:00.0025284" startTime="2022-10-28T14:10:47.0319439+02:00" endTime="2022-10-28T14:10:47.0319439+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95713ae5-9c76-4eb7-add0-404c5ecae744" />
+    <UnitTestResult executionId="10c9edd9-5302-4b9e-b754-5d022809db39" testId="dd6a7d33-cfef-2722-8126-47a75655f72d" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingProvider_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009390" startTime="2022-10-28T14:10:47.0430873+02:00" endTime="2022-10-28T14:10:47.0430875+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="10c9edd9-5302-4b9e-b754-5d022809db39" />
+    <UnitTestResult executionId="fc6723be-4ed9-48a7-9dbe-c3d887e51e0d" testId="cfef4bb3-431e-5125-7aa7-1640d2b9c97e" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithNullPayload_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0013605" startTime="2022-10-28T14:10:47.0395115+02:00" endTime="2022-10-28T14:10:47.0395117+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc6723be-4ed9-48a7-9dbe-c3d887e51e0d" />
+    <UnitTestResult executionId="b715bab5-a78e-49e6-b1ae-8d95af1a88a7" testId="5443ec26-d156-9e7b-4d19-4f15f2fb4bee" testName="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingRepository_ShouldThrow" computerName="LAPTOP-193JPKT0" duration="00:00:00.0009521" startTime="2022-10-28T14:10:47.0440857+02:00" endTime="2022-10-28T14:10:47.0440859+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b715bab5-a78e-49e6-b1ae-8d95af1a88a7" />
+    <UnitTestResult executionId="9a5d2649-b09c-4271-a827-ba1a1a9a4a50" testId="ff4e2a6e-5353-f4dd-b051-ed95e8286d38" testName="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithInvalidConfiguration_ShouldThrowException" computerName="LAPTOP-193JPKT0" duration="00:00:00.0052658" startTime="2022-10-28T14:10:47.0315816+02:00" endTime="2022-10-28T14:10:47.0315816+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a5d2649-b09c-4271-a827-ba1a1a9a4a50" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithPayload_ShouldGenerateBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="d9849357-a868-c84d-814b-d77205e6cb1a">
+      <Execution id="42dec544-5bab-42f3-8301-16e1aeb73d23" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitAsync_WithPayload_ShouldGenerateBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingProvider_ShouldThrow" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="dd6a7d33-cfef-2722-8126-47a75655f72d">
+      <Execution id="10c9edd9-5302-4b9e-b754-5d022809db39" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="Constructor_MissingProvider_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithInvalidConfiguration_ShouldThrowException" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="ff4e2a6e-5353-f4dd-b051-ed95e8286d38">
+      <Execution id="9a5d2649-b09c-4271-a827-ba1a1a9a4a50" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.ServiceCollectionExtensionsTests" name="AddBewitGeneration_WithInvalidConfiguration_ShouldThrowException" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithDifferentPayload_ShouldGenerateBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="fa8e9a3d-7338-7db0-bbe9-fa17b75f6f1d">
+      <Execution id="95713ae5-9c76-4eb7-add0-404c5ecae744" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitTokenAsync_WithDifferentPayload_ShouldGenerateBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithPersistance_ShouldAddPersistedBewitTokenGenerator" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="984c66aa-4f3a-cb4c-7ee0-b557cb729717">
+      <Execution id="6afdaa75-08f8-4cb1-bb60-2feea3702525" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.ServiceCollectionExtensionsTests" name="AddBewitGeneration_WithPersistance_ShouldAddPersistedBewitTokenGenerator" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithPayload_ShouldGenerateBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="ebbb3cd4-b7b2-e409-68e9-9fc59bd94e4f">
+      <Execution id="8d884be3-e402-4bc3-bbb9-7721803574b5" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitTokenAsync_WithPayload_ShouldGenerateBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithValidConfiguration_ShouldAddBewitTokenGeneratorForMyPayload" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="6cce68dc-b54b-8710-4faa-98289db88e51">
+      <Execution id="ea261c61-41b0-43eb-8bb2-81c1121e6deb" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.ServiceCollectionExtensionsTests" name="AddBewitGeneration_WithValidConfiguration_ShouldAddBewitTokenGeneratorForMyPayload" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingRepository_ShouldThrow" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="5443ec26-d156-9e7b-4d19-4f15f2fb4bee">
+      <Execution id="b715bab5-a78e-49e6-b1ae-8d95af1a88a7" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="Constructor_MissingRepository_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_WithAllMandatoryOptions_ShouldInit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="56381e7d-5447-fa2f-e0f9-c246e6425c69">
+      <Execution id="58bb7ef0-0cd5-40c7-bfc3-638139c71711" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="Constructor_WithAllMandatoryOptions_ShouldInit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithDifferentPayload_ShouldGenerateDifferentBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="049af83b-2415-d516-fdb0-98ef3ebdf212">
+      <Execution id="be58e0ba-2986-4718-abd2-bb010f3b9057" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitAsync_WithDifferentPayload_ShouldGenerateDifferentBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithNullPayload_ShouldThrow" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="cfef4bb3-431e-5125-7aa7-1640d2b9c97e">
+      <Execution id="fc6723be-4ed9-48a7-9dbe-c3d887e51e0d" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitAsync_WithNullPayload_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="a1307ab4-ca8b-591d-3150-7253adfa2f1c">
+      <Execution id="7e1642fe-c8c2-49c3-8a50-bc3e5818f830" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.Constructor_MissingCryptoService_ShouldThrow" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="046a4722-5a95-99e2-5c64-67fdd3683159">
+      <Execution id="9a2cc01b-13d1-456a-899d-c3e8d32c56c7" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="Constructor_MissingCryptoService_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithMyPayload_ShouldAddBewitTokenGeneratorForMyPayload" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="a21739f3-0dbe-48bd-bc2b-1d11ccb08e20">
+      <Execution id="57638287-a170-4021-a0ca-62a2a3ad0acc" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.ServiceCollectionExtensionsTests" name="AddBewitGeneration_WithMyPayload_ShouldAddBewitTokenGeneratorForMyPayload" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithNullPayload_ShouldThrow" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="2fe4e015-e9fb-5fba-6236-8e589754a8c1">
+      <Execution id="48e0f15b-3bc7-45fa-bfd3-fc20db2e54d1" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitTokenAsync_WithNullPayload_ShouldThrow" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.BewitTokenGeneratorTests.GenerateBewitTokenAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="f83defa3-8f57-a414-fb7a-18e4495b102f">
+      <Execution id="74201d0a-2140-4c73-82f6-5cb6e5253933" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.BewitTokenGeneratorTests" name="GenerateBewitTokenAsync_WithDifferentDateAndRandomToken_ShouldGenerateDifferentBewit" />
+    </UnitTest>
+    <UnitTest name="Bewit.Generation.Tests.ServiceCollectionExtensionsTests.AddBewitGeneration_WithEmptyBuilder_ShouldAddBewitTokenGeneratorForMyPayload" storage="c:\repos\bewit\test\generation.tests\bin\debug\net6.0\bewit.generation.tests.dll" id="f506fbe9-635e-3d98-e698-1e59c2ae4a62">
+      <Execution id="50643694-33d7-4325-9b5b-17e54f6b9066" />
+      <TestMethod codeBase="C:\Repos\bewit\test\Generation.Tests\bin\Debug\net6.0\Bewit.Generation.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bewit.Generation.Tests.ServiceCollectionExtensionsTests" name="AddBewitGeneration_WithEmptyBuilder_ShouldAddBewitTokenGeneratorForMyPayload" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ebbb3cd4-b7b2-e409-68e9-9fc59bd94e4f" executionId="8d884be3-e402-4bc3-bbb9-7721803574b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9849357-a868-c84d-814b-d77205e6cb1a" executionId="42dec544-5bab-42f3-8301-16e1aeb73d23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f83defa3-8f57-a414-fb7a-18e4495b102f" executionId="74201d0a-2140-4c73-82f6-5cb6e5253933" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6cce68dc-b54b-8710-4faa-98289db88e51" executionId="ea261c61-41b0-43eb-8bb2-81c1121e6deb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="049af83b-2415-d516-fdb0-98ef3ebdf212" executionId="be58e0ba-2986-4718-abd2-bb010f3b9057" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56381e7d-5447-fa2f-e0f9-c246e6425c69" executionId="58bb7ef0-0cd5-40c7-bfc3-638139c71711" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="046a4722-5a95-99e2-5c64-67fdd3683159" executionId="9a2cc01b-13d1-456a-899d-c3e8d32c56c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a1307ab4-ca8b-591d-3150-7253adfa2f1c" executionId="7e1642fe-c8c2-49c3-8a50-bc3e5818f830" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a21739f3-0dbe-48bd-bc2b-1d11ccb08e20" executionId="57638287-a170-4021-a0ca-62a2a3ad0acc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="984c66aa-4f3a-cb4c-7ee0-b557cb729717" executionId="6afdaa75-08f8-4cb1-bb60-2feea3702525" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f506fbe9-635e-3d98-e698-1e59c2ae4a62" executionId="50643694-33d7-4325-9b5b-17e54f6b9066" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2fe4e015-e9fb-5fba-6236-8e589754a8c1" executionId="48e0f15b-3bc7-45fa-bfd3-fc20db2e54d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa8e9a3d-7338-7db0-bbe9-fa17b75f6f1d" executionId="95713ae5-9c76-4eb7-add0-404c5ecae744" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd6a7d33-cfef-2722-8126-47a75655f72d" executionId="10c9edd9-5302-4b9e-b754-5d022809db39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cfef4bb3-431e-5125-7aa7-1640d2b9c97e" executionId="fc6723be-4ed9-48a7-9dbe-c3d887e51e0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5443ec26-d156-9e7b-4d19-4f15f2fb4bee" executionId="b715bab5-a78e-49e6-b1ae-8d95af1a88a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ff4e2a6e-5353-f4dd-b051-ed95e8286d38" executionId="9a5d2649-b09c-4271-a827-ba1a1a9a4a50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="17" executed="17" passed="17" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.1 (64-bit .NET 6.0.9)&#xD;
+[xUnit.net 00:00:01.14]   Discovering: Bewit.Generation.Tests&#xD;
+[xUnit.net 00:00:01.18]   Discovered:  Bewit.Generation.Tests&#xD;
+[xUnit.net 00:00:01.18]   Starting:    Bewit.Generation.Tests&#xD;
+[xUnit.net 00:00:01.43]   Finished:    Bewit.Generation.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
