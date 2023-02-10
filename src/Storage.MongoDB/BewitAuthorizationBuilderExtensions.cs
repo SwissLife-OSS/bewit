@@ -14,7 +14,7 @@ namespace Bewit.Storage.MongoDB
         {
             MongoNonceOptions options = configuration
                 .GetSection("Bewit:Mongo")
-                .Get<MongoNonceOptions>();
+                .Get<MongoNonceOptions>()!;
 
             configure?.Invoke(options);
 

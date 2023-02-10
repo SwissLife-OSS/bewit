@@ -1,61 +1,19 @@
 ﻿{
-  "Kind": "SingleResult",
-  "Label": null,
-  "Path": null,
-  "Data": {
-    "foo": null
-  },
-  "Items": null,
-  "Errors": [
+  "errors": [
     {
-      "Message": "NotAuthorized",
-      "Code": null,
-      "Path": {
-        "Name": "foo",
-        "Parent": {
-          "Parent": null,
-          "Length": -1,
-          "IsRoot": true
-        },
-        "Length": 0,
-        "IsRoot": false
-      },
-      "Locations": [
+      "message": "NotAuthorized",
+      "locations": [
         {
-          "Line": 1,
-          "Column": 3
+          "line": 1,
+          "column": 3
         }
       ],
-      "Extensions": null,
-      "Exception": null,
-      "SyntaxNode": {
-        "Kind": "Field",
-        "Alias": null,
-        "Arguments": [],
-        "Required": null,
-        "SelectionSet": null,
-        "Location": {
-          "Start": 2,
-          "End": 7,
-          "Line": 1,
-          "Column": 3
-        },
-        "Name": {
-          "Kind": "Name",
-          "Location": {
-            "Start": 2,
-            "End": 7,
-            "Line": 1,
-            "Column": 3
-          },
-          "Value": "foo"
-        },
-        "Directives": []
-      }
+      "path": [
+        "foo"
+      ]
     }
   ],
-  "Extensions": null,
-  "Incremental": null,
-  "ContextData": null,
-  "HasNext": null
+  "data": {
+    "foo": null
+  }
 }

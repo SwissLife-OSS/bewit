@@ -14,7 +14,7 @@ namespace Host
         {
             _repository = repository
                 ?? throw new ArgumentNullException(nameof(repository));
-            _downloadUrl = configuration["DownloadUrl"];
+            _downloadUrl = configuration["DownloadUrl"]!;
         }
 
         public string CreateDownloadLink(

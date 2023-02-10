@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using HotChocolate;
 using HotChocolate.Execution;
 using Snapshooter.Xunit;
 using Xunit;
@@ -20,7 +21,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider, token);
 
             // assert
-            result.MatchSnapshot();
+            result.ToJson().MatchSnapshot();
         }
 
         [Fact]
@@ -34,10 +35,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider, token);
 
             // assert
-            result.MatchSnapshot(options =>
-                options
-                    .IgnoreField("Errors.[*].Exception.StackTraceString")
-                );
+            result.ToJson().MatchSnapshot();
         }
 
         [Fact]
@@ -50,7 +48,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IExecutionResult result = await TestHelpers.ExecuteQuery(serviceProvider);
 
             // assert
-            result.MatchSnapshot();
+            result.ToJson().MatchSnapshot();
         }
     }
 }
