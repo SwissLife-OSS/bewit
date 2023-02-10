@@ -1,9 +1,16 @@
 <Project>
 
   <PropertyGroup>
-    <HotChocolateVersion>12.12.1</HotChocolateVersion>
+    <HotChocolateVersion>13.0.2</HotChocolateVersion>
     <MongoDBVersion>2.9.3</MongoDBVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <MicrosoftExtensionsVersion>6.0.0</MicrosoftExtensionsVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <MicrosoftExtensionsVersion>7.0.0</MicrosoftExtensionsVersion>
   </PropertyGroup>
 
 </Project>

@@ -23,9 +23,7 @@ namespace Bewit.Extensions.HotChocolate.Generation
             if (context.Result is TPayload result)
             {
                 BewitToken<TPayload> bewit
-                    = await tokenGenerator.GenerateBewitTokenAsync(
-                        result,
-                        context.RequestAborted);
+                    = await tokenGenerator.GenerateBewitTokenAsync(result, context.RequestAborted);
 
                 context.Result = (string)bewit;
             }
