@@ -1,17 +1,24 @@
 ﻿{
+  "Kind": "SingleResult",
   "Label": null,
   "Path": null,
   "Data": {
     "foo": null
   },
+  "Items": null,
   "Errors": [
     {
       "Message": "NotAuthorized",
       "Code": null,
       "Path": {
-        "Parent": null,
-        "Depth": 0,
-        "Name": "foo"
+        "Name": "foo",
+        "Parent": {
+          "Parent": null,
+          "Length": -1,
+          "IsRoot": true
+        },
+        "Length": 0,
+        "IsRoot": false
       },
       "Locations": [
         {
@@ -26,7 +33,7 @@
         "Data": null,
         "InnerException": null,
         "HelpURL": null,
-        "StackTraceString": "at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in ***",
+        "StackTraceString": "   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in /Users/pascalsenn/kot/bewit/src/Validation/BewitTokenValidator.cs:line 73\n   at Bewit.Validation.BewitTokenValidator`1.ValidateBewitTokenAsync(BewitToken`1 bewit, CancellationToken cancellationToken) in /Users/pascalsenn/kot/bewit/src/Validation/BewitTokenValidator.cs:line 37\n   at Bewit.Extensions.HotChocolate.Validation.BewitAuthorizationMiddleware`1.InvokeAsync(IMiddlewareContext context) in /Users/pascalsenn/kot/bewit/src/Extensions.HotChocolate/Validation/BewitAuthorizationMiddleware.cs:line 36",
         "RemoteStackTraceString": null,
         "RemoteStackIndex": 0,
         "ExceptionMethod": null,
@@ -61,6 +68,7 @@
     }
   ],
   "Extensions": null,
+  "Incremental": null,
   "ContextData": null,
   "HasNext": null
 }

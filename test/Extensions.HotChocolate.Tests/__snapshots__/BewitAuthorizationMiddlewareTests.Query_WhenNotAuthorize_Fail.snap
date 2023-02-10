@@ -1,17 +1,24 @@
 ﻿{
+  "Kind": "SingleResult",
   "Label": null,
   "Path": null,
   "Data": {
     "foo": null
   },
+  "Items": null,
   "Errors": [
     {
       "Message": "NotAuthorized",
       "Code": null,
       "Path": {
-        "Parent": null,
-        "Depth": 0,
-        "Name": "foo"
+        "Name": "foo",
+        "Parent": {
+          "Parent": null,
+          "Length": -1,
+          "IsRoot": true
+        },
+        "Length": 0,
+        "IsRoot": false
       },
       "Locations": [
         {
@@ -48,6 +55,7 @@
     }
   ],
   "Extensions": null,
+  "Incremental": null,
   "ContextData": null,
   "HasNext": null
 }
