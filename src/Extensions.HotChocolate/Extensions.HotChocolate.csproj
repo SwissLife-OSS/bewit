@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="HotChocolate.Execution" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Types" />
+    <PackageReference Include="HotChocolate.Execution" />
   </ItemGroup>
 
 </Project>

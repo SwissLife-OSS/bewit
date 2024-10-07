@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="HotChocolate.Data" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.AspNetCore" />
+    <PackageReference Include="HotChocolate.Data" />
   </ItemGroup>
 
   <ItemGroup>
