@@ -22,7 +22,7 @@ namespace Bewit
             // Refactor: Check direct T when TypeNameHandling.All is done
             if (Value is JObject jObject)
             {
-                return jObject.ToObject<T>();
+                return jObject.ToObject<T>()!;
             }
 
             throw new InvalidOperationException(

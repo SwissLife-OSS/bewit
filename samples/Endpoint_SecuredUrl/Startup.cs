@@ -18,10 +18,9 @@ namespace Host
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var bewitOptions = new BewitOptions
+            var bewitOptions = new BewitOptions(secret: "ax54Z$tgs87454")
             {
-                TokenDuration = TimeSpan.FromMinutes(5),
-                Secret = "ax54Z$tgs87454"
+                TokenDuration = TimeSpan.FromMinutes(5)
             };
 
             // Add support for generating bewits
@@ -54,7 +53,7 @@ namespace Host
 
                     endpoints.MapGet("/opensesame/{id:int}", async c =>
                     {
-                        var generator =
+                        IBewitTokenGenerator<string> generator =
                             c.RequestServices.GetRequiredService<IBewitTokenGenerator<string>>();
 
                         var id = c.Request.RouteValues.GetValueOrDefault("id");

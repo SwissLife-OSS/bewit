@@ -1,7 +1,0 @@
-<Project>
-
-  <PropertyGroup>
-    <MongoDBVersion>2.9.3</MongoDBVersion>
-  </PropertyGroup>
-
-</Project>

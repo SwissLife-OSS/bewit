@@ -11,7 +11,7 @@ namespace Bewit
             _value = value;
         }
 
-        public bool Equals(BewitToken<T> other)
+        public bool Equals(BewitToken<T>? other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -27,7 +27,7 @@ namespace Bewit
                 _value, other._value, StringComparison.InvariantCulture);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
             {

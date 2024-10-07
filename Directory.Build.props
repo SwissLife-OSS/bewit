@@ -1,5 +1,4 @@
 <Project>
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Version.props', '$(MSBuildThisFileDirectory)'))" />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>Full</DebugType>
