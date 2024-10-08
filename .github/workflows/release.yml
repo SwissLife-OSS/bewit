@@ -41,6 +41,6 @@ jobs:
         with:
           tag: ${{ github.ref_name }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}
-          sonar_project_key: 'SwissLife-OSS_HotChocolateExtensions'
-          sonar_project_name: 'hotchocolate-extensions'
+          sonar_project_key: 'SwissLife-OSS_Bewit'
+          sonar_project_name: 'bewit'
           sonar_exclusions: ${{ vars.SONAR_EXCLUSIONS }}
