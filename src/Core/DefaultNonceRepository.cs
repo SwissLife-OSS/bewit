@@ -2,19 +2,21 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Bewit
 {
     internal class DefaultNonceRepository : INonceRepository
     {
         private static readonly ValueTask EmptyTask = new ValueTask();
-        private static readonly ValueTask<Token> EmptyToken = new ValueTask<Token>(Token.Empty);
+        private static readonly ValueTask<Token?> EmptyToken = new ValueTask<Token?>(Token.Empty);
 
         public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken)
         {
             return EmptyTask;
         }
 
-        public ValueTask<Token> TakeOneAsync(string token, CancellationToken cancellationToken)
+        public ValueTask<Token?> TakeOneAsync(string token, CancellationToken cancellationToken)
         {
             return EmptyToken;
         }

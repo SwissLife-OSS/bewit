@@ -1,5 +1,7 @@
 using System;
 
+#nullable enable
+
 namespace Bewit
 {
     public sealed class BewitToken<T>: IEquatable<BewitToken<T>>

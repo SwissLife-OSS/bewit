@@ -33,6 +33,10 @@ indent_size = 4
 [*.cs]
 indent_size = 4
 
+# C# or VB files
+[*.{cs,vb}]
+guidelines = 80, 100
+
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion

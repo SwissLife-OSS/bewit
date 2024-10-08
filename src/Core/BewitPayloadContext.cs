@@ -1,4 +1,5 @@
 using System;
+#nullable enable
 
 namespace Bewit
 {
@@ -11,21 +12,21 @@ namespace Bewit
 
         internal Type Type { get; }
 
-        internal Func<INonceRepository> CreateRepository { get; private set; }
+        internal Func<INonceRepository>? CreateRepository { get; private set; }
         public BewitPayloadContext SetRepository(Func<INonceRepository> create)
         {
             CreateRepository = create;
             return this;
         }
 
-        internal Func<ICryptographyService> CreateCryptographyService { get; private set; }
+        internal Func<ICryptographyService>? CreateCryptographyService { get; private set; }
         public BewitPayloadContext SetCryptographyService(Func<ICryptographyService> create)
         {
             CreateCryptographyService = create;
             return this;
         }
 
-        internal Func<IVariablesProvider> CreateVariablesProvider { get; private set; }
+        internal Func<IVariablesProvider>? CreateVariablesProvider { get; private set; }
         public BewitPayloadContext SetVariablesProvider(Func<IVariablesProvider> create)
         {
             CreateVariablesProvider = create;

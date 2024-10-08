@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Bewit.Validation.Exceptions;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Bewit.Validation
 {
     public class BewitTokenValidator<T> : IBewitTokenValidator<T>
+        where T: notnull
     {
         private readonly ICryptographyService _cryptographyService;
         private readonly IVariablesProvider _variablesProvider;
