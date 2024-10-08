@@ -7,6 +7,10 @@ namespace Bewit
     {
         public static readonly Token Empty = new Token(string.Empty, DateTime.MinValue);
 
+        public Token()
+        {
+        }
+
         [JsonConstructor]
         protected Token(string nonce, DateTime expirationDate)
         {

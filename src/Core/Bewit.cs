@@ -4,8 +4,11 @@ using Newtonsoft.Json;
 namespace Bewit
 {
     public class Bewit<T>
-        where T: notnull
     {
+        public Bewit()
+        {
+        }
+
         [JsonConstructor]
         public Bewit(Token token, T payload, string hash)
         {
