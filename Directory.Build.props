@@ -23,11 +23,12 @@
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
-    <PackageLicenseUrl>https://github.com/SwissLife-OSS/bewit/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/bewit</PackageProjectUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/bewit/releases/$(Version)</PackageReleaseNotes>
     <PackageTags>SwissLife .Net Security HotChocolate Download MongoDb</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIconUrl>https://github.com/SwissLife-OSS/bewit/raw/master/logo.png</PackageIconUrl>
     <NoWarn>NU5125;NU5048</NoWarn>
   </PropertyGroup>
@@ -45,5 +46,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+      <None Include="..\..\README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
 </Project>

@@ -1,20 +1,20 @@
 <Project>
-  
+
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="[1.1,)" />
     <PackageVersion Include="MongoDB.Driver" Version="[2.19,)" />
     <PackageVersion Include="Newtonsoft.Json" Version="[13.0.1,)"/>
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="[4.5,)"/>
 
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="14.0.0-rc.2" />
-    <PackageVersion Include="HotChocolate.Data" Version="14.0.0-rc.2" />
-    <PackageVersion Include="HotChocolate.Execution" Version="14.0.0-rc.2" />
-    <PackageVersion Include="HotChocolate.Types" Version="14.0.0-rc.2" />
-    
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Data" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Execution" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Types" Version="14.0.0-rc.3" />
+
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -54,5 +54,5 @@
     <PackageVersion Include="Squadron.Mongo" Version="0.17.0" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
   </ItemGroup>
-  
+
 </Project>
