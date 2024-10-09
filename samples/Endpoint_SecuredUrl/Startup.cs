@@ -1,13 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Bewit;
+using Bewit.Generation;
+using Bewit.Http.Endpoint;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using Bewit;
-using System.Text;
-using Bewit.Http.Endpoint;
-using Bewit.Generation;
 
 namespace Host
 {
@@ -20,8 +20,8 @@ namespace Host
         {
             var bewitOptions = new BewitOptions
             {
-                TokenDuration = TimeSpan.FromMinutes(5),
-                Secret = "ax54Z$tgs87454"
+                Secret =  "ax54Z$tgs87454",
+                TokenDuration = TimeSpan.FromMinutes(5)
             };
 
             // Add support for generating bewits
@@ -54,7 +54,7 @@ namespace Host
 
                     endpoints.MapGet("/opensesame/{id:int}", async c =>
                     {
-                        var generator =
+                        IBewitTokenGenerator<string> generator =
                             c.RequestServices.GetRequiredService<IBewitTokenGenerator<string>>();
 
                         var id = c.Request.RouteValues.GetValueOrDefault("id");

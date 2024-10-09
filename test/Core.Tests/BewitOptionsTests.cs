@@ -4,6 +4,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+#nullable enable
+
 namespace Bewit.Tests.Core
 {
     public class BewitOptionsTests
@@ -15,7 +17,6 @@ namespace Bewit.Tests.Core
             const string secret = "123";
 
             //Act
-            
             var options = new BewitOptions
             {
                 Secret = secret
@@ -34,12 +35,12 @@ namespace Bewit.Tests.Core
             IConfiguration config = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>("Secret", "123"),
-                    new KeyValuePair<string, string>("TokenDuration", "2.03:00:00")
+                    new KeyValuePair<string, string?>("Secret", "123"),
+                    new KeyValuePair<string, string?>("TokenDuration", "2.03:00:00")
                 }).Build();
 
             //Act
-            BewitOptions options = config.Get<BewitOptions>();
+            BewitOptions options = config.Get<BewitOptions>()!;
 
             //Assert
             options.Should().NotBeNull();

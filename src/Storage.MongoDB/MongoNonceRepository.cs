@@ -5,6 +5,8 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
+#nullable enable
+
 namespace Bewit.Storage.MongoDB
 {
     internal class MongoNonceRepository : INonceRepository
@@ -31,11 +33,6 @@ namespace Bewit.Storage.MongoDB
 
         public MongoNonceRepository(IMongoDatabase database, MongoNonceOptions options)
         {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
-
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _collection = database.GetCollection<Token>(options.CollectionName);
 
@@ -49,7 +46,7 @@ namespace Bewit.Storage.MongoDB
             await _collection.InsertOneAsync(token, cancellationToken: cancellationToken);
         }
 
-        public async ValueTask<Token> TakeOneAsync(
+        public async ValueTask<Token?> TakeOneAsync(
             string token,
             CancellationToken cancellationToken)
         {

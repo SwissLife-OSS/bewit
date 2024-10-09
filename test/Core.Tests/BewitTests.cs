@@ -96,7 +96,7 @@ namespace Bewit.Tests.Core
         }
 
         [Fact]
-        public void Constructor_payloadNull_ShouldThrow()
+        public void Constructor_PayloadNull_ShouldThrow()
         {
             //Arrange
             string nextToken = "bar";
@@ -107,7 +107,7 @@ namespace Bewit.Tests.Core
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, payload, hash);
+                new Bewit<Foo>(token, payload!, hash);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();
@@ -128,7 +128,7 @@ namespace Bewit.Tests.Core
 
             //Act
             Action createBewit = () =>
-                new Bewit<Foo>(token, payload, hash);
+                new Bewit<Foo>(token, payload, hash!);
 
             //Assert
             createBewit.Should().Throw<ArgumentException>();

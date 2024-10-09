@@ -1,10 +1,9 @@
 using System;
 
-namespace Bewit
+namespace Bewit;
+
+public interface ICryptographyService
 {
-    public interface ICryptographyService
-    {
-        string GetHash<T>(
-            string token, DateTime expirationDate, T payload);
-    }
+    string GetHash<T>(string token, DateTime expirationDate, T payload)
+        where T : notnull;
 }

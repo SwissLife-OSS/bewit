@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
+#nullable enable
+
 namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class BewitUrlMiddlewareTests
@@ -29,14 +31,14 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
 
         public class GiveMeAccessResult
         {
-            public string RequestAccess { get; set; }
+            public string? RequestAccess { get; set; }
         }
 
         [Fact]
         public async Task InvokeAsync_WithFixedDateTime_ShouldAlwaysSendSameToken()
         {
             //Arrange
-            TestServer testServer = CreateTestServer<string>();
+            TestServer testServer = CreateTestServer();
             HttpClient client = testServer.CreateClient();
             GraphQLClient gqlClient = new GraphQLClient(client);
             QueryRequest query = new QueryRequest(
@@ -57,7 +59,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
             res.Data.RequestAccess.Should().Be("https://www.google.com/a/b/?c=d&bewit=eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOiIvYS9iLz9jPWQiLCJIYXNoIjoiOWxaak9tTlFqVG0xbUlUVjZ2LzNtU1NBTFBXRndmNXNaQ3pqc3J6eXhwQT0ifQ%253D%253D");
         }
 
-        private static TestServer CreateTestServer<TPayload>()
+        private static TestServer CreateTestServer()
         {
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
@@ -71,7 +73,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                                 .SetVariablesProvider(() => new MockedVariablesProvider());
                         })
                         .AddGraphQLServer()
-                        .SetOptions(new SchemaOptions { StrictValidation = false })
+                        .ModifyOptions(s => s.StrictValidation = false)
                         .AddMutationType(d =>
                         {
                             d.Name("Mutation");

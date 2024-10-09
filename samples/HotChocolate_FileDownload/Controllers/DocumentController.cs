@@ -29,7 +29,7 @@ namespace Host.Controllers
                     FileName = Uri.EscapeDataString(document.Name),
                     Inline = false
                 };
-            Response.Headers.Add("Content-Disposition", cd.ToString());
+            Response.Headers["Content-Disposition"] = cd.ToString();
 
             return File(document.Content, document.ContentType);
         }

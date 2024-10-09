@@ -4,30 +4,23 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Bewit
 {
     public class HmacSha256CryptographyService: ICryptographyService
     {
         private readonly string _secret;
 
-        public HmacSha256CryptographyService(BewitOptions options)
+        public HmacSha256CryptographyService(BewitConfiguration configuration)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            if (string.IsNullOrWhiteSpace(options.Secret))
-            {
-                throw new ArgumentNullException(nameof(options.Secret));
-            }
-
-            _secret = options.Secret;
+            _secret = configuration.Secret;
         }
 
         public string GetHash<T>(string token, DateTime expirationDate, T payload)
+            where T: notnull
         {
-            HMACSHA256 sha256 = null;
+            HMACSHA256? sha256 = null;
             try
             {
                 byte[] keyBytes = Encoding.UTF8.GetBytes(_secret);

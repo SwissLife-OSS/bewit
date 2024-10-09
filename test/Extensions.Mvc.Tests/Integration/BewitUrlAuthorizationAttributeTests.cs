@@ -14,7 +14,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitUrlAuthorizationAttributeTests
     {
-        private BewitOptions Options = new BewitOptions {Secret = "456"};
+        private readonly BewitOptions Options = new BewitOptions {Secret = "456"};
 
         [Fact]
         public async Task SampleGetRequest_NoBewitProtectionOnRoute_ShouldPass()
@@ -38,7 +38,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithValidBewitForUrl_ShouldAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Options);
+            var cryptoService = new HmacSha256CryptographyService(Options.Validate());
             TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/WithBewitProtection";
             BewitPayloadContext context = new BewitPayloadContext(typeof(string))
@@ -72,7 +72,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithDifferentUrl_ShouldNotAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Options);
+            var cryptoService = new HmacSha256CryptographyService(Options.Validate());
             TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/SomeBewitProtectedUrl";
             BewitPayloadContext context = new BewitPayloadContext(typeof(string))
@@ -104,7 +104,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
         public async Task OnAuthorization_WithAlteredPayloadForUrl_ShouldNotAuthorize()
         {
             //Arrange
-            var cryptoService = new HmacSha256CryptographyService(Options);
+            var cryptoService = new HmacSha256CryptographyService(Options.Validate());
             TestServer server = TestServerHelper.CreateServer<string>(Options);
             var url = "/api/dummy/SomeBewitProtectedUrl";
             BewitPayloadContext context = new BewitPayloadContext(typeof(string))

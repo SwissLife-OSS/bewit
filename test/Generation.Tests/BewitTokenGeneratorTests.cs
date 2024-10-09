@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bewit.Validation.Generation.Exceptions;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
@@ -50,7 +51,7 @@ namespace Bewit.Generation.Tests
             };
 
             //Assert
-            initProvider.Should().Throw<ArgumentException>();
+            initProvider.Should().Throw<BewitMissingConfigurationException>();
         }
 
         [Fact]
@@ -71,7 +72,7 @@ namespace Bewit.Generation.Tests
             };
 
             //Assert
-            initProvider.Should().Throw<ArgumentException>();
+            initProvider.Should().Throw<BewitMissingConfigurationException>();
         }
 
         [Fact]
@@ -92,7 +93,7 @@ namespace Bewit.Generation.Tests
             };
 
             //Assert
-            initProvider.Should().Throw<ArgumentException>();
+            initProvider.Should().Throw<BewitMissingConfigurationException>();
         }
 
         #endregion
@@ -202,7 +203,7 @@ namespace Bewit.Generation.Tests
             //Arrange
             var variableProvider = new MockHelper.MockedVariablesProvider();
             var tokenTuration = TimeSpan.FromMinutes(1);
-            var provider =
+            IBewitTokenGenerator<Foo> provider =
                 CreateGenerator<Foo>(
                     tokenTuration,
                     MockHelper.GetMockedCrpytoService<Foo>(),
@@ -218,7 +219,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            var bewit = GetBewitFromToken(token);
+            Bewit<Foo> bewit = GetBewitFromToken(token);
             bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
             bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
@@ -233,7 +234,7 @@ namespace Bewit.Generation.Tests
             //Arrange
             var variableProvider = new MockHelper.MockedVariablesProvider2();
             var tokenTuration = TimeSpan.FromMinutes(1);
-            var provider =
+            IBewitTokenGenerator<Foo> provider =
                 CreateGenerator<Foo>(
                     tokenTuration,
                     MockHelper.GetMockedCrpytoService<Foo>(),
@@ -249,7 +250,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            var bewit = GetBewitFromToken(token);
+            Bewit<Foo> bewit = GetBewitFromToken(token);
             bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
             bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
@@ -264,7 +265,7 @@ namespace Bewit.Generation.Tests
             //Arrange
             var variableProvider = new MockHelper.MockedVariablesProvider();
             var tokenTuration = TimeSpan.FromMinutes(1);
-            var provider =
+            IBewitTokenGenerator<Foo> provider =
                 CreateGenerator<Foo>(
                     tokenTuration,
                     MockHelper.GetMockedCrpytoService<Foo>(),
@@ -280,7 +281,7 @@ namespace Bewit.Generation.Tests
                     CancellationToken.None);
 
             //Assert
-            var bewit = GetBewitFromToken(token);
+            Bewit<Foo> bewit = GetBewitFromToken(token);
             bewit.Token.Nonce.Should().Be(variableProvider.NextToken.ToString());
             bewit.Token.ExpirationDate.Should()
                 .Be(variableProvider.UtcNow.AddTicks(tokenTuration.Ticks));
@@ -297,7 +298,7 @@ namespace Bewit.Generation.Tests
             ICryptographyService cryptoService =
                 MockHelper.GetMockedCrpytoService<Foo>();
             var tokenTuration = TimeSpan.FromMinutes(1);
-            var provider = CreateGenerator<Foo>(
+            IBewitTokenGenerator<Foo> provider = CreateGenerator<Foo>(
                 tokenTuration,
                 cryptoService,
                 variableProvider);

@@ -57,7 +57,7 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                     );
 
                     services.AddGraphQLServer()
-                        .SetOptions(new SchemaOptions { StrictValidation = false })
+                        .ModifyOptions(s => s.StrictValidation = false)
                         .AddMutationType(d =>
                         {
                             d.Name("Mutation");

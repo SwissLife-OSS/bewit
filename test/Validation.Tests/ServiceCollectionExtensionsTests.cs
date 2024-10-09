@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bewit.Exceptions;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,7 @@ namespace Bewit.Validation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
                     new KeyValuePair<string, string>("Bewit:Secret", "123")
@@ -52,7 +53,7 @@ namespace Bewit.Validation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
                     new KeyValuePair<string, string>("Bewit:esfesf", "123")
@@ -63,7 +64,7 @@ namespace Bewit.Validation.Tests
             Action register = () => services.AddBewitValidation(configuration, b => b.AddPayload<Foo>());
 
             //Assert
-            register.Should().Throw<ArgumentException>();
+            register.Should().Throw<InvalidSecretException>();
         }
 
         [Fact]
