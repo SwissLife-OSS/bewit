@@ -17,7 +17,6 @@ namespace Bewit.Tests.Core
             const string secret = "123";
 
             //Act
-
             var options = new BewitOptions
             {
                 Secret = secret

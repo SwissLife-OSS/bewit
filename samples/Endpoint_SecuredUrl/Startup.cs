@@ -20,7 +20,7 @@ namespace Host
         {
             var bewitOptions = new BewitOptions
             {
-                Secret=  "ax54Z$tgs87454",
+                Secret =  "ax54Z$tgs87454",
                 TokenDuration = TimeSpan.FromMinutes(5)
             };
 
