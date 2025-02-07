@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace Bewit.Generation
     {
         Task<BewitToken<T>> GenerateBewitTokenAsync(
             T payload,
+            Dictionary<string, object> extraProperties,
             CancellationToken cancellationToken);
     }
 }

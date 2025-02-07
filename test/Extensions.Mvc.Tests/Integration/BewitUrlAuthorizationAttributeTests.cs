@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -49,6 +50,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(
                     url.ToLowerInvariant(),
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
             var fullUrl = $"{url}?bewit={bewitToken}";
             HttpClient client = server.CreateClient();
@@ -82,6 +84,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
             var tokenGenerator = new BewitTokenGenerator<string>(Options, context);
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(url.ToLowerInvariant(),
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
             url = "/api/dummy/WithBewitProtection";
             var fullUrl = $"{url}?bewit={bewitToken}";
@@ -114,6 +117,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
             var tokenGenerator = new BewitTokenGenerator<string>(Options, context);
             BewitToken<string> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(url.ToLowerInvariant(),
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //try to hack the token by replacing the url but reusing the same hash

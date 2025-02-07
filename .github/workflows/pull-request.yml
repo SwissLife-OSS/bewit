@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
             3
@@ -22,8 +22,8 @@ jobs:
         uses: swisslife-oss/actions/pull-request@main
         with:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
-          sonar_project_key: 'SwissLife-OSS_HotChocolateExtensions'
-          sonar_project_name: 'hotchocolate-extensions'
+          sonar_project_key: 'SwissLife-OSS_Bewit'
+          sonar_project_name: 'bewit'
           pr_number: ${{ github.event.pull_request.number }}
           pr_source_branch: ${{ github.head_ref }}
           pr_target_branch: ${{ github.base_ref }}
