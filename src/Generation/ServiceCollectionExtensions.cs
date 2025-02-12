@@ -19,7 +19,7 @@ namespace Bewit.Generation
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>()!;
             return services.AddBewitGeneration(options, build);
         }
 
@@ -42,7 +42,7 @@ namespace Bewit.Generation
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>()!;
             return services.AddBewitGeneration(options, registrationBuilder =>
             {
                 registrationBuilder.AddPayload<TPayload>();
@@ -77,12 +77,13 @@ namespace Bewit.Generation
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
-            options.Validate();
+            BewitConfiguration configuration = options.Validate();
 
             var builder = new BewitRegistrationBuilder();
             build(builder);
 
             services.TryAddSingleton(options);
+            services.TryAddSingleton(configuration);
             services.TryAddSingleton<ICryptographyService, HmacSha256CryptographyService>();
             services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
             services.TryAddSingleton<INonceRepository, DefaultNonceRepository>();
@@ -96,7 +97,8 @@ namespace Bewit.Generation
 
                 if (context.CreateCryptographyService == default)
                 {
-                    context.SetCryptographyService(() => new HmacSha256CryptographyService(options));
+                    context.SetCryptographyService(()
+                        => new HmacSha256CryptographyService(configuration));
                 }
 
                 if (context.CreateVariablesProvider == default)

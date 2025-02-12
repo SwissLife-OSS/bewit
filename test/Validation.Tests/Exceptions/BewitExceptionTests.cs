@@ -12,7 +12,7 @@ namespace Bewit.Validation.Tests.Exceptions
             const string errorMessage = "foo";
             
             //Act
-            var ex = new BewitExceptionAccessor(errorMessage);
+            var ex = new AccessorForBewitException(errorMessage);
 
             //Assert
             ex.Message.Should().Be(errorMessage);

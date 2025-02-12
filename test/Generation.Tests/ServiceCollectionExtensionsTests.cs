@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bewit.Exceptions;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +51,7 @@ namespace Bewit.Generation.Tests
             Action register = () => services.AddBewitGeneration(configuration, b => b.AddPayload<Foo>());
 
             //Assert
-            register.Should().Throw<ArgumentException>();
+            register.Should().Throw<InvalidSecretException>();
         }
 
         [Fact]

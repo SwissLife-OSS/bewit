@@ -4,11 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Validation.Exceptions;
 using Newtonsoft.Json;
+
 #nullable enable
 
 namespace Bewit.Validation
 {
     public class BewitTokenValidator<T> : IBewitTokenValidator<T>
+        where T: notnull
     {
         private readonly ICryptographyService _cryptographyService;
         private readonly IVariablesProvider _variablesProvider;
@@ -22,11 +24,11 @@ namespace Bewit.Validation
             }
 
             _cryptographyService = context.CreateCryptographyService?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateCryptographyService));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateCryptographyService));
             _variablesProvider = context.CreateVariablesProvider?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateVariablesProvider));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateVariablesProvider));
             _repository = context.CreateRepository?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateRepository));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateRepository));
         }
 
         public async Task<T> ValidateBewitTokenAsync(
@@ -45,7 +47,7 @@ namespace Bewit.Validation
             var serializedBewit = Encoding.UTF8.GetString(Convert.FromBase64String(base64Bewit));
 
             // Refactor: TypeNameHandling.All
-            return JsonConvert.DeserializeObject<Bewit<T>>(serializedBewit);
+            return JsonConvert.DeserializeObject<Bewit<T>>(serializedBewit)!;
         }
 
         protected async ValueTask<Bewit<T>> ValidateBewitAsync(

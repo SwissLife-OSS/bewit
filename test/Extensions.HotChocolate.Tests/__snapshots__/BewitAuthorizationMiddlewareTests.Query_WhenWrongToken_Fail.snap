@@ -1,66 +1,19 @@
 ﻿{
-  "Label": null,
-  "Path": null,
-  "Data": {
-    "foo": null
-  },
-  "Errors": [
+  "errors": [
     {
-      "Message": "NotAuthorized",
-      "Code": null,
-      "Path": {
-        "Parent": null,
-        "Depth": 0,
-        "Name": "foo"
-      },
-      "Locations": [
+      "message": "NotAuthorized",
+      "locations": [
         {
-          "Line": 1,
-          "Column": 3
+          "line": 1,
+          "column": 3
         }
       ],
-      "Extensions": null,
-      "Exception": {
-        "ClassName": "Bewit.Validation.Exceptions.BewitInvalidException",
-        "Message": "The given Bewit is invalid.",
-        "Data": null,
-        "InnerException": null,
-        "HelpURL": null,
-        "StackTraceString": "at Bewit.Validation.BewitTokenValidator`1.ValidateBewitAsync(Bewit`1 bewit, CancellationToken cancellationToken) in ***",
-        "RemoteStackTraceString": null,
-        "RemoteStackIndex": 0,
-        "ExceptionMethod": null,
-        "HResult": -2146233088,
-        "Source": "Bewit.Validation",
-        "WatsonBuckets": null
-      },
-      "SyntaxNode": {
-        "Kind": "Field",
-        "Alias": null,
-        "Arguments": [],
-        "Required": null,
-        "SelectionSet": null,
-        "Location": {
-          "Start": 2,
-          "End": 7,
-          "Line": 1,
-          "Column": 3
-        },
-        "Name": {
-          "Kind": "Name",
-          "Location": {
-            "Start": 2,
-            "End": 7,
-            "Line": 1,
-            "Column": 3
-          },
-          "Value": "foo"
-        },
-        "Directives": []
-      }
+      "path": [
+        "foo"
+      ]
     }
   ],
-  "Extensions": null,
-  "ContextData": null,
-  "HasNext": null
+  "data": {
+    "foo": null
+  }
 }

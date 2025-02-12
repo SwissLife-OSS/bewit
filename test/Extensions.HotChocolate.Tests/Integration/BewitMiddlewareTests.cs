@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
+#nullable enable
+
 namespace Bewit.Extensions.HotChocolate.Tests.Integration
 {
     public class BewitMiddlewareTests
@@ -29,7 +31,7 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
 
         public class GiveMeAccessResult
         {
-            public string RequestAccess { get; set; }
+            public string? RequestAccess { get; set; }
         }
 
         [Fact]
@@ -65,14 +67,14 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                     services.AddRouting();
 
                     BewitPayloadContext context = new BewitPayloadContext(typeof(string))
-                        .SetCryptographyService(() => new HmacSha256CryptographyService(new BewitOptions {Secret = "123"}))
+                        .SetCryptographyService(() => new HmacSha256CryptographyService(new BewitConfiguration(secret: "123", TimeSpan.FromMinutes(1))))
                         .SetVariablesProvider(() => new MockedVariablesProvider())
                         .SetRepository(() => new DefaultNonceRepository());
                     services.AddTransient<IBewitTokenGenerator<string>>(ctx =>
-                        new BewitTokenGenerator<string>(new BewitOptions(), context));
+                        new BewitTokenGenerator<string>(new BewitOptions { Secret = "123" }, context));
                     services
                         .AddGraphQLServer()
-                        .SetOptions(new SchemaOptions { StrictValidation = false })
+                        .ModifyOptions(s => s.StrictValidation = false)
                         .AddMutationType(d =>
                         {
                             d.Name("Mutation");

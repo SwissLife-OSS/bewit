@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
+#nullable enable
+
 namespace Bewit.Extensions.HotChocolate.Tests
 {
     public static class TestHelpers
@@ -18,7 +20,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
             IServiceProvider serviceProvider, T payload)
         {
             IBewitTokenGenerator<T> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<T>>();
+                .GetRequiredService<IBewitTokenGenerator<T>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync(payload, default))
@@ -35,7 +37,7 @@ namespace Bewit.Extensions.HotChocolate.Tests
                 .BuildServiceProvider();
 
             IBewitTokenGenerator<string> bewitGenerator = serviceProvider
-                .GetService<IBewitTokenGenerator<string>>();
+                .GetRequiredService<IBewitTokenGenerator<string>>();
 
             return (await bewitGenerator
                     .GenerateBewitTokenAsync("badPayload", default))
@@ -43,28 +45,28 @@ namespace Bewit.Extensions.HotChocolate.Tests
         }
 
         public static async Task<IExecutionResult> ExecuteQuery(
-            IServiceProvider services, string token = null)
+            IServiceProvider services, string? token = null)
         {
-            IQueryRequestBuilder requestBuilder =
-                QueryRequestBuilder.New()
-                    .SetQuery("{ foo }");
+            OperationRequestBuilder requestBuilder =
+                OperationRequestBuilder.New()
+                .SetDocument("{ foo }");
 
             if (token != null)
             {
                 HttpContext httpContext = services.GetRequiredService<HttpContext>();
-                httpContext.Request.Headers.Add(BewitTokenHeader.Value, token);
+                httpContext.Request.Headers[BewitTokenHeader.Value] = token;
             }
 
-            return await services.ExecuteRequestAsync(requestBuilder.Create());
+            return await services.ExecuteRequestAsync(requestBuilder.Build());
         }
 
         public static IServiceProvider CreateSchema<TPayload>()
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                .AddInMemoryCollection(new List<KeyValuePair<string, string?>>
                 {
-                    new KeyValuePair<string, string>("Bewit:Secret", "secret"),
-                    new KeyValuePair<string, string>("Bewit:TokenDuration", "0:00:05:00")
+                    new KeyValuePair<string, string?>("Bewit:Secret", "secret"),
+                    new KeyValuePair<string, string?>("Bewit:TokenDuration", "0:00:05:00")
                 })
                 .Build();
 

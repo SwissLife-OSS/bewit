@@ -12,7 +12,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
 {
     public class BewitAttributeTests
     {
-        private BewitOptions Options = new BewitOptions {Secret = "ef56s$e4fs6ef1"};
+        private readonly BewitOptions Options = new BewitOptions{ Secret = "ef56s$e4fs6ef1" };
 
         [Fact]
         public async Task OnAuthorization_WithValidBewitForUrl_ShouldAuthorize()
@@ -20,7 +20,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
             //Arrange
             TestServer server = TestServerHelper.CreateServer<IDictionary<string, object>>(Options);
             BewitPayloadContext context = new BewitPayloadContext(typeof(IDictionary<string, object>))
-                .SetCryptographyService(() => new HmacSha256CryptographyService(Options))
+                .SetCryptographyService(() => new HmacSha256CryptographyService(Options.Validate()))
                 .SetVariablesProvider(() => TestServerHelper.VariablesProvider)
                 .SetRepository(() => TestServerHelper.NonceRepository);
             var tokenGenerator = new BewitTokenGenerator<IDictionary<string, object>>(Options, context);

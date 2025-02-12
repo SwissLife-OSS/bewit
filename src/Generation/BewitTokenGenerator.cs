@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bewit.Validation.Generation.Exceptions;
 using Newtonsoft.Json;
 
 namespace Bewit.Generation
@@ -10,6 +11,7 @@ namespace Bewit.Generation
     internal class BewitTokenGenerator<T>:
         IBewitTokenGenerator<T>,
         IIdentifiableBewitTokenGenerator<T>
+            where T : notnull
     {
         private readonly TimeSpan _tokenDuration;
         private readonly ICryptographyService _cryptographyService;
@@ -32,11 +34,11 @@ namespace Bewit.Generation
 
             _tokenDuration = options.TokenDuration;
             _cryptographyService = context.CreateCryptographyService?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateCryptographyService));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateCryptographyService));
             _variablesProvider = context.CreateVariablesProvider?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateVariablesProvider));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateVariablesProvider));
             _repository = context.CreateRepository?.Invoke()
-                ?? throw new ArgumentNullException(nameof(BewitPayloadContext.CreateRepository));
+                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateRepository));
         }
 
         public Task<BewitToken<T>> GenerateBewitTokenAsync(
@@ -69,11 +71,6 @@ namespace Bewit.Generation
             Token token,
             CancellationToken cancellationToken)
         {
-            if (payload == null)
-            {
-                throw new ArgumentNullException(nameof(payload));
-            }
-
             Bewit<T> bewit = CreateBewit(token, payload);
             await _repository.InsertOneAsync(bewit.Token, cancellationToken);
 

@@ -19,7 +19,7 @@ namespace Bewit.Validation
             IConfiguration configuration,
             Action<BewitRegistrationBuilder> build)
         {
-            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>();
+            BewitOptions options = configuration.GetSection("Bewit").Get<BewitOptions>()!;
             return services.AddBewitValidation(options, build);
         }
 
@@ -45,12 +45,13 @@ namespace Bewit.Validation
             BewitOptions options,
             Action<BewitRegistrationBuilder> build)
         {
-            options.Validate();
+            BewitConfiguration configuration = options.Validate();
 
             var builder = new BewitRegistrationBuilder();
             build(builder);
 
             services.TryAddSingleton(options);
+            services.TryAddSingleton(configuration);
             services.TryAddSingleton<ICryptographyService, HmacSha256CryptographyService>();
             services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
 
@@ -63,7 +64,8 @@ namespace Bewit.Validation
 
                 if (context.CreateCryptographyService == default)
                 {
-                    context.SetCryptographyService(() => new HmacSha256CryptographyService(options));
+                    context.SetCryptographyService(()
+                        => new HmacSha256CryptographyService(configuration));
                 }
 
                 if (context.CreateVariablesProvider == default)

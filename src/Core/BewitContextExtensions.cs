@@ -11,7 +11,7 @@ namespace Bewit
             this IHttpContextAccessor httpContextAccessor,
             object value)
         {
-            HttpContext httpContext = httpContextAccessor?.HttpContext;
+            HttpContext httpContext = httpContextAccessor?.HttpContext!;
 
             if (httpContext != null)
             {
@@ -29,7 +29,7 @@ namespace Bewit
         private static BewitContext GetBewitContext(
             this IHttpContextAccessor httpContextAccessor)
         {
-            HttpContext httpContext = httpContextAccessor?.HttpContext;
+            HttpContext httpContext = httpContextAccessor?.HttpContext!;
 
             if (httpContext != null &&
                 httpContext.Items.TryGetValue(_key, out var context) &&

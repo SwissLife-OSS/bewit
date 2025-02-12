@@ -335,7 +335,7 @@ ASALocalRun/
 .sonarqube/
 
 testoutput/
+__mismatch__/
 
 tools/**
 !tools/packages.config
-All.sln
