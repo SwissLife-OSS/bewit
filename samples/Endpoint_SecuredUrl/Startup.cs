@@ -60,7 +60,8 @@ namespace Host
                         var id = c.Request.RouteValues.GetValueOrDefault("id");
 
                         BewitToken<string> token =
-                            await generator.GenerateBewitTokenAsync($"/download/{id}", default);
+                            await generator.GenerateBewitTokenAsync($"/download/{id}",
+                                new Dictionary<string, object>(), default);
 
                         string html = @$"<html><a href=""/download/{id}?bewit={token}"">download</a>
                                         <br>{(string)token}</html>";

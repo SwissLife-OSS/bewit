@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,7 +60,34 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
             res.Data.RequestAccess.Should().Be("https://www.google.com/a/b/?c=d&bewit=eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOiIvYS9iLz9jPWQiLCJIYXNoIjoiOWxaak9tTlFqVG0xbUlUVjZ2LzNtU1NBTFBXRndmNXNaQ3pqc3J6eXhwQT0ifQ%253D%253D");
         }
 
-        private static TestServer CreateTestServer()
+        [Fact]
+        public async Task InvokeAsync_WithExtraProperties_ShouldNotImpactBewitToken()
+        {
+            //Arrange
+            TestServer testServer = CreateTestServer(
+                new Dictionary<string, object> { ["foo"] = "bar" });
+            HttpClient client = testServer.CreateClient();
+            GraphQLClient gqlClient = new GraphQLClient(client);
+            QueryRequest query = new QueryRequest(
+                string.Empty,
+                @"mutation giveMeAccess {
+                    RequestAccess
+                }",
+                "giveMeAccess",
+                new Dictionary<string, object>());
+
+            //Act
+            QueryResponse<GiveMeAccessResult> res =
+                await gqlClient.QueryAsync<GiveMeAccessResult>(query,
+                    CancellationToken.None);
+
+            //Assert
+            res.Data.Should().NotBeNull();
+            res.Data.RequestAccess.Should().Be("https://www.google.com/a/b/?c=d&bewit=eyJUb2tlbiI6eyJOb25jZSI6IjcyNGU3YWNjLWJlNTctNDlhMS04MTk1LTQ2YTAzYzYyNzFjNiIsIkV4cGlyYXRpb25EYXRlIjoiMjAxNy0wMS0wMVQwMTowMjowMS4wMDFaIn0sIlBheWxvYWQiOiIvYS9iLz9jPWQiLCJIYXNoIjoiOWxaak9tTlFqVG0xbUlUVjZ2LzNtU1NBTFBXRndmNXNaQ3pqc3J6eXhwQT0ifQ%253D%253D");
+        }
+
+        private static TestServer CreateTestServer(
+            Dictionary<string, object>? extraProperties = null)
         {
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureServices(services =>
@@ -79,7 +107,12 @@ namespace Bewit.Extensions.HotChocolate.Tests.Integration
                             d.Name("Mutation");
                             d.Field("RequestAccess")
                                 .Type<NonNullType<StringType>>()
-                                .Resolve(ctx => "https://www.google.com/a/b/?c=d")
+                                .Resolve(ctx =>
+                                {
+                                    ctx.AddBewitTokenExtraProperties(extraProperties);
+
+                                    return "https://www.google.com/a/b/?c=d";
+                                })
                                 .UseBewitUrlProtection();
                         });
                 })
