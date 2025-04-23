@@ -55,15 +55,15 @@ namespace Bewit.Extensions.HotChocolate.Validation
         private void CreateError(IMiddlewareContext context, Exception ex = default)
         {
             IErrorBuilder errorBuilder = ErrorBuilder.New()
-                .SetMessage("NotAuthorized")
-                .SetPath(context.Path)
-                .AddLocation(context.Selection.SyntaxNode);
+                .SetMessage("The current user is not authorized to access this resource.")
+                .SetCode(ErrorCodes.Authentication.NotAuthorized);
 
             if (ex != default)
             {
                 errorBuilder.SetException(ex);
             }
 
+            context.ContextData[WellKnownContextData.HttpStatusCode] = 401;
             context.Result = errorBuilder.Build();
         }
     }
