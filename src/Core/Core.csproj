@@ -16,4 +16,8 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)/confix/components/**/*.*"/>
+  </ItemGroup>
+
 </Project>
