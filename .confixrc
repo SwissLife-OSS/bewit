@@ -1,0 +1,12 @@
+{
+    "component": {
+        "inputs": [
+            {
+                "type": "graphql"
+            },
+            {
+                "type": "dotnet"
+            }
+        ]
+    }
+}
