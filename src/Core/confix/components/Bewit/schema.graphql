@@ -1,4 +1,0 @@
-type Configuration {
-    Secret: String!
-    TokenDuration: String
-}
