@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit.Generation;
@@ -29,14 +30,18 @@ namespace Host.Types
         public async Task<string> CreateBewitToken(string value)
         {
             return (await _fooPayloadGenerator
-                    .GenerateBewitTokenAsync(new FooPayload {Value = value}, default))
+                    .GenerateBewitTokenAsync(
+                        new FooPayload {Value = value},
+                        new Dictionary<string, object>(),
+                        default))
                 .ToString();
         }
 
         public async Task<string> CreateIdentifiableBewitToken(string identifier)
         {
             return (await _barPayloadGenerator
-                    .GenerateIdentifiableBewitTokenAsync(new BarPayload(), identifier, default))
+                    .GenerateIdentifiableBewitTokenAsync(
+                        new BarPayload(), identifier, new Dictionary<string, object>(), default))
                 .ToString();
         }
     }

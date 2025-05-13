@@ -82,7 +82,7 @@ namespace Bewit.Storage.MongoDB.Tests
             //Assert
             var items = (
                 await collection.FindAsync(
-                    Builders<Token>.Filter.Empty,
+                    Builders<Token>.Filter.Eq(x => x.IsDeleted, false),
                     cancellationToken: CancellationToken.None)
             ).ToList();
             items.Should().BeEmpty();

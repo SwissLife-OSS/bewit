@@ -23,7 +23,8 @@ namespace Bewit.Extensions.HotChocolate.Tests
                 .GetRequiredService<IBewitTokenGenerator<T>>();
 
             return (await bewitGenerator
-                    .GenerateBewitTokenAsync(payload, default))
+                    .GenerateBewitTokenAsync(payload,
+                         new Dictionary<string, object>(), default))
                 .ToString();
         }
 
@@ -40,7 +41,8 @@ namespace Bewit.Extensions.HotChocolate.Tests
                 .GetRequiredService<IBewitTokenGenerator<string>>();
 
             return (await bewitGenerator
-                    .GenerateBewitTokenAsync("badPayload", default))
+                    .GenerateBewitTokenAsync("badPayload",
+                        new Dictionary<string, object>(), default))
                 .ToString();
         }
 

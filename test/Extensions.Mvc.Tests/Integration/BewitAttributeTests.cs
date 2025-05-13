@@ -36,6 +36,7 @@ namespace Bewit.Extensions.Mvc.Tests.Integration
             BewitToken<IDictionary<string, object>> bewitToken =
                 await tokenGenerator.GenerateBewitTokenAsync(
                     payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
             var url = $"/api/dummy/WithBewitParameters/{id}";
             var fullUrl = $"{url}?bewit={bewitToken}";
