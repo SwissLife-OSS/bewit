@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -118,6 +119,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> bewit =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -142,6 +144,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> bewit =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -166,6 +169,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> bewit =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -187,6 +191,7 @@ namespace Bewit.Generation.Tests
             //Act
             Func<Task> generateBewit = async () =>
                 await provider.GenerateBewitTokenAsync(null,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -216,6 +221,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> token =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -247,6 +253,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> token =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -278,6 +285,7 @@ namespace Bewit.Generation.Tests
             //Act
             BewitToken<Foo> token =
                 await provider.GenerateBewitTokenAsync(payload,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert
@@ -306,6 +314,7 @@ namespace Bewit.Generation.Tests
             //Act
             Func<Task> generateBewit = async () =>
                 await provider.GenerateBewitTokenAsync(null,
+                    new Dictionary<string, object>(),
                     CancellationToken.None);
 
             //Assert

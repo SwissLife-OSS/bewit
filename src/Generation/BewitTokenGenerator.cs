@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Threading;
@@ -43,9 +44,12 @@ namespace Bewit.Generation
 
         public Task<BewitToken<T>> GenerateBewitTokenAsync(
             T payload,
-            CancellationToken cancellationToken)
+            Dictionary<string, object> extraProperties,
+            CancellationToken cancellationToken
+            )
         {
             var token = Token.Create(CreateNextToken(), CreateExpirationDate());
+            token.ExtraProperties = extraProperties;
             return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
 
         }
@@ -53,9 +57,11 @@ namespace Bewit.Generation
         public Task<BewitToken<T>> GenerateIdentifiableBewitTokenAsync(
             T payload,
             string identifier,
+            Dictionary<string, object> extraProperties,
             CancellationToken cancellationToken)
         {
             var token = new IdentifiableToken(identifier, CreateNextToken(), CreateExpirationDate());
+            token.ExtraProperties = extraProperties;
             return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
         }
 

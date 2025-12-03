@@ -26,5 +26,8 @@ namespace Bewit.Storage.MongoDB
         /// ReUse will keep it in the storage.
         /// </summary>
         public NonceUsage NonceUsage { get; set; } = NonceUsage.OneTime;
+
+
+        public int RecordExpireAfterDays { get; set; } = 365 * 2;
     }
 }

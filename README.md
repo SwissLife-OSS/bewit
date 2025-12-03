@@ -40,7 +40,17 @@ ISchema schema = SchemaBuilder.New()
                 d.Name("Mutation");
                 d.Field("RequestAccessUrl")
                     .Type<NonNullType<StringType>>()
-                    .Resolver(ctx => $"{mvcApiUrl}/api/file/123")
+                    .Resolver(ctx =>
+                    {
+                        Dictionary<string, string> extraProperties = new()
+                        {
+                            ["foo"] = "bar"
+                        };
+
+                        ctx.AddBewitTokenExtraProperties(extraProperties);
+
+                        return $"{mvcApiUrl}/api/file/123";
+                    })
                     .UseBewitUrlProtection();
             }))
     .Create();

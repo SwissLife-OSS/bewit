@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Bewit
@@ -21,6 +22,12 @@ namespace Bewit
         public string Nonce { get; private set; }
 
         public DateTime ExpirationDate { get; private set; }
+
+        [JsonIgnore]
+        public bool? IsDeleted { get; set; } = false;
+
+        [JsonIgnore]
+        public Dictionary<string, object> ExtraProperties { get; set; }
 
         public static Token Create(string nonce, DateTime expirationDate)
         {

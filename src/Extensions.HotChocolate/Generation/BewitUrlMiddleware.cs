@@ -29,7 +29,7 @@ namespace Bewit.Extensions.HotChocolate.Generation
 
                 BewitToken<string> bewit =
                     await tokenGenerator.GenerateBewitTokenAsync(
-                        uri.PathAndQuery, context.RequestAborted);
+                        uri.PathAndQuery, context.GetBewitTokenExtraProperties(), context.RequestAborted);
 
                 var parametersToAdd = new Dictionary<string, string>
                 {

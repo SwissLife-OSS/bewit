@@ -68,7 +68,17 @@ namespace Bewit.IntegrationTests.HotChocolateServer
                             d.Field("RequestAccessUrlWithQueryString")
                                 .Type<NonNullType<StringType>>()
                                 .Resolve(ctx =>
-                                    "http://foo.bar/api/dummy/WithBewitProtection?foo=bar&baz=qux")
+                                {
+                                    ctx.AddBewitTokenExtraProperties(
+                                        new Dictionary<string, object>
+                                        {
+                                            ["foo"] = "bar",
+                                            ["customType"] = new{},
+                                            ["nullValue"] = null
+                                        });
+
+                                    return "http://foo.bar/api/dummy/WithBewitProtection?foo=bar&baz=qux";
+                                })
                                 .UseBewitUrlProtection();
                             d.Field("RequestAccessUrl")
                                 .Type<NonNullType<StringType>>()
