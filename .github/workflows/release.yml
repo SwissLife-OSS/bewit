@@ -31,6 +31,7 @@ jobs:
         with:
           dotnet-version: |
             8
+            10
       - name: Restore tools
         run: dotnet tool restore
       - name: Build, Test and Sonar
