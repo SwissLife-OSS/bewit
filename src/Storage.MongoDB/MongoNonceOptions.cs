@@ -1,20 +1,20 @@
 
+#nullable enable
 namespace Bewit.Storage.MongoDB
 {
     public class MongoNonceOptions
     {
         /// <summary>
         /// Connection string for the MongoDB instance.
-        /// Mandatory.
+        /// Required only when using connection-string based UseMongoPersistence overloads.
         /// </summary>
-        public string ConnectionString { get; set; } //mandatory
+        public string? ConnectionString { get; set; }
 
         /// <summary>
         /// Name of the Database in the MongoDB instance.
-        /// Mandatory.
+        /// Mandatory for all UseMongoPersistence overloads.
         /// </summary>
-        public string DatabaseName { get; set; } //mandatory
-
+        public string DatabaseName { get; set; } = null!;
         /// <summary>
         /// Name of the Bewit Collection in the Mongo database.
         /// Optional.
@@ -26,7 +26,6 @@ namespace Bewit.Storage.MongoDB
         /// ReUse will keep it in the storage.
         /// </summary>
         public NonceUsage NonceUsage { get; set; } = NonceUsage.OneTime;
-
 
         public int RecordExpireAfterDays { get; set; } = 365 * 2;
     }
