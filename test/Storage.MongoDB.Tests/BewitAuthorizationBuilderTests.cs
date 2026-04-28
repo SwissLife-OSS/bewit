@@ -152,5 +152,71 @@ namespace Bewit.Storage.MongoDB.Tests
             //Assert
             useRepository.Should().Throw<ArgumentNullException>();
         }
+
+        [Fact]
+        public void UseMongoPersistence_WithMongoClientAndMandatoryParameters_ShouldInitAndReturnMongoNonceRepository()
+        {
+            //Arrange
+            var builder = new BewitPayloadContext(typeof(object));
+            var client = new MongoClient(_mongoResource.ConnectionString);
+            IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
+
+            //Act
+            builder.UseMongoPersistence(
+                client,
+                new MongoNonceOptions
+                {
+                    DatabaseName = collection.Database.DatabaseNamespace.DatabaseName
+                }
+            );
+
+            //Assert
+            builder.Should().Be(builder);
+            builder.CreateRepository.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void UseMongoPersistence_WithMongoClientAndNullContext_ShouldThrowArgumentNullException()
+        {
+            //Arrange
+            BewitPayloadContext context = null;
+            var client = new MongoClient(_mongoResource.ConnectionString);
+            IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
+
+            //Act
+            Action useRepository = ()
+                => context.UseMongoPersistence(
+                    client,
+                    new MongoNonceOptions
+                    {
+                        DatabaseName = collection.Database.DatabaseNamespace.DatabaseName
+                    }
+                );
+
+            //Assert
+            useRepository.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void UseMongoPersistence_WithMongoClientNull_ShouldThrowArgumentNullException()
+        {
+            //Arrange
+            var builder = new BewitPayloadContext(typeof(object));
+            IMongoClient client = null;
+            IMongoCollection<Foo> collection = _mongoResource.CreateCollection<Foo>();
+
+            //Act
+            Action useRepository = ()
+                => builder.UseMongoPersistence(
+                    client,
+                    new MongoNonceOptions
+                    {
+                        DatabaseName = collection.Database.DatabaseNamespace.DatabaseName
+                    }
+                );
+
+            //Assert
+            useRepository.Should().Throw<ArgumentNullException>();
+        }
     }
 }
