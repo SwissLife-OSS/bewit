@@ -7,14 +7,13 @@ namespace Bewit.Storage.MongoDB;
 internal sealed class BewitOidcCallback(List<string> scopes) : IOidcCallback
 {
     private static readonly TimeSpan ExpirationBuffer = TimeSpan.FromMinutes(1);
+    private readonly DefaultAzureCredential _credential = new();
 
     public OidcAccessToken GetOidcAccessToken(
         OidcCallbackParameters parameters,
         CancellationToken cancellationToken)
     {
-        var credential = new DefaultAzureCredential();
-
-        AccessToken accessToken = credential.GetToken(
+        AccessToken accessToken = _credential.GetToken(
             new TokenRequestContext([.. scopes]), cancellationToken);
 
         return ToOidcAccessToken(accessToken);
@@ -24,9 +23,7 @@ internal sealed class BewitOidcCallback(List<string> scopes) : IOidcCallback
         OidcCallbackParameters parameters,
         CancellationToken cancellationToken)
     {
-        var credential = new DefaultAzureCredential();
-
-        AccessToken accessToken = await credential.GetTokenAsync(
+        AccessToken accessToken = await _credential.GetTokenAsync(
             new TokenRequestContext([.. scopes]), cancellationToken);
 
         return ToOidcAccessToken(accessToken);

@@ -1,5 +1,4 @@
 using System.Collections.Specialized;
-using System.Net;
 using System.Web;
 using Bewit.Exceptions;
 using Bewit.Validation;
@@ -20,12 +19,10 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {
-            context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            context.Result = new StatusCodeResult(403);
 
             return;
         }
-
-        bewitToken = WebUtility.UrlDecode(bewitToken);
 
         var validator = context.HttpContext.RequestServices
             .GetRequiredService<IBewitTokenValidator<string>>();
@@ -40,7 +37,7 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
         }
         catch (BewitException)
         {
-            context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            context.Result = new StatusCodeResult(403);
 
             return;
         }
@@ -49,7 +46,7 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
 
         if (!string.Equals(path, payload, StringComparison.OrdinalIgnoreCase))
         {
-            context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            context.Result = new StatusCodeResult(403);
         }
     }
 

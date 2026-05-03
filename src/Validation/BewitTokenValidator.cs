@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Bewit.Exceptions;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +29,9 @@ internal sealed class BewitTokenValidator<T>(
         string expectedHash = cryptographyService.GetHash(
             bewit.Token.Nonce, hashExpiry, bewit.Payload);
 
-        if (!string.Equals(bewit.Hash, expectedHash, StringComparison.Ordinal))
+        if (!CryptographicOperations.FixedTimeEquals(
+                Encoding.UTF8.GetBytes(bewit.Hash),
+                Encoding.UTF8.GetBytes(expectedHash)))
         {
             throw new BewitInvalidException();
         }

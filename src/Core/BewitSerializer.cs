@@ -37,7 +37,7 @@ internal static class BewitSerializer
 
             return JsonSerializer.Deserialize<Bewit<T>>(json, JsonOptions);
         }
-        catch
+        catch (Exception ex) when (ex is FormatException or JsonException)
         {
             return null;
         }

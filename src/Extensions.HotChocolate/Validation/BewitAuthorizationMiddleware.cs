@@ -36,12 +36,6 @@ internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
             tokenString = tokenObj as string;
         }
 
-        if (context.ContextData.TryGetValue(
-                BewitTokenConstants.ContextKey, out var contextTokenObj))
-        {
-            tokenString ??= contextTokenObj as string;
-        }
-
         if (string.IsNullOrWhiteSpace(tokenString))
         {
             context.ReportError(
@@ -68,14 +62,8 @@ internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
         {
             context.ReportError(
                 ErrorBuilder.New()
-                    .SetMessage(ex.Message)
-                    .SetCode(ex switch
-                    {
-                        BewitExpiredException => "BEWIT_EXPIRED",
-                        BewitNotFoundException => "BEWIT_NOT_FOUND",
-                        BewitInvalidException => "BEWIT_INVALID",
-                        _ => "BEWIT_ERROR"
-                    })
+                    .SetMessage("Unauthorized.")
+                    .SetCode("BEWIT_UNAUTHORIZED")
                     .SetException(ex)
                     .Build());
 

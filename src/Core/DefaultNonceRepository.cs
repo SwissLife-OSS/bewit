@@ -1,31 +1,29 @@
 namespace Bewit;
 
-/// <summary>
-/// No-op implementation of <see cref="INonceRepository"/> for stateless
-/// <see cref="ExpiryMode.SelfContained"/> tokens that don't require persistence.
-/// </summary>
 internal sealed class DefaultNonceRepository : INonceRepository
 {
+    private const string Message =
+        "This operation requires a persistent nonce repository (e.g., MongoDB). " +
+        "Configure one via UseMongoDb() or UseNonceRepository() on the BewitBuilder or PayloadBuilder.";
+
     public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken) =>
-        ValueTask.CompletedTask;
+        throw new NotSupportedException(Message);
 
     public ValueTask<Token?> TakeOneAsync(Guid nonce, CancellationToken cancellationToken) =>
-        new(Token.Empty);
+        throw new NotSupportedException(Message);
 
     public ValueTask DeleteIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
-        throw new NotSupportedException(
-            "Bulk invalidation requires a persistent nonce repository (e.g., MongoDB).");
+        throw new NotSupportedException(Message);
 
     public ValueTask<bool> ExtendExpiryAsync(
         Guid nonce,
         TimeSpan duration,
         CancellationToken cancellationToken) =>
-        new(false);
+        throw new NotSupportedException(Message);
 
     public ValueTask<bool> UpdateExpiryAsync(
         Guid nonce,
         DateTime newExpiry,
         CancellationToken cancellationToken) =>
-        throw new NotSupportedException(
-            "Expiry updates require a persistent nonce repository (e.g., MongoDB).");
+        throw new NotSupportedException(Message);
 }

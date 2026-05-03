@@ -1,4 +1,3 @@
-using System.Net;
 using Bewit.Exceptions;
 using Bewit.Validation;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +13,10 @@ internal sealed class BewitEndpointMiddleware<T>(RequestDelegate next) where T :
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            context.Response.StatusCode = 401;
 
             return;
         }
-
-        bewitToken = WebUtility.UrlDecode(bewitToken);
 
         var validator = context.RequestServices
             .GetRequiredService<IBewitTokenValidator<T>>();
@@ -37,7 +34,7 @@ internal sealed class BewitEndpointMiddleware<T>(RequestDelegate next) where T :
         }
         catch (BewitException)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            context.Response.StatusCode = 403;
 
             return;
         }
