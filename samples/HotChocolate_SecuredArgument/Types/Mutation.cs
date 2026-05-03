@@ -1,28 +1,32 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Bewit;
 using Bewit.Generation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Host.Types
 {
     public class Mutation
     {
         private readonly IBewitTokenGenerator<FooPayload> _fooPayloadGenerator;
-        private readonly IIdentifiableBewitTokenGenerator<BarPayload> _barPayloadGenerator;
+        private readonly IBewitTokenGenerator<BarPayload> _barPayloadGenerator;
+        private readonly INonceRepository _barNonceRepository;
 
         public Mutation(
             IBewitTokenGenerator<FooPayload> fooPayloadGenerator,
-            IIdentifiableBewitTokenGenerator<BarPayload> barPayloadGenerator)
+            IBewitTokenGenerator<BarPayload> barPayloadGenerator,
+            [FromKeyedServices("Host.Types.BarPayload")] INonceRepository barNonceRepository)
         {
             _fooPayloadGenerator = fooPayloadGenerator;
             _barPayloadGenerator = barPayloadGenerator;
+            _barNonceRepository = barNonceRepository;
         }
 
         public async Task<string> InvalidateBewitTokens(
             string identifier,
             CancellationToken cancellationToken)
         {
-            await _barPayloadGenerator.InvalidateIdentifier(identifier, cancellationToken);
+            await _barNonceRepository.DeleteIdentifierAsync(identifier, cancellationToken);
 
             return identifier;
         }
@@ -31,8 +35,7 @@ namespace Host.Types
         {
             return (await _fooPayloadGenerator
                     .GenerateBewitTokenAsync(
-                        new FooPayload {Value = value},
-                        new Dictionary<string, object>(),
+                        new FooPayload { Value = value },
                         default))
                 .ToString();
         }
@@ -40,8 +43,10 @@ namespace Host.Types
         public async Task<string> CreateIdentifiableBewitToken(string identifier)
         {
             return (await _barPayloadGenerator
-                    .GenerateIdentifiableBewitTokenAsync(
-                        new BarPayload(), identifier, new Dictionary<string, object>(), default))
+                    .GenerateBewitTokenAsync(
+                        new BarPayload(),
+                        new BewitTokenOptions { Identifier = identifier },
+                        default))
                 .ToString();
         }
     }

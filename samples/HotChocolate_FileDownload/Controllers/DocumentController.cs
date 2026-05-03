@@ -1,5 +1,5 @@
 using System;
-using Bewit.Mvc.Filter;
+using Bewit.Extensions.Mvc;
 using Host.Data;
 using Host.Models;
 using Microsoft.AspNetCore.Mvc;

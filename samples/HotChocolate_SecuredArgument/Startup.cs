@@ -5,24 +5,19 @@ using Microsoft.Extensions.Hosting;
 using HotChocolate.AspNetCore;
 using Host.Data;
 using Host.Types;
-using Bewit.Generation;
 using System;
 using Host.Models;
 using System.Collections.Generic;
 using Bewit;
-using Bewit.Extensions.HotChocolate.Validation;
 using Bewit.Storage.MongoDB;
 
 namespace Host
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                // Add some sample data
                 .AddSingleton(new DocumentsRepository(
                     new List<Document>
                     {
@@ -31,33 +26,52 @@ namespace Host
                             "application/pdf")
                     }));
 
-            var bewitOptions = new BewitOptions
+            services.AddBewit(bewit =>
             {
-                TokenDuration = TimeSpan.FromMinutes(5),
-                Secret = "ax54Z$tgs87454"
-            };
-
-            // Add support for generating bewits in the GraphQL Api
-            services.AddBewitGeneration(
-                bewitOptions,
-                builder =>
+                bewit.ConfigureOptions(o =>
                 {
-                    builder.AddPayload<FooPayload>();
-                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
+                    o.Secret = "ax54Z$tgs87454";
+                    o.TokenDuration = TimeSpan.FromMinutes(5);
+                });
+
+                bewit.AddPayload<FooPayload>();
+
+                bewit.AddPayload<BarPayload>(p =>
+                {
+                    p.ConfigureOptions(o =>
                     {
-                        ConnectionString = "mongodb://localhost:27017",
-                        DatabaseName = "bewit_secured_argument"
+                        o.ExpiryMode = ExpiryMode.ServerControlled;
                     });
-                    builder.AddPayload<BazPayload>().UseMongoPersistence(new MongoNonceOptions
+
+                    p.UseMongoDb(m =>
                     {
-                        ConnectionString = "mongodb://localhost:27017",
-                        DatabaseName = "bewit_secured_argument"
+                        m.ConnectionString = "mongodb://localhost:27017";
+                        m.DatabaseName = "bewit_secured_argument";
                     });
                 });
 
+                bewit.AddPayload<BazPayload>(p =>
+                {
+                    p.ConfigureOptions(o =>
+                    {
+                        o.ExpiryMode = ExpiryMode.ServerControlled;
+                    });
+
+                    p.UseMongoDb(m =>
+                    {
+                        m.ConnectionString = "mongodb://localhost:27017";
+                        m.DatabaseName = "bewit_secured_argument";
+                    });
+                });
+            });
+
+            services.AddBewitGeneration<FooPayload>();
+            services.AddBewitGeneration<BarPayload>();
+            services.AddBewitGeneration<BazPayload>();
+            services.AddBewitValidation<FooPayload>();
+            services.AddBewitValidation<BarPayload>();
             services.AddHttpContextAccessor();
 
-            // Add GraphQL Services
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
@@ -65,22 +79,11 @@ namespace Host
                 .AddType<DocumentType>()
                 .AddMutationConventions()
                 .InitializeOnStartup()
-                .UseBewitAuthorization(bewitOptions, builder =>
-                {
-                    builder.AddPayload<FooPayload>();
-                    builder.AddPayload<BarPayload>().UseMongoPersistence(new MongoNonceOptions
-                    {
-                        ConnectionString = "mongodb://localhost:27017",
-                        NonceUsage = NonceUsage.ReUse,
-                        DatabaseName = "bewit_secured_argument"
-                    });
-                })
                 .UseDefaultPipeline();
 
             services.AddRouting();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -89,6 +92,7 @@ namespace Host
             }
 
             app
+                .UseBewitTokenHeaderExtraction()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
