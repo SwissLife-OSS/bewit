@@ -1,8 +1,8 @@
-# Bewit Migration Guide (v1.x → v2.0)
+# Bewit Migration Guide (v6.x → v7.0)
 
 ## Breaking Changes Summary
 
-| Change | Old (v1.x) | New (v2.0) |
+| Change | Old (v6.x) | New (v7.0) |
 |--------|-----------|------------|
 | Target Framework | net8.0 | net10.0 |
 | Serialization | Newtonsoft.Json | System.Text.Json |
@@ -62,7 +62,7 @@ services.AddBewitValidation<MyCustomPayload>();
 
 ## Configuration Migration
 
-### Before (v1.x)
+### Before (v6.x)
 ```json
 {
   "Bewit": {
@@ -72,7 +72,7 @@ services.AddBewitValidation<MyCustomPayload>();
 }
 ```
 
-### After (v2.0)
+### After (v7.0)
 Configuration is done via code with `IOptions<BewitOptions>`. Each payload type can have its own options:
 ```csharp
 bewit.AddPayload<string>(p => p.ConfigureOptions(o =>
@@ -85,13 +85,13 @@ bewit.AddPayload<string>(p => p.ConfigureOptions(o =>
 
 ## MongoDB Migration
 
-### Before (v1.x)
+### Before (v6.x)
 ```csharp
 builder.AddPayload<T>().UseMongoPersistence(configuration, options => options.NonceUsage = NonceUsage.ReUse);
 builder.AddPayload<T2>().UseMongoPersistence(configuration, options => options.NonceUsage = NonceUsage.ReUse);
 ```
 
-### After (v2.0)
+### After (v7.0)
 
 **Builder-level (shared across all payloads):**
 ```csharp
