@@ -9,10 +9,10 @@
     <PackageVersion Include="MongoDB.Driver" Version="[3.0,)" />
     <PackageVersion Include="Azure.Identity" Version="[1.13,)" />
 
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.1.11" />
-    <PackageVersion Include="HotChocolate.Data" Version="15.1.11" />
-    <PackageVersion Include="HotChocolate.Execution" Version="15.1.11" />
-    <PackageVersion Include="HotChocolate.Types" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.1.16" />
+    <PackageVersion Include="HotChocolate.Data" Version="15.1.16" />
+    <PackageVersion Include="HotChocolate.Execution" Version="15.1.16" />
+    <PackageVersion Include="HotChocolate.Types" Version="15.1.16" />
   </ItemGroup>
 
   <ItemGroup>
