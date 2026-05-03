@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Validation\Validation.csproj" />
+    <ProjectReference Include="..\..\src\Generation\Generation.csproj" />
+    <ProjectReference Include="..\..\src\Core\Core.csproj" />
   </ItemGroup>
 
 </Project>

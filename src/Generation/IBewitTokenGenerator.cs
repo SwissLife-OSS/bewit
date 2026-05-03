@@ -1,14 +1,14 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+namespace Bewit.Generation;
 
-namespace Bewit.Generation
+public interface IBewitTokenGenerator<T> where T : notnull
 {
-    public interface IBewitTokenGenerator<T>
-    {
-        Task<BewitToken<T>> GenerateBewitTokenAsync(
-            T payload,
-            Dictionary<string, object> extraProperties,
-            CancellationToken cancellationToken);
-    }
+    ValueTask<BewitToken<T>> GenerateBewitTokenAsync(
+        T payload,
+        CancellationToken cancellationToken) =>
+        GenerateBewitTokenAsync(payload, null, cancellationToken);
+
+    ValueTask<BewitToken<T>> GenerateBewitTokenAsync(
+        T payload,
+        BewitTokenOptions? options,
+        CancellationToken cancellationToken);
 }

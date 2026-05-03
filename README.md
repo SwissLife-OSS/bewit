@@ -1,133 +1,194 @@
-**Bewit is an authentication scheme alternative to cookies and bearer tokens.**
+# Bewit
 
-Bewit enables you to provide authentication in use cases where cookies and authentication headers can not be used. With support for both stateful and stateless authentication, Bewit is a practical solution for many scenarii, including file downloads and temporary or single-use links.
+**Bewit is an authentication scheme for secure, temporary access tokens.**
 
-## Getting Started
+Bewit enables authentication in use cases where cookies and auth headers can't be used — file downloads, temporary links, single-use tokens, and share links with admin-controlled expiry.
 
-We've prepared a simple example of how to use Bewit to provide stateless secure file downloads for a HotChocolate Server.
-In this scenario, a HotChocolate server will be used to generate secure links. These links can then be used to download content from an Asp.Net MVC Server without cookies or authentication headers.
+## Features
+
+- **Self-Contained tokens** — expiry embedded in the token (stateless)
+- **Server-Controlled tokens** — expiry managed in the database (admin can extend/revoke)
+- **Sliding window** — token expiry extends on each successful validation
+- **Multi-tenancy** — different secrets and modes per payload type
+- **MongoDB persistence** — with OIDC auth support (Azure.Identity)
+- **HotChocolate integration** — `[Bewit<T>]` attribute for GraphQL resolvers
+- **MVC integration** — `[BewitMvc]`, `[FromBewit]`, `[BewitUrlAuthorization]` filters
+- **Aspire-ready** — connection string pattern for distributed apps
+
+## Quick Start
 
 ### Install
 
-You will need the following package for your HotChocolate Server:
+```bash
+dotnet add package Bewit
+dotnet add package Bewit.Generation
+dotnet add package Bewit.Validation
+```
+
+### Registration
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureOptions(o =>
+    {
+        o.Secret = "your-secret-at-least-32-chars!";
+        o.TokenDuration = TimeSpan.FromMinutes(5);
+        o.ExpiryMode = ExpiryMode.SelfContained;
+    });
+
+    bewit.AddPayload<string>();
+});
+
+services.AddBewitGeneration<string>();
+services.AddBewitValidation<string>();
+```
+
+### Generate a Token
+
+```csharp
+var generator = serviceProvider.GetRequiredService<IBewitTokenGenerator<string>>();
+
+BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+    "my-payload", null, cancellationToken);
+```
+
+### Validate a Token
+
+```csharp
+var validator = serviceProvider.GetRequiredService<IBewitTokenValidator<string>>();
+
+string payload = await validator.ValidateBewitTokenAsync(token, cancellationToken);
+```
+
+## Server-Controlled Tokens with Sliding Window
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureOptions(o =>
+    {
+        o.Secret = "your-secret";
+        o.TokenDuration = TimeSpan.FromDays(7);
+        o.ExpiryMode = ExpiryMode.ServerControlled;
+        o.SlidingWindow = TimeSpan.FromHours(1);
+    });
+
+    bewit.UseMongoDb(mongo =>
+    {
+        mongo.ConnectionString = "mongodb://localhost:27017";
+        mongo.DatabaseName = "myapp";
+    });
+
+    bewit.AddPayload<ShareLinkPayload>();
+});
+```
+
+## MongoDB with OIDC (Azure Cosmos DB)
+
+```csharp
+bewit.UseMongoDb(mongo =>
+{
+    mongo.ConnectionString = "mongodb+srv://...";
+    mongo.DatabaseName = "mydb";
+    mongo.AuthType = MongoAuthType.Oidc;
+    mongo.OidcScopes = ["https://cosmos-db-scope/.default"];
+});
+```
+
+Or reuse an existing `IMongoDatabase` from DI:
+
+```csharp
+bewit.UseMongoDb(sp => sp.GetRequiredService<IMyDbContext>().Database);
+```
+
+## Multiple Payloads with Shared MongoDB
+
+All payloads inherit the builder-level MongoDB and options. Per-payload overrides are possible:
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureOptions(o =>
+    {
+        o.Secret = "your-secret";
+        o.ExpiryMode = ExpiryMode.ServerControlled;
+    });
+
+    bewit.UseMongoDb(mongo =>
+    {
+        mongo.ConnectionString = "mongodb://localhost:27017";
+        mongo.DatabaseName = "myapp";
+        mongo.NonceUsage = NonceUsage.ReUse;
+    });
+
+    bewit.AddPayload<NominationBewitContext>();
+    bewit.AddPayload<UserRegistrationBewitContext>();
+    bewit.AddPayload<DocumentDownloadBewitContext>();
+
+    // Override: self-contained, no MongoDB needed
+    bewit.AddPayload<DownloadBewitContext>(p =>
+    {
+        p.ConfigureOptions(o =>
+        {
+            o.ExpiryMode = ExpiryMode.SelfContained;
+            o.TokenDuration = TimeSpan.FromMinutes(5);
+        });
+    });
+});
+```
+
+## HotChocolate Integration
 
 ```bash
 dotnet add package Bewit.Extensions.HotChocolate
 ```
 
-On your MVC Server, add the following package:
+### `[Bewit<T>]` Attribute
+
+```csharp
+[Mutation]
+[Bewit<NominationBewitContext>(ExceptionType = typeof(BewitValidationException))]
+public static async Task<NominationDto> AssignNomineeAsync(
+    [Service] IHttpContextAccessor httpContextAccessor, ...)
+{
+    var context = httpContextAccessor.GetBewitPayload<NominationBewitContext>();
+}
+```
+
+### Setup
+
+```csharp
+app.UseBewitTokenHeaderExtraction();
+```
+
+## MVC Integration
 
 ```bash
 dotnet add package Bewit.Extensions.Mvc
 ```
 
-### HotChocolate Server
-
-First create a simple HotChocolate API with the following Schema:
-
 ```csharp
-const string mvcApiUrl = "http://localhost:5000"; //your mvc api url here
-
-ISchema schema = SchemaBuilder.New()
-    .SetOptions(new SchemaOptions
-    {
-        StrictValidation = false //because we don't have a QueryType in this example
-    })
-    .AddMutationType(
-        new ObjectType(
-            d =>
-            {
-                d.Name("Mutation");
-                d.Field("RequestAccessUrl")
-                    .Type<NonNullType<StringType>>()
-                    .Resolver(ctx =>
-                    {
-                        Dictionary<string, string> extraProperties = new()
-                        {
-                            ["foo"] = "bar"
-                        };
-
-                        ctx.AddBewitTokenExtraProperties(extraProperties);
-
-                        return $"{mvcApiUrl}/api/file/123";
-                    })
-                    .UseBewitUrlProtection();
-            }))
-    .Create();
+[BewitUrlAuthorization]
+[HttpGet("download/{id}")]
+public IActionResult Download(string id) { ... }
 ```
 
-You'll also need to register some things in the service container:
+## Packages
 
-```csharp
-services.AddBewitGeneration<string>(
-    new BewitOptions
-    {
-        Secret = "my encryption key",
-        TokenDuration = TimeSpan.FromMinutes(1) //lifespan of the generated url
-    },
-    builder => builder.UseHmacSha256Encryption()
-);
-```
+| Package | Description |
+|---------|-------------|
+| `Bewit` | Core abstractions, models, crypto, DI |
+| `Bewit.Generation` | Token generation |
+| `Bewit.Validation` | Token validation |
+| `Bewit.Storage.MongoDB` | MongoDB nonce repository with OIDC support |
+| `Bewit.Extensions.HotChocolate` | HotChocolate `[Bewit<T>]`, middleware |
+| `Bewit.Extensions.Mvc` | MVC filters and parameter binding |
+| `Bewit.Http` | Minimal API endpoint authorization |
 
-### MVC Server
+## Migration from v1.x
 
-Create a simple Asp.Net MVC Server with the following Controller:
-
-```csharp
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FileController: Controller
-    {
-        [HttpGet("{id}")]
-        [BewitUrlAuthorization]
-        public FileResult GetFile(string id)
-        {
-            return File(/* your file here*/);
-        }
-    }
-```
-
-You'll also need to register some things in the service container:
-
-```csharp
-services.AddBewitUrlAuthorizationFilter(
-    new BewitOptions
-    {
-        Secret = "my encryption key"
-    },
-    builder => builder
-        .UseHmacSha256Encryption()
-    );
-```
-
-### Use
-
-You can now generate secure download urls by calling your mutation:
-
-```graphql
-mutation foo {
-  requestAccessUrl
-}
-```
-
-## Features
-
-### Generating secured Links
-
-- [x] Vanilla (no overhead)
-- [x] HotChocolate integration
-- [ ] graphql-dotnet integration
-
-### Authentication
-
-- [x] Asp.Net MVC
-
-### Persistance (for Stateful authentication)
-
-- [x] MongoDb
-- [ ] Sql Server
-- [ ] Azure Blob Storage
-- [ ] PostgresSQL
+See [Migration Guide](docs/migration-guide.md).
 
 ## Community
 

@@ -1,102 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Bewit.Validation.Generation.Exceptions;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
-namespace Bewit.Generation
+namespace Bewit.Generation;
+
+internal sealed class BewitTokenGenerator<T>(
+    IOptions<BewitOptions> options,
+    ICryptographyService cryptographyService,
+    INonceRepository nonceRepository,
+    IVariablesProvider variablesProvider)
+    : IBewitTokenGenerator<T>
+    where T : notnull
 {
-    internal class BewitTokenGenerator<T>:
-        IBewitTokenGenerator<T>,
-        IIdentifiableBewitTokenGenerator<T>
-            where T : notnull
+    private readonly BewitOptions _options = options.Value;
+
+    public async ValueTask<BewitToken<T>> GenerateBewitTokenAsync(
+        T payload,
+        BewitTokenOptions? tokenOptions,
+        CancellationToken cancellationToken)
     {
-        private readonly TimeSpan _tokenDuration;
-        private readonly ICryptographyService _cryptographyService;
-        private readonly IVariablesProvider _variablesProvider;
-        private readonly INonceRepository _repository;
+        TimeSpan duration = tokenOptions?.Duration ?? _options.TokenDuration;
+        DateTime expirationDate = variablesProvider.UtcNow.Add(duration);
+        Guid nonce = variablesProvider.NextToken;
 
-        public BewitTokenGenerator(
-            BewitOptions options,
-            BewitPayloadContext context)
+        bool isSelfContained = _options.ExpiryMode == ExpiryMode.SelfContained;
+
+        // SelfContained: expiry is embedded in the hash (tamper-proof)
+        // ServerControlled: expiry is NOT in the hash (admin can extend/revoke via DB)
+        DateTime? hashExpiry = isSelfContained ? expirationDate : null;
+
+        string hash = cryptographyService.GetHash(nonce, hashExpiry, payload);
+
+        if (!isSelfContained)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            var dbToken = Token.Create(
+                nonce,
+                expirationDate,
+                tokenOptions?.Identifier,
+                tokenOptions?.ExtraProperties);
 
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _tokenDuration = options.TokenDuration;
-            _cryptographyService = context.CreateCryptographyService?.Invoke()
-                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateCryptographyService));
-            _variablesProvider = context.CreateVariablesProvider?.Invoke()
-                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateVariablesProvider));
-            _repository = context.CreateRepository?.Invoke()
-                ?? throw new BewitMissingConfigurationException(nameof(BewitPayloadContext.CreateRepository));
+            await nonceRepository.InsertOneAsync(dbToken, cancellationToken);
         }
 
-        public Task<BewitToken<T>> GenerateBewitTokenAsync(
-            T payload,
-            Dictionary<string, object> extraProperties,
-            CancellationToken cancellationToken
-            )
-        {
-            var token = Token.Create(CreateNextToken(), CreateExpirationDate());
-            token.ExtraProperties = extraProperties;
-            return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
+        // SelfContained tokens carry the expiry; ServerControlled tokens do not
+        var bewitToken = Token.Create(
+            nonce,
+            isSelfContained ? expirationDate : null,
+            tokenOptions?.Identifier,
+            tokenOptions?.ExtraProperties);
 
-        }
+        var bewit = new Bewit<T>(bewitToken, payload, hash);
 
-        public Task<BewitToken<T>> GenerateIdentifiableBewitTokenAsync(
-            T payload,
-            string identifier,
-            Dictionary<string, object> extraProperties,
-            CancellationToken cancellationToken)
-        {
-            var token = new IdentifiableToken(identifier, CreateNextToken(), CreateExpirationDate());
-            token.ExtraProperties = extraProperties;
-            return GenerateBewitTokenImplAsync(payload, token, cancellationToken);
-        }
-
-        public async Task InvalidateIdentifier(
-            string identifier,
-            CancellationToken cancellationToken)
-        {
-            await _repository.DeleteIdentifier(identifier, cancellationToken);
-        }
-
-        private async Task<BewitToken<T>> GenerateBewitTokenImplAsync(
-            T payload,
-            Token token,
-            CancellationToken cancellationToken)
-        {
-            Bewit<T> bewit = CreateBewit(token, payload);
-            await _repository.InsertOneAsync(bewit.Token, cancellationToken);
-
-            // Refactor: TypeNameHandling.All
-            var serializedBewit = JsonConvert.SerializeObject(bewit);
-            var base64Bewit = Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedBewit));
-
-            return new BewitToken<T>(base64Bewit);
-        }
-
-        private string CreateNextToken() =>
-            _variablesProvider.NextToken.ToString("D", CultureInfo.InvariantCulture);
-
-        private DateTime CreateExpirationDate() =>
-            _variablesProvider.UtcNow.AddTicks(_tokenDuration.Ticks);
-
-        private Bewit<T> CreateBewit(Token token, T payload)
-        {
-            var hash = _cryptographyService.GetHash(token.Nonce, token.ExpirationDate, payload);
-            return new Bewit<T>(token, payload, hash);
-        }
+        return new BewitToken<T>(BewitSerializer.Serialize(bewit));
     }
 }

@@ -1,33 +1,24 @@
-using System;
-using System.Threading.Tasks;
 using Bewit.Generation;
 using HotChocolate.Resolvers;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.Extensions.HotChocolate.Generation
+namespace Bewit.Extensions.HotChocolate;
+
+internal sealed class BewitMiddleware<T>(FieldDelegate next) where T : notnull
 {
-    public class BewitMiddleware<TPayload>
+    public async Task InvokeAsync(IMiddlewareContext context)
     {
-        private readonly FieldDelegate _next;
+        await next(context);
 
-        public BewitMiddleware(FieldDelegate next)
+        if (context.Result is T payload)
         {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
-        }
+            var generator = context.Services
+                .GetRequiredService<IBewitTokenGenerator<T>>();
 
-        public async Task InvokeAsync(
-            IMiddlewareContext context,
-            IBewitTokenGenerator<TPayload> tokenGenerator)
-        {
-            await _next(context).ConfigureAwait(false);
+            BewitToken<T> token = await generator.GenerateBewitTokenAsync(
+                payload, null, context.RequestAborted);
 
-            if (context.Result is TPayload result)
-            {
-                BewitToken<TPayload> bewit
-                    = await tokenGenerator.GenerateBewitTokenAsync(
-                        result, context.GetBewitTokenExtraProperties(), context.RequestAborted);
-
-                context.Result = (string)bewit;
-            }
+            context.Result = (string)token;
         }
     }
 }

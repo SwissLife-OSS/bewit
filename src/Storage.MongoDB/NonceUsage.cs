@@ -2,6 +2,6 @@ namespace Bewit.Storage.MongoDB;
 
 public enum NonceUsage
 {
-    OneTime,
-    ReUse
+    OneTime = 0,
+    ReUse = 1
 }

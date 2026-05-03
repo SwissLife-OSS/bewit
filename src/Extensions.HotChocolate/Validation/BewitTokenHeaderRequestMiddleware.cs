@@ -1,36 +1,23 @@
-using System.Threading.Tasks;
-using HotChocolate.Execution;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using RequestDelegate = HotChocolate.Execution.RequestDelegate;
 
-namespace Bewit.Extensions.HotChocolate.Validation
+namespace Bewit.Extensions.HotChocolate;
+
+internal sealed class BewitTokenHeaderRequestMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next)
 {
-    public class BewitTokenHeaderRequestMiddleware
+    public async Task InvokeAsync(HttpContext context)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly RequestDelegate _next;
-
-        public BewitTokenHeaderRequestMiddleware(
-            IHttpContextAccessor httpContextAccessor,
-            RequestDelegate next)
+        if (context.Request.Headers.TryGetValue(
+                BewitTokenConstants.HeaderName, out var headerValues)
+            && headerValues.Count > 0)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _next = next;
-        }
+            string? token = headerValues[0];
 
-        public ValueTask InvokeAsync(IRequestContext requestContext)
-        {
-            HttpContext context = _httpContextAccessor.HttpContext;
-
-            if (context != null &&
-                context.Request.Headers
-                    .TryGetValue(BewitTokenHeader.Value, out StringValues bewitToken))
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                requestContext.ContextData[BewitTokenHeader.Value] = bewitToken.ToString();
+                context.Items[BewitTokenConstants.ContextKey] = token;
             }
-
-            return _next(requestContext);
         }
+
+        await next(context);
     }
 }

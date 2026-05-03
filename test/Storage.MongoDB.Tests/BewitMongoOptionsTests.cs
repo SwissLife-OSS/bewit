@@ -1,30 +1,25 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Bewit.Storage.MongoDB.Tests
+namespace Bewit.Storage.MongoDB.Tests;
+
+public class BewitMongoOptionsTests
 {
-    public class BewitMongoOptionsTests
+    [Fact]
+    public void Defaults_ShouldBeCorrect()
     {
-        [Fact]
-        public void FieldInit_DummyValues_ShouldRestitureDummyValues()
-        {
-            //Arrange
-            const string collectionName = "foo";
-            const string connectionString = "bar";
-            const string databaseName = "baz";
+        var options = new BewitMongoOptions();
 
-            //Act
-            var options = new MongoNonceOptions
-            {
-                ConnectionString = connectionString,
-                DatabaseName = databaseName,
-                CollectionName = collectionName
-            };
+        options.CollectionName.Should().Be("bewit_nonces");
+        options.AuthType.Should().Be(MongoAuthType.Password);
+        options.NonceUsage.Should().Be(NonceUsage.OneTime);
+        options.RecordExpireAfterDays.Should().Be(730);
+    }
 
-            //Assert
-            options.CollectionName.Should().Be(collectionName);
-            options.ConnectionString.Should().Be(connectionString);
-            options.DatabaseName.Should().Be(databaseName);
-        }
+    [Fact]
+    public void MongoAuthType_Values_ShouldMatchMongoExtensions()
+    {
+        ((int)MongoAuthType.Password).Should().Be(0);
+        ((int)MongoAuthType.Oidc).Should().Be(1);
     }
 }

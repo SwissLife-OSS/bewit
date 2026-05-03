@@ -1,29 +1,31 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+namespace Bewit;
 
-#nullable enable
-
-namespace Bewit
+/// <summary>
+/// No-op implementation of <see cref="INonceRepository"/> for stateless
+/// <see cref="ExpiryMode.SelfContained"/> tokens that don't require persistence.
+/// </summary>
+internal sealed class DefaultNonceRepository : INonceRepository
 {
-    internal class DefaultNonceRepository : INonceRepository
-    {
-        private static readonly ValueTask EmptyTask = new ValueTask();
-        private static readonly ValueTask<Token?> EmptyToken = new ValueTask<Token?>(Token.Empty);
+    public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
 
-        public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken)
-        {
-            return EmptyTask;
-        }
+    public ValueTask<Token?> TakeOneAsync(Guid nonce, CancellationToken cancellationToken) =>
+        new(Token.Empty);
 
-        public ValueTask<Token?> TakeOneAsync(string token, CancellationToken cancellationToken)
-        {
-            return EmptyToken;
-        }
+    public ValueTask DeleteIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
+        throw new NotSupportedException(
+            "Bulk invalidation requires a persistent nonce repository (e.g., MongoDB).");
 
-        public ValueTask DeleteIdentifier(string identifier, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException("Only stateful bewit support invalidation");
-        }
-    }
+    public ValueTask<bool> ExtendExpiryAsync(
+        Guid nonce,
+        TimeSpan duration,
+        CancellationToken cancellationToken) =>
+        new(false);
+
+    public ValueTask<bool> UpdateExpiryAsync(
+        Guid nonce,
+        DateTime newExpiry,
+        CancellationToken cancellationToken) =>
+        throw new NotSupportedException(
+            "Expiry updates require a persistent nonce repository (e.g., MongoDB).");
 }

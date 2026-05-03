@@ -1,0 +1,90 @@
+using Bewit.Generation;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Xunit;
+
+namespace Bewit.IntegrationTests;
+
+public class EndToEndTests
+{
+    [Fact]
+    public async Task SelfContained_GenerateAndValidate_ShouldRoundTrip()
+    {
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o =>
+            {
+                o.Secret = "a-very-secret-key-at-least-32-chars!";
+                o.TokenDuration = TimeSpan.FromMinutes(5);
+                o.ExpiryMode = ExpiryMode.SelfContained;
+            });
+            bewit.AddPayload<string>();
+        });
+
+        services.AddBewitGeneration<string>();
+        services.AddBewitValidation<string>();
+
+        var sp = services.BuildServiceProvider();
+
+        var generator = sp.GetRequiredService<IBewitTokenGenerator<string>>();
+        var validator = sp.GetRequiredService<Bewit.Validation.IBewitTokenValidator<string>>();
+
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "integration-payload", null, CancellationToken.None);
+
+        string payload = await validator.ValidateBewitTokenAsync(
+            token, CancellationToken.None);
+
+        payload.Should().Be("integration-payload");
+    }
+
+    [Fact]
+    public async Task MultiPayload_DifferentSecrets_ShouldWork()
+    {
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.AddPayload<string>(p =>
+                p.ConfigureOptions(o =>
+                {
+                    o.Secret = "string-secret-at-least-32-chars-long!";
+                    o.TokenDuration = TimeSpan.FromMinutes(1);
+                }));
+
+            bewit.AddPayload<int>(p =>
+                p.ConfigureOptions(o =>
+                {
+                    o.Secret = "int-secret-at-least-32-chars-long!!!";
+                    o.TokenDuration = TimeSpan.FromMinutes(10);
+                }));
+        });
+
+        services.AddBewitGeneration<string>();
+        services.AddBewitGeneration<int>();
+        services.AddBewitValidation<string>();
+        services.AddBewitValidation<int>();
+
+        var sp = services.BuildServiceProvider();
+
+        var stringGen = sp.GetRequiredService<IBewitTokenGenerator<string>>();
+        var intGen = sp.GetRequiredService<IBewitTokenGenerator<int>>();
+        var stringVal = sp.GetRequiredService<Bewit.Validation.IBewitTokenValidator<string>>();
+        var intVal = sp.GetRequiredService<Bewit.Validation.IBewitTokenValidator<int>>();
+
+        BewitToken<string> strToken = await stringGen.GenerateBewitTokenAsync(
+            "hello", null, CancellationToken.None);
+
+        BewitToken<int> intToken = await intGen.GenerateBewitTokenAsync(
+            42, null, CancellationToken.None);
+
+        (await stringVal.ValidateBewitTokenAsync(strToken, CancellationToken.None))
+            .Should().Be("hello");
+
+        (await intVal.ValidateBewitTokenAsync(intToken, CancellationToken.None))
+            .Should().Be(42);
+    }
+}
