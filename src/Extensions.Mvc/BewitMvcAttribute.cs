@@ -2,6 +2,7 @@ using Bewit.Validation;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bewit.Extensions.Mvc;
 
@@ -12,7 +13,24 @@ public sealed class BewitMvcAttribute : Attribute, IAsyncActionFilter
         ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
-        string? bewitToken = context.HttpContext.Request.Query["bewit"];
+        var options = context.HttpContext.RequestServices
+            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
+        BewitTokenExtractionOptions config = options.Value;
+
+        string? bewitToken = null;
+
+        if (context.HttpContext.Request.Headers.TryGetValue(
+                config.HeaderName, out var headerValues)
+            && headerValues.Count > 0)
+        {
+            bewitToken = headerValues[0];
+        }
+
+        if (string.IsNullOrWhiteSpace(bewitToken))
+        {
+            bewitToken = context.HttpContext.Request.Query[config.QueryParamName];
+        }
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {

@@ -4,6 +4,7 @@ using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bewit.Extensions.HotChocolate;
 
@@ -28,10 +29,13 @@ internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
             return;
         }
 
+        var options = context.Services
+            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
         string? tokenString = null;
 
         if (httpContext.Items.TryGetValue(
-                BewitTokenConstants.ContextKey, out var tokenObj))
+                options.Value.ContextKey, out var tokenObj))
         {
             tokenString = tokenObj as string;
         }

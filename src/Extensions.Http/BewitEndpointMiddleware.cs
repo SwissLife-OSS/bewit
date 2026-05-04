@@ -2,14 +2,31 @@ using Bewit.Exceptions;
 using Bewit.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bewit.Http;
 
-internal sealed class BewitEndpointMiddleware<T>(RequestDelegate next) where T : notnull
+internal sealed class BewitEndpointMiddleware<T>(
+    RequestDelegate next,
+    IOptions<BewitTokenExtractionOptions> options) where T : notnull
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        string? bewitToken = context.Request.Query["bewit"];
+        BewitTokenExtractionOptions config = options.Value;
+
+        string? bewitToken = null;
+
+        if (context.Request.Headers.TryGetValue(
+                config.HeaderName, out var headerValues)
+            && headerValues.Count > 0)
+        {
+            bewitToken = headerValues[0];
+        }
+
+        if (string.IsNullOrWhiteSpace(bewitToken))
+        {
+            bewitToken = context.Request.Query[config.QueryParamName];
+        }
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {

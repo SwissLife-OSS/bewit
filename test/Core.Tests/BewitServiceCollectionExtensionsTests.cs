@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Bewit.Tests;
@@ -46,5 +47,46 @@ public class BewitServiceCollectionExtensionsTests
 
         stringRepo.Should().NotBeNull();
         intRepo.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AddBewit_WithoutConfigureTokenExtraction_ShouldRegisterDefaults()
+    {
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o => o.Secret = "test-secret-at-least-32-chars-long!");
+            bewit.AddPayload<string>();
+        });
+
+        var sp = services.BuildServiceProvider();
+        var options = sp.GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
+        options.Value.HeaderName.Should().Be("bewitToken");
+        options.Value.QueryParamName.Should().Be("bewit");
+    }
+
+    [Fact]
+    public void AddBewit_WithConfigureTokenExtraction_ShouldApplyCustomValues()
+    {
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o => o.Secret = "test-secret-at-least-32-chars-long!");
+            bewit.ConfigureTokenExtraction(o =>
+            {
+                o.HeaderName = "X-Custom-Token";
+                o.QueryParamName = "token";
+            });
+            bewit.AddPayload<string>();
+        });
+
+        var sp = services.BuildServiceProvider();
+        var options = sp.GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
+        options.Value.HeaderName.Should().Be("X-Custom-Token");
+        options.Value.QueryParamName.Should().Be("token");
     }
 }

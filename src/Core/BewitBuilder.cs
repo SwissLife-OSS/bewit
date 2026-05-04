@@ -12,6 +12,8 @@ public sealed class BewitBuilder
 
     internal Func<IServiceProvider, INonceRepository>? NonceRepositoryFactory { get; private set; }
 
+    internal Action<BewitTokenExtractionOptions>? TokenExtractionAction { get; private set; }
+
     internal List<Action<IServiceCollection>> PayloadRegistrations { get; } = [];
 
     internal BewitBuilder(IServiceCollection services)
@@ -52,6 +54,14 @@ public sealed class BewitBuilder
         PayloadRegistrations.Add(services =>
             PayloadRegistrationHelper.Register(
                 services, payloadBuilder, section, GlobalOptionsAction, builderFactory));
+
+        return this;
+    }
+
+    public BewitBuilder ConfigureTokenExtraction(
+        Action<BewitTokenExtractionOptions> configure)
+    {
+        TokenExtractionAction = configure;
 
         return this;
     }

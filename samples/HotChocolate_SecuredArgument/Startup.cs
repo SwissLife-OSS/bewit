@@ -91,7 +91,7 @@ namespace Host
             }
 
             app
-                .UseBewitTokenHeaderExtraction()
+                .UseBewitTokenExtraction()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {

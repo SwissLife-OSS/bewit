@@ -5,17 +5,33 @@ using Bewit.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bewit.Extensions.Mvc;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizationFilter
 {
-    private const string BewitQueryParam = "bewit";
-
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        string? bewitToken = context.HttpContext.Request.Query[BewitQueryParam];
+        var options = context.HttpContext.RequestServices
+            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
+        string queryParamName = options.Value.QueryParamName;
+
+        string? bewitToken = null;
+
+        if (context.HttpContext.Request.Headers.TryGetValue(
+                options.Value.HeaderName, out var headerValues)
+            && headerValues.Count > 0)
+        {
+            bewitToken = headerValues[0];
+        }
+
+        if (string.IsNullOrWhiteSpace(bewitToken))
+        {
+            bewitToken = context.HttpContext.Request.Query[queryParamName];
+        }
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {
@@ -42,7 +58,7 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
             return;
         }
 
-        string path = GetRelativeUrl(context);
+        string path = GetRelativeUrl(context, queryParamName);
 
         if (!string.Equals(path, payload, StringComparison.OrdinalIgnoreCase))
         {
@@ -50,14 +66,16 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
         }
     }
 
-    private static string GetRelativeUrl(AuthorizationFilterContext context)
+    private static string GetRelativeUrl(
+        AuthorizationFilterContext context,
+        string queryParamName)
     {
         string? path = context.HttpContext.Request.Path.Value?.ToLowerInvariant();
 
         NameValueCollection queryString = HttpUtility.ParseQueryString(
             context.HttpContext.Request.QueryString.Value ?? string.Empty);
 
-        queryString.Remove(BewitQueryParam);
+        queryString.Remove(queryParamName);
 
         if (queryString.Count != 0)
         {
