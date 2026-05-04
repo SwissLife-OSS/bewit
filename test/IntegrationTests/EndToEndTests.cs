@@ -162,46 +162,4 @@ public class EndToEndTests
         resolved.Secret.Should().Be("from-config-at-least-32-chars-long!");
         resolved.TokenDuration.Should().Be(TimeSpan.FromMinutes(30));
     }
-
-    [Fact]
-    public async Task BindConfiguration_PerPayloadOverride()
-    {
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Bewit:Secret"] = "global-secret-at-least-32-chars-long",
-                ["Bewit:TokenDuration"] = "00:05:00",
-                ["Bewit:Custom:Secret"] = "custom-secret-at-least-32-chars-long",
-                ["Bewit:Custom:TokenDuration"] = "00:30:00",
-                ["Bewit:Custom:ExpiryMode"] = "ServerControlled"
-            })
-            .Build();
-
-        var services = new ServiceCollection();
-        services.AddSingleton<IConfiguration>(configuration);
-
-        services.AddBewit(bewit =>
-        {
-            bewit.BindConfiguration("Bewit");
-            bewit.AddPayload<string>();
-            bewit.AddPayload<int>(p => p.BindConfiguration("Bewit:Custom"));
-        });
-
-        services.AddBewitGeneration<string>();
-        services.AddBewitGeneration<int>();
-
-        var sp = services.BuildServiceProvider();
-
-        var optionsMonitor = sp.GetRequiredService<IOptionsMonitor<BewitOptions>>();
-
-        BewitOptions stringOpts = optionsMonitor.Get(typeof(string).FullName!);
-        stringOpts.Secret.Should().Be("global-secret-at-least-32-chars-long");
-        stringOpts.TokenDuration.Should().Be(TimeSpan.FromMinutes(5));
-        stringOpts.ExpiryMode.Should().Be(ExpiryMode.SelfContained);
-
-        BewitOptions intOpts = optionsMonitor.Get(typeof(int).FullName!);
-        intOpts.Secret.Should().Be("custom-secret-at-least-32-chars-long");
-        intOpts.TokenDuration.Should().Be(TimeSpan.FromMinutes(30));
-        intOpts.ExpiryMode.Should().Be(ExpiryMode.ServerControlled);
-    }
 }

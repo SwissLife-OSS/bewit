@@ -34,7 +34,7 @@
     <PackageVersion Include="FluentAssertions" Version="7.2.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Snapshooter.Xunit" Version="0.14.1" />
-    <PackageVersion Include="Squadron.Mongo" Version="0.23.0" />
+    <PackageVersion Include="Squadron.Mongo" Version="1.0.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
   </ItemGroup>
 
