@@ -27,6 +27,7 @@ public sealed class BewitEndpointFilter<T> : IEndpointFilter
         }
 
         if (string.IsNullOrWhiteSpace(tokenString)
+            && config.Sources.HasFlag(BewitTokenSource.Header)
             && httpContext.Request.Headers.TryGetValue(
                 config.HeaderName, out var headerValues)
             && headerValues.Count > 0)
@@ -34,7 +35,8 @@ public sealed class BewitEndpointFilter<T> : IEndpointFilter
             tokenString = headerValues[0];
         }
 
-        if (string.IsNullOrWhiteSpace(tokenString))
+        if (string.IsNullOrWhiteSpace(tokenString)
+            && config.Sources.HasFlag(BewitTokenSource.QueryString))
         {
             tokenString = httpContext.Request.Query[config.QueryParamName];
         }

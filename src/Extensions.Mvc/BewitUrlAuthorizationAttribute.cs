@@ -21,14 +21,16 @@ public sealed class BewitUrlAuthorizationAttribute : Attribute, IAsyncAuthorizat
 
         string? bewitToken = null;
 
-        if (context.HttpContext.Request.Headers.TryGetValue(
+        if (options.Value.Sources.HasFlag(BewitTokenSource.Header)
+            && context.HttpContext.Request.Headers.TryGetValue(
                 options.Value.HeaderName, out var headerValues)
             && headerValues.Count > 0)
         {
             bewitToken = headerValues[0];
         }
 
-        if (string.IsNullOrWhiteSpace(bewitToken))
+        if (string.IsNullOrWhiteSpace(bewitToken)
+            && options.Value.Sources.HasFlag(BewitTokenSource.QueryString))
         {
             bewitToken = context.HttpContext.Request.Query[queryParamName];
         }

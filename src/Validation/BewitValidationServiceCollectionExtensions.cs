@@ -31,4 +31,60 @@ public static class BewitValidationServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddBewitValidation<T1, T2>(
+        this IServiceCollection services)
+        where T1 : notnull
+        where T2 : notnull
+    {
+        services.AddBewitValidation<T1>();
+        services.AddBewitValidation<T2>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddBewitValidation<T1, T2, T3>(
+        this IServiceCollection services)
+        where T1 : notnull
+        where T2 : notnull
+        where T3 : notnull
+    {
+        services.AddBewitValidation<T1>();
+        services.AddBewitValidation<T2>();
+        services.AddBewitValidation<T3>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddBewitValidation<T1, T2, T3, T4>(
+        this IServiceCollection services)
+        where T1 : notnull
+        where T2 : notnull
+        where T3 : notnull
+        where T4 : notnull
+    {
+        services.AddBewitValidation<T1>();
+        services.AddBewitValidation<T2>();
+        services.AddBewitValidation<T3>();
+        services.AddBewitValidation<T4>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddBewitValidation<T1, T2, T3, T4, T5>(
+        this IServiceCollection services)
+        where T1 : notnull
+        where T2 : notnull
+        where T3 : notnull
+        where T4 : notnull
+        where T5 : notnull
+    {
+        services.AddBewitValidation<T1>();
+        services.AddBewitValidation<T2>();
+        services.AddBewitValidation<T3>();
+        services.AddBewitValidation<T4>();
+        services.AddBewitValidation<T5>();
+
+        return services;
+    }
 }

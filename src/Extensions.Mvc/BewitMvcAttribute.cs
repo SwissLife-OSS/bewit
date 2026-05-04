@@ -20,14 +20,16 @@ public sealed class BewitMvcAttribute : Attribute, IAsyncActionFilter
 
         string? bewitToken = null;
 
-        if (context.HttpContext.Request.Headers.TryGetValue(
+        if (config.Sources.HasFlag(BewitTokenSource.Header)
+            && context.HttpContext.Request.Headers.TryGetValue(
                 config.HeaderName, out var headerValues)
             && headerValues.Count > 0)
         {
             bewitToken = headerValues[0];
         }
 
-        if (string.IsNullOrWhiteSpace(bewitToken))
+        if (string.IsNullOrWhiteSpace(bewitToken)
+            && config.Sources.HasFlag(BewitTokenSource.QueryString))
         {
             bewitToken = context.HttpContext.Request.Query[config.QueryParamName];
         }

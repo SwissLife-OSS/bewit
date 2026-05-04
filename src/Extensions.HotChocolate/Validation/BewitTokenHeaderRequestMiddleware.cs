@@ -13,14 +13,16 @@ internal sealed class BewitTokenExtractionMiddleware(
 
         string? token = null;
 
-        if (context.Request.Headers.TryGetValue(
+        if (config.Sources.HasFlag(BewitTokenSource.Header)
+            && context.Request.Headers.TryGetValue(
                 config.HeaderName, out var headerValues)
             && headerValues.Count > 0)
         {
             token = headerValues[0];
         }
 
-        if (string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token)
+            && config.Sources.HasFlag(BewitTokenSource.QueryString))
         {
             token = context.Request.Query[config.QueryParamName];
         }
