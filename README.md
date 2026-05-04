@@ -298,8 +298,63 @@ public static async Task<NominationDto> AssignNomineeAsync(
 ### Setup
 
 ```csharp
-app.UseBewitTokenHeaderExtraction();
+app.UseBewitTokenExtraction();
 ```
+
+## HTTP Endpoint Integration
+
+```bash
+dotnet add package Bewit.Http
+```
+
+Protect minimal API or middleware-based endpoints:
+```csharp
+app.UseBewitEndpointAuthorization<MyPayload>();
+```
+
+The middleware validates the token from the configured header or query parameter and makes the payload available via `GetBewitPayload<T>()`.
+
+## Token Extraction
+
+All extensions (HotChocolate, Http, Mvc) read the bewit token from the same configurable sources: an HTTP **header** and/or a **query parameter**. Header takes precedence when both are present.
+
+Defaults match the v6.x behavior:
+- Header: `bewitToken`
+- Query parameter: `bewit`
+
+### Code configuration
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureTokenExtraction(o =>
+    {
+        o.HeaderName = "X-Custom-Token";
+        o.QueryParamName = "token";
+    });
+
+    bewit.AddPayload<string>();
+});
+```
+
+### appsettings.json
+```json
+{
+  "Bewit:TokenExtraction": {
+    "HeaderName": "X-Custom-Token",
+    "QueryParamName": "token"
+  }
+}
+```
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindTokenExtractionConfiguration("Bewit:TokenExtraction");
+    bewit.AddPayload<string>();
+});
+```
+
+Both can be combined — `BindTokenExtractionConfiguration` loads from appsettings first, then `ConfigureTokenExtraction` overrides specific values (standard .NET options layering).
 
 ## MVC Integration
 
@@ -325,9 +380,9 @@ public IActionResult Download(string id) { ... }
 | `Bewit.Extensions.Mvc` | MVC filters and parameter binding |
 | `Bewit.Http` | Minimal API endpoint authorization |
 
-## Migration from v1.x
+## Migration
 
-See [Migration Guide](docs/migration-guide.md).
+See [Migration Guide v7](docs/migration-guide-v7.md).
 
 ## Community
 

@@ -10,11 +10,4 @@ public static class BewitHotChocolateServiceCollectionExtensions
     {
         return app.UseMiddleware<BewitTokenExtractionMiddleware>();
     }
-
-    [Obsolete("Use UseBewitTokenExtraction instead.")]
-    public static IApplicationBuilder UseBewitTokenHeaderExtraction(
-        this IApplicationBuilder app)
-    {
-        return app.UseBewitTokenExtraction();
-    }
 }

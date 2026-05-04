@@ -15,16 +15,23 @@ public static class BewitServiceCollectionExtensions
         services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
         services.AddHttpContextAccessor();
 
+        var optionsBuilder = services
+            .AddOptions<BewitTokenExtractionOptions>();
+
+        if (builder.TokenExtractionConfigSection is not null)
+        {
+            optionsBuilder.BindConfiguration(
+                builder.TokenExtractionConfigSection);
+        }
+
         if (builder.TokenExtractionAction is not null)
         {
-            services.Configure(builder.TokenExtractionAction);
+            optionsBuilder.Configure(builder.TokenExtractionAction);
         }
-        else
-        {
-            services.TryAddSingleton(
-                Microsoft.Extensions.Options.Options.Create(
-                    new BewitTokenExtractionOptions()));
-        }
+
+        optionsBuilder
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         foreach (Action<IServiceCollection> registration in builder.PayloadRegistrations)
         {

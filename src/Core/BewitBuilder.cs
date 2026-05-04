@@ -14,6 +14,8 @@ public sealed class BewitBuilder
 
     internal Action<BewitTokenExtractionOptions>? TokenExtractionAction { get; private set; }
 
+    internal string? TokenExtractionConfigSection { get; private set; }
+
     internal List<Action<IServiceCollection>> PayloadRegistrations { get; } = [];
 
     internal BewitBuilder(IServiceCollection services)
@@ -62,6 +64,13 @@ public sealed class BewitBuilder
         Action<BewitTokenExtractionOptions> configure)
     {
         TokenExtractionAction = configure;
+
+        return this;
+    }
+
+    public BewitBuilder BindTokenExtractionConfiguration(string sectionPath)
+    {
+        TokenExtractionConfigSection = sectionPath;
 
         return this;
     }

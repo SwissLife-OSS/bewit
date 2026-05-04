@@ -16,6 +16,8 @@
 | MongoDB Driver | 2.x | 3.0+ |
 | HttpContextAccessor | Manual `services.AddHttpContextAccessor()` | Auto-registered by `AddBewit()` |
 | Startup validation | None | `ServerControlled` without nonce repo fails at startup |
+| Token extraction | Hardcoded header/query per extension | Unified `BewitTokenExtractionOptions` with header + query fallback |
+| HotChocolate setup | `UseBewitTokenHeaderExtraction()` | `UseBewitTokenExtraction()` |
 
 ## DI Registration Migration
 
@@ -245,3 +247,55 @@ services.AddBewit(bewit =>
 | `PayloadBuilder.UseSlidingWindow(TimeSpan)` | `ConfigureOptions(o => o.SlidingWindow = ...)` |
 | `PayloadBuilder.WithTokenDuration(TimeSpan)` | `ConfigureOptions(o => o.TokenDuration = ...)` |
 | `UseMongoPersistence(config, ...)` | `UseMongoDb(...)` on `BewitBuilder` or `PayloadBuilder<T>` |
+| `BewitTokenConstants` | `BewitTokenExtractionOptions` (configurable via options pattern) |
+| `UseBewitTokenHeaderExtraction()` | `UseBewitTokenExtraction()` |
+
+## Token Extraction Migration
+
+In v6.x, the HotChocolate extension used a hardcoded `bewitToken` header and the Http extension used a hardcoded `bewit` query parameter. These were not configurable.
+
+In v7.0, all extensions (HotChocolate, Http, Mvc) use `BewitTokenExtractionOptions` — a shared, configurable options class that follows the standard .NET options pattern.
+
+### Before (v6.x)
+```csharp
+// HotChocolate — header only, hardcoded name
+app.UseBewitTokenHeaderExtraction();
+
+// Http — query param only, hardcoded name
+app.UseBewitEndpointAuthorization<T>();
+
+// Mvc — query param only, hardcoded name
+[BewitUrlAuthorization]
+```
+
+### After (v7.0)
+```csharp
+// HotChocolate — reads header first, then query param
+app.UseBewitTokenExtraction();
+
+// Http — reads header first, then query param
+app.UseBewitEndpointAuthorization<T>();
+
+// Mvc — reads header first, then query param
+[BewitUrlAuthorization]
+```
+
+All three now check **header first, then fall back to query parameter**. Default names are unchanged (`bewitToken` header, `bewit` query param), so existing consumers work without config changes.
+
+### Custom token extraction
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureTokenExtraction(o =>
+    {
+        o.HeaderName = "X-Custom-Token";
+        o.QueryParamName = "token";
+    });
+    // or from appsettings.json:
+    bewit.BindTokenExtractionConfiguration("Bewit:TokenExtraction");
+
+    bewit.AddPayload<string>();
+});
+```
+
+`BewitTokenExtractionOptions` supports full .NET options layering: `Bind` → `Configure` → `PostConfigure`, with `ValidateDataAnnotations` and `ValidateOnStart`.

@@ -113,7 +113,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         await middleware.InvokeAsync(context);
 
-        context.Items["bewitToken"].Should().Be("custom-header-token");
+        context.Items["X-My-Token"].Should().Be("custom-header-token");
     }
 
     [Fact]
