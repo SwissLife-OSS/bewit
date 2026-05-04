@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bewit;
 using Bewit.Generation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Host.Types
 {
@@ -10,23 +9,23 @@ namespace Host.Types
     {
         private readonly IBewitTokenGenerator<FooPayload> _fooPayloadGenerator;
         private readonly IBewitTokenGenerator<BarPayload> _barPayloadGenerator;
-        private readonly INonceRepository _barNonceRepository;
+        private readonly IBewitTokenRevoker<BarPayload> _barRevoker;
 
         public Mutation(
             IBewitTokenGenerator<FooPayload> fooPayloadGenerator,
             IBewitTokenGenerator<BarPayload> barPayloadGenerator,
-            [FromKeyedServices("Host.Types.BarPayload")] INonceRepository barNonceRepository)
+            IBewitTokenRevoker<BarPayload> barRevoker)
         {
             _fooPayloadGenerator = fooPayloadGenerator;
             _barPayloadGenerator = barPayloadGenerator;
-            _barNonceRepository = barNonceRepository;
+            _barRevoker = barRevoker;
         }
 
         public async Task<string> InvalidateBewitTokens(
             string identifier,
             CancellationToken cancellationToken)
         {
-            await _barNonceRepository.DeleteIdentifierAsync(identifier, cancellationToken);
+            await _barRevoker.RevokeByIdentifierAsync(identifier, cancellationToken);
 
             return identifier;
         }

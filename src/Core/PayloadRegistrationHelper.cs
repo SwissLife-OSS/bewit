@@ -8,13 +8,23 @@ internal static class PayloadRegistrationHelper
     public static void Register<T>(
         IServiceCollection services,
         PayloadBuilder<T> builder,
+        string? globalConfigurationSection,
         Action<BewitOptions>? globalOptions,
         Func<IServiceProvider, INonceRepository>? builderNonceRepositoryFactory)
         where T : notnull
     {
         string optionsName = typeof(T).FullName ?? typeof(T).Name;
 
-        services.AddOptions<BewitOptions>(optionsName)
+        var optionsBuilder = services.AddOptions<BewitOptions>(optionsName);
+
+        string? section = builder.ConfigurationSection ?? globalConfigurationSection;
+
+        if (section is not null)
+        {
+            optionsBuilder.BindConfiguration(section);
+        }
+
+        optionsBuilder
             .Configure(o =>
             {
                 globalOptions?.Invoke(o);
@@ -28,11 +38,13 @@ internal static class PayloadRegistrationHelper
         Func<IServiceProvider, INonceRepository>? factory =
             builder.NonceRepositoryFactory ?? builderNonceRepositoryFactory;
 
-        if (factory is not null)
+        bool hasRealNonceRepo = factory is not null;
+
+        if (hasRealNonceRepo)
         {
             services.AddKeyedSingleton<INonceRepository>(
                 optionsName,
-                (sp, _) => factory(sp));
+                (sp, _) => factory!(sp));
         }
         else
         {
@@ -40,5 +52,15 @@ internal static class PayloadRegistrationHelper
                 optionsName,
                 new DefaultNonceRepository());
         }
+
+        services.AddSingleton<IValidateOptions<BewitOptions>>(
+            new BewitNonceRequirementValidator(optionsName, hasRealNonceRepo));
+
+        services.AddSingleton<IBewitTokenRevoker<T>>(sp =>
+        {
+            var repo = sp.GetRequiredKeyedService<INonceRepository>(optionsName);
+
+            return new BewitTokenRevoker<T>(repo);
+        });
     }
 }

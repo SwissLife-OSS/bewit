@@ -7,13 +7,15 @@
 | Target Framework | net8.0 | net10.0 |
 | Serialization | Newtonsoft.Json | System.Text.Json |
 | Nullable | disabled | enabled |
-| Configuration | Manual `BewitOptions` / `IConfiguration` | `IOptions<T>` pattern with validation |
+| Configuration | Manual `BewitOptions` / `IConfiguration` | `BindConfiguration` + `ConfigureOptions` with `IOptions<T>` validation |
 | DI Registration | 11+ overloads across projects | Single `services.AddBewit(Action<BewitBuilder>)` |
 | Crypto signature | `GetHash<T>(string, DateTime, T)` | `GetHash<T>(Guid, DateTime?, T)` |
 | Token class | mutable | immutable class with factory method |
 | Nonce repository | `InsertOneAsync` / `TakeOneAsync` | + `ExtendExpiryAsync`, `UpdateExpiryAsync`, `DeleteIdentifierAsync` |
 | HotChocolate | 15.0.0 | 15.1.11 |
 | MongoDB Driver | 2.x | 3.0+ |
+| HttpContextAccessor | Manual `services.AddHttpContextAccessor()` | Auto-registered by `AddBewit()` |
+| Startup validation | None | `ServerControlled` without nonce repo fails at startup |
 
 ## DI Registration Migration
 
@@ -73,15 +75,28 @@ services.AddBewitValidation<MyCustomPayload>();
 ```
 
 ### After (v7.0)
-Configuration is done via code with `IOptions<BewitOptions>`. Each payload type can have its own options:
-```csharp
-bewit.AddPayload<string>(p => p.ConfigureOptions(o =>
+
+`appsettings.json` stays the same:
+```json
 {
-    o.Secret = "secret-for-strings";
-    o.TokenDuration = TimeSpan.FromMinutes(1);
-    o.ExpiryMode = ExpiryMode.SelfContained;
-}));
+  "Bewit": {
+    "Secret": "your-secret-at-least-32-chars!",
+    "TokenDuration": "00:05:00",
+    "ExpiryMode": "SelfContained"
+  }
+}
 ```
+
+Bind it via the builder:
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindConfiguration("Bewit");
+    bewit.AddPayload<string>();
+});
+```
+
+For all configuration options (code overrides, per-payload sections, code-only) see the [README](../README.md#configuration).
 
 ## MongoDB Migration
 
@@ -133,7 +148,8 @@ bewit.UseMongoDb(sp => sp.GetRequiredService<IMyDbContext>().Database);
 ## New Features
 
 ### Server-Controlled Expiry
-Expiry lives in the database, not in the token. Admins can extend or revoke tokens:
+Expiry lives in the database, not in the token. Admins can extend or revoke tokens.
+Requires a persistent nonce repository (`UseMongoDb()` or `UseNonceRepository()`) — the app will fail at startup if none is configured:
 ```csharp
 bewit.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled);
 // or per-payload:
@@ -141,11 +157,19 @@ p.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled);
 ```
 
 ### Sliding Window
-Token expiry is extended on each successful validation:
+Token expiry is extended on each successful validation.
+Only applies to `ExpiryMode.ServerControlled` with a persistent nonce repository — the app will fail at startup if misconfigured:
 ```csharp
 bewit.ConfigureOptions(o => o.SlidingWindow = TimeSpan.FromMinutes(30));
 // or per-payload:
 p.ConfigureOptions(o => o.SlidingWindow = TimeSpan.FromMinutes(30));
+```
+
+### Token Revocation
+Type-safe revocation via `IBewitTokenRevoker<T>`:
+```csharp
+IBewitTokenRevoker<BarPayload> revoker
+await revoker.RevokeByIdentifierAsync(identifier, ct);
 ```
 
 ### `[Bewit<T>]` Attribute (HotChocolate)

@@ -6,6 +6,8 @@ public sealed class BewitBuilder
 {
     internal IServiceCollection Services { get; }
 
+    internal string? ConfigurationSection { get; private set; }
+
     internal Action<BewitOptions>? GlobalOptionsAction { get; private set; }
 
     internal Func<IServiceProvider, INonceRepository>? NonceRepositoryFactory { get; private set; }
@@ -15,6 +17,13 @@ public sealed class BewitBuilder
     internal BewitBuilder(IServiceCollection services)
     {
         Services = services;
+    }
+
+    public BewitBuilder BindConfiguration(string sectionPath)
+    {
+        ConfigurationSection = sectionPath;
+
+        return this;
     }
 
     public BewitBuilder ConfigureOptions(Action<BewitOptions> configure)
@@ -38,10 +47,11 @@ public sealed class BewitBuilder
         configure?.Invoke(payloadBuilder);
 
         Func<IServiceProvider, INonceRepository>? builderFactory = NonceRepositoryFactory;
+        string? section = ConfigurationSection;
 
         PayloadRegistrations.Add(services =>
             PayloadRegistrationHelper.Register(
-                services, payloadBuilder, GlobalOptionsAction, builderFactory));
+                services, payloadBuilder, section, GlobalOptionsAction, builderFactory));
 
         return this;
     }

@@ -42,7 +42,6 @@ namespace Host
 
             services.AddBewitGeneration<string>();
             services.AddBewitValidation<string>();
-            services.AddHttpContextAccessor();
 
             services
                 .AddGraphQLServer()

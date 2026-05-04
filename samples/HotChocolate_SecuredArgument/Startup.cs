@@ -70,7 +70,6 @@ namespace Host
             services.AddBewitGeneration<BazPayload>();
             services.AddBewitValidation<FooPayload>();
             services.AddBewitValidation<BarPayload>();
-            services.AddHttpContextAccessor();
 
             services
                 .AddGraphQLServer()

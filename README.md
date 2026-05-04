@@ -7,8 +7,9 @@ Bewit enables authentication in use cases where cookies and auth headers can't b
 ## Features
 
 - **Self-Contained tokens** — expiry embedded in the token (stateless)
-- **Server-Controlled tokens** — expiry managed in the database (admin can extend/revoke)
-- **Sliding window** — token expiry extends on each successful validation
+- **Server-Controlled tokens** — expiry managed in the database; requires `UseMongoDb()` or `UseNonceRepository()`
+- **Sliding window** — token expiry extends on each successful validation (server-controlled only)
+- **Token revocation** — type-safe `IBewitTokenRevoker<T>` to revoke tokens by identifier
 - **Multi-tenancy** — different secrets and modes per payload type
 - **MongoDB persistence** — with OIDC auth support (Azure.Identity)
 - **HotChocolate integration** — `[Bewit<T>]` attribute for GraphQL resolvers
@@ -27,6 +28,29 @@ dotnet add package Bewit.Validation
 
 ### Registration
 
+**From appsettings.json:**
+```json
+{
+  "Bewit": {
+    "Secret": "your-secret-at-least-32-chars!",
+    "TokenDuration": "00:05:00",
+    "ExpiryMode": "SelfContained"
+  }
+}
+```
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindConfiguration("Bewit");
+    bewit.AddPayload<string>();
+});
+
+services.AddBewitGeneration<string>();
+services.AddBewitValidation<string>();
+```
+
+**Or code-only:**
 ```csharp
 services.AddBewit(bewit =>
 {
@@ -42,6 +66,86 @@ services.AddBewit(bewit =>
 
 services.AddBewitGeneration<string>();
 services.AddBewitValidation<string>();
+```
+
+Both can be combined — `BindConfiguration` loads from appsettings first, then `ConfigureOptions` overrides specific values.
+
+## Configuration
+
+v7.0 supports `appsettings.json` binding, code-based configuration, or both. When combined, code wins (standard .NET options layering: Bind → Configure → PostConfigure).
+
+### From appsettings.json
+```json
+{
+  "Bewit": {
+    "Secret": "your-secret-at-least-32-chars!",
+    "TokenDuration": "00:05:00",
+    "ExpiryMode": "SelfContained"
+  }
+}
+```
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindConfiguration("Bewit");
+    bewit.AddPayload<string>();
+});
+```
+
+### Code overrides on top of config
+
+Aspire-friendly — `IConfiguration` is read at resolve time, not registration time:
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindConfiguration("Bewit");
+    bewit.ConfigureOptions(o =>
+    {
+        o.TokenDuration = TimeSpan.FromMinutes(30); // overrides appsettings value
+    });
+    bewit.AddPayload<string>();
+});
+```
+
+### Per-payload config section
+
+Each payload type can bind to its own config section:
+```json
+{
+  "Bewit": {
+    "Secret": "global-secret",
+    "TokenDuration": "00:05:00"
+  },
+  "Bewit:Downloads": {
+    "Secret": "download-secret",
+    "TokenDuration": "00:01:00",
+    "ExpiryMode": "ServerControlled"
+  }
+}
+```
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.BindConfiguration("Bewit");
+    bewit.AddPayload<string>();
+    bewit.AddPayload<DownloadPayload>(p =>
+        p.BindConfiguration("Bewit:Downloads")); // overrides global section
+});
+```
+
+### Code-only (no appsettings)
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.ConfigureOptions(o =>
+    {
+        o.Secret = "your-secret";
+        o.TokenDuration = TimeSpan.FromMinutes(5);
+    });
+    bewit.AddPayload<string>();
+});
 ```
 
 ### Generate a Token
@@ -62,6 +166,10 @@ string payload = await validator.ValidateBewitTokenAsync(token, cancellationToke
 ```
 
 ## Server-Controlled Tokens with Sliding Window
+
+Both `ExpiryMode.ServerControlled` and `SlidingWindow` require a persistent nonce repository.
+The app fails at startup if `ServerControlled` is set without `UseMongoDb()` / `UseNonceRepository()`,
+or if `SlidingWindow` is set without `ServerControlled`.
 
 ```csharp
 services.AddBewit(bewit =>
@@ -84,6 +192,22 @@ services.AddBewit(bewit =>
 });
 ```
 
+## Token Revocation
+
+Inject `IBewitTokenRevoker<T>` to revoke all tokens for an identifier — no keyed DI magic strings needed:
+
+```csharp
+public class Mutation(IBewitTokenRevoker<BarPayload> revoker)
+{
+    public async Task<string> InvalidateTokens(string identifier, CancellationToken ct)
+    {
+        await revoker.RevokeByIdentifierAsync(identifier, ct);
+
+        return identifier;
+    }
+}
+```
+
 ## MongoDB with OIDC (Azure Cosmos DB)
 
 ```csharp
@@ -96,11 +220,26 @@ bewit.UseMongoDb(mongo =>
 });
 ```
 
-Or reuse an existing `IMongoDatabase` from DI:
+Or reuse an existing `IMongoDatabase` from DI — the recommended approach when the service already uses [`MongoDB.Extensions.Context`](https://github.com/SwissLife-OSS/mongo-extensions):
 
 ```csharp
-bewit.UseMongoDb(sp => sp.GetRequiredService<IMyDbContext>().Database);
+// Register the context once
+services.AddMongoDbContext<MyDbContext, IMyDbContext>(
+    configurationSection: "MongoDb");
+
+// Bewit reuses its IMongoDatabase — no second connection opened
+services.AddBewit(bewit =>
+{
+    bewit.UseMongoDb(
+        sp => sp.GetRequiredService<IMyDbContext>().Database,
+        mongo => { mongo.NonceUsage = NonceUsage.OneTime; });
+
+    bewit.AddPayload<MyPayload>(p =>
+        p.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled));
+});
 ```
+
+This shares the connection pool and inherits the convention packs, serializer registrations, and read/write concerns configured on the context.
 
 ## Multiple Payloads with Shared MongoDB
 

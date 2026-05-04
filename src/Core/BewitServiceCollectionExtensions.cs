@@ -13,6 +13,7 @@ public static class BewitServiceCollectionExtensions
         configure(builder);
 
         services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
+        services.AddHttpContextAccessor();
 
         foreach (Action<IServiceCollection> registration in builder.PayloadRegistrations)
         {
