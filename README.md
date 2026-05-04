@@ -307,12 +307,26 @@ app.UseBewitTokenExtraction();
 dotnet add package Bewit.Http
 ```
 
-Protect minimal API or middleware-based endpoints:
+### Minimal API — Endpoint Filter (recommended)
+
+Apply authorization to individual routes or route groups:
+```csharp
+app.MapGet("/files/{id}", (string id) => ...)
+    .AddBewitAuthorization<MyPayload>();
+
+// or protect a group of endpoints:
+app.MapGroup("/api/files")
+    .AddBewitAuthorization<MyPayload>();
+```
+
+The filter validates the token from the configured header, query parameter, or pre-extracted `HttpContext.Items` entry, and makes the payload available via `GetBewitPayload<T>()`.
+
+### Middleware (global)
+
+Protect all endpoints via middleware:
 ```csharp
 app.UseBewitEndpointAuthorization<MyPayload>();
 ```
-
-The middleware validates the token from the configured header or query parameter and makes the payload available via `GetBewitPayload<T>()`.
 
 ## Token Extraction
 
