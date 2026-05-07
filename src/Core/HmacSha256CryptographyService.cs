@@ -28,7 +28,8 @@ internal sealed class HmacSha256CryptographyService : ICryptographyService
         {
             nonce,
             expirationDate,
-            payload
+            payload,
+            type = typeof(T).FullName
         };
 
         var contentBytes = Encoding.UTF8.GetBytes(
