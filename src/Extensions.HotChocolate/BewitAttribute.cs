@@ -18,7 +18,7 @@ public sealed class BewitAttribute<T> : ObjectFieldDescriptorAttribute
     protected override void OnConfigure(
         IDescriptorContext context,
         IObjectFieldDescriptor descriptor,
-        MemberInfo member)
+        MemberInfo? member)
     {
         descriptor.AuthorizeBewit<T>();
 
