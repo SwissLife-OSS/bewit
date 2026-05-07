@@ -1,7 +1,5 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Xunit;
@@ -34,8 +32,7 @@ public class BewitTokenExtractionMiddlewareTests
 
                 return Task.CompletedTask;
             },
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
@@ -51,8 +48,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
@@ -68,8 +64,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
@@ -83,8 +78,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
@@ -100,8 +94,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
@@ -116,8 +109,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(o => o.HeaderName = "X-My-Token"),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions(o => o.HeaderName = "X-My-Token"));
 
         await middleware.InvokeAsync(context);
 
@@ -132,8 +124,7 @@ public class BewitTokenExtractionMiddlewareTests
 
         var middleware = new BewitTokenExtractionMiddleware(
             _ => Task.CompletedTask,
-            CreateOptions(o => o.QueryParamName = "token"),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions(o => o.QueryParamName = "token"));
 
         await middleware.InvokeAsync(context);
 
@@ -153,8 +144,7 @@ public class BewitTokenExtractionMiddlewareTests
 
                 return Task.CompletedTask;
             },
-            CreateOptions(),
-            NullLogger<BewitTokenExtractionMiddleware>.Instance);
+            CreateOptions());
 
         await middleware.InvokeAsync(context);
 
