@@ -15,12 +15,6 @@ internal sealed class DefaultNonceRepository : INonceRepository
     public ValueTask DeleteIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
         throw new NotSupportedException(Message);
 
-    public ValueTask<bool> ExtendExpiryAsync(
-        Guid nonce,
-        TimeSpan duration,
-        CancellationToken cancellationToken) =>
-        throw new NotSupportedException(Message);
-
     public ValueTask<bool> UpdateExpiryAsync(
         Guid nonce,
         DateTime newExpiry,

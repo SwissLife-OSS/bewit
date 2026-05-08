@@ -16,7 +16,6 @@ namespace Bewit;
 ///         o.Secret = "my-secret-key";
 ///         o.TokenDuration = TimeSpan.FromMinutes(5);
 ///         o.ExpiryMode = ExpiryMode.ServerControlled;
-///         o.SlidingWindow = TimeSpan.FromMinutes(30);
 ///     });
 /// });
 /// </code>
@@ -43,12 +42,6 @@ public sealed class BewitOptions
     /// Default is <see cref="ExpiryMode.SelfContained"/>.
     /// </summary>
     public ExpiryMode ExpiryMode { get; set; } = ExpiryMode.SelfContained;
-
-    /// <summary>
-    /// When set, the nonce expiry is extended by this duration on each successful validation.
-    /// Only applies when the nonce repository supports it (e.g., MongoDB storage).
-    /// </summary>
-    public TimeSpan? SlidingWindow { get; set; }
 }
 
 /// <summary>

@@ -40,17 +40,6 @@ public class DefaultNonceRepositoryTests
     }
 
     [Fact]
-    public async Task ExtendExpiryAsync_ShouldThrowNotSupportedException()
-    {
-        Func<Task> act = () => _sut
-            .ExtendExpiryAsync(Guid.NewGuid(), TimeSpan.FromMinutes(1), CancellationToken.None)
-            .AsTask();
-
-        await act.Should().ThrowAsync<NotSupportedException>()
-            .WithMessage("*persistent nonce repository*");
-    }
-
-    [Fact]
     public async Task UpdateExpiryAsync_ShouldThrowNotSupportedException()
     {
         Func<Task> act = () => _sut

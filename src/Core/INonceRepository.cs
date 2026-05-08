@@ -13,9 +13,6 @@ namespace Bewit;
 /// // Validate and consume a nonce
 /// var nonce = await repository.TakeOneAsync(nonceId, cancellationToken);
 ///
-/// // Extend expiry for sliding window
-/// await repository.ExtendExpiryAsync(nonceId, TimeSpan.FromMinutes(30), cancellationToken);
-///
 /// // Admin extends share link expiry
 /// await repository.UpdateExpiryAsync(nonceId, newExpiresAt, cancellationToken);
 ///
@@ -43,16 +40,6 @@ public interface INonceRepository
     /// Used for bulk revocation (e.g., revoke all tokens for a user or share link).
     /// </summary>
     ValueTask DeleteIdentifierAsync(string identifier, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Extends the expiry of a nonce record by the specified duration from now.
-    /// Used for sliding window session extension.
-    /// Returns <c>true</c> if the record was found and updated, <c>false</c> otherwise.
-    /// </summary>
-    ValueTask<bool> ExtendExpiryAsync(
-        Guid nonce,
-        TimeSpan duration,
-        CancellationToken cancellationToken);
 
     /// <summary>
     /// Sets the expiry of a nonce record to an absolute date.

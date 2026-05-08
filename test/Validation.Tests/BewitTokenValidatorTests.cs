@@ -134,43 +134,6 @@ public class BewitTokenValidatorTests
         await act.Should().ThrowAsync<BewitNotFoundException>();
     }
 
-    [Fact]
-    public async Task ValidateBewitToken_ServerControlled_SlidingWindow_ShouldExtendExpiry()
-    {
-        var options = Options.Create(new BewitOptions
-        {
-            Secret = Secret,
-            TokenDuration = TimeSpan.FromMinutes(5),
-            ExpiryMode = ExpiryMode.ServerControlled,
-            SlidingWindow = TimeSpan.FromMinutes(30)
-        });
-
-        var variables = CreateVariablesProvider(FixedUtcNow);
-        var nonceRepo = new Mock<INonceRepository>();
-
-        nonceRepo.Setup(r => r.InsertOneAsync(It.IsAny<Token>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
-
-        nonceRepo.Setup(r => r.TakeOneAsync(FixedNonce, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Token.Create(FixedNonce, FixedUtcNow.AddMinutes(5)));
-
-        nonceRepo.Setup(r => r.ExtendExpiryAsync(
-                FixedNonce, TimeSpan.FromMinutes(30), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
-
-        var generator = CreateGenerator(options, nonceRepo.Object, variables);
-        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
-            "payload", null, CancellationToken.None);
-
-        var validator = CreateValidator(options, nonceRepo.Object, variables);
-        await validator.ValidateBewitTokenAsync(token, CancellationToken.None);
-
-        nonceRepo.Verify(
-            r => r.ExtendExpiryAsync(
-                FixedNonce, TimeSpan.FromMinutes(30), It.IsAny<CancellationToken>()),
-            Times.Once);
-    }
-
     private static IOptions<BewitOptions> CreateOptions(
         ExpiryMode mode,
         TimeSpan? duration = null) =>

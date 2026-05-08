@@ -11,7 +11,7 @@
 | DI Registration | 11+ overloads across projects | Single `services.AddBewit(Action<BewitBuilder>)` |
 | Crypto signature | `GetHash<T>(string, DateTime, T)` | `GetHash<T>(Guid, DateTime?, T)` |
 | Token class | mutable | immutable class with factory method |
-| Nonce repository | `InsertOneAsync` / `TakeOneAsync` | + `ExtendExpiryAsync`, `UpdateExpiryAsync`, `DeleteIdentifierAsync` |
+| Nonce repository | `InsertOneAsync` / `TakeOneAsync` | + `UpdateExpiryAsync`, `DeleteIdentifierAsync` |
 | HotChocolate | 15.0.0 | 15.1.11 |
 | MongoDB Driver | 2.x | 3.0+ |
 | HttpContextAccessor | Manual `services.AddHttpContextAccessor()` | Auto-registered by `AddBewit()` |
@@ -47,7 +47,6 @@ services.AddBewit(bewit =>
         p.ConfigureOptions(o =>
         {
             o.ExpiryMode = ExpiryMode.ServerControlled;
-            o.SlidingWindow = TimeSpan.FromMinutes(30);
         });
         p.UseMongoDb(mongo =>
         {
@@ -158,15 +157,6 @@ bewit.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled);
 p.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled);
 ```
 
-### Sliding Window
-Token expiry is extended on each successful validation.
-Only applies to `ExpiryMode.ServerControlled` with a persistent nonce repository — the app will fail at startup if misconfigured:
-```csharp
-bewit.ConfigureOptions(o => o.SlidingWindow = TimeSpan.FromMinutes(30));
-// or per-payload:
-p.ConfigureOptions(o => o.SlidingWindow = TimeSpan.FromMinutes(30));
-```
-
 ### Token Revocation
 Type-safe revocation via `IBewitTokenRevoker<T>`:
 ```csharp
@@ -244,7 +234,6 @@ services.AddBewit(bewit =>
 | `Bewit.Validation.Exceptions.BewitException` | `Bewit.Exceptions.BewitException` (moved to Core) |
 | `PayloadBuilder.UseServerControlled()` | `ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled)` |
 | `PayloadBuilder.UseSelfContained()` | `ConfigureOptions(o => o.ExpiryMode = ExpiryMode.SelfContained)` |
-| `PayloadBuilder.UseSlidingWindow(TimeSpan)` | `ConfigureOptions(o => o.SlidingWindow = ...)` |
 | `PayloadBuilder.WithTokenDuration(TimeSpan)` | `ConfigureOptions(o => o.TokenDuration = ...)` |
 | `UseMongoPersistence(config, ...)` | `UseMongoDb(...)` on `BewitBuilder` or `PayloadBuilder<T>` |
 | `BewitTokenConstants` | `BewitTokenExtractionOptions` (configurable via options pattern) |

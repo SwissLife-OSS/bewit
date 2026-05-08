@@ -8,7 +8,6 @@ Bewit enables authentication in use cases where cookies and auth headers can't b
 
 - **Self-Contained tokens** — expiry embedded in the token (stateless)
 - **Server-Controlled tokens** — expiry managed in the database; requires `UseMongoDb()` or `UseNonceRepository()`
-- **Sliding window** — token expiry extends on each successful validation (server-controlled only)
 - **Token revocation** — type-safe `IBewitTokenRevoker<T>` to revoke tokens by identifier
 - **Multi-tenancy** — different secrets and modes per payload type
 - **MongoDB persistence** — with OIDC auth support (Azure.Identity)
@@ -165,11 +164,10 @@ var validator = serviceProvider.GetRequiredService<IBewitTokenValidator<string>>
 string payload = await validator.ValidateBewitTokenAsync(token, cancellationToken);
 ```
 
-## Server-Controlled Tokens with Sliding Window
+## Server-Controlled Tokens
 
-Both `ExpiryMode.ServerControlled` and `SlidingWindow` require a persistent nonce repository.
-The app fails at startup if `ServerControlled` is set without `UseMongoDb()` / `UseNonceRepository()`,
-or if `SlidingWindow` is set without `ServerControlled`.
+`ExpiryMode.ServerControlled` requires a persistent nonce repository.
+The app fails at startup if `ServerControlled` is set without `UseMongoDb()` / `UseNonceRepository()`.
 
 ```csharp
 services.AddBewit(bewit =>
@@ -179,7 +177,6 @@ services.AddBewit(bewit =>
         o.Secret = "your-secret";
         o.TokenDuration = TimeSpan.FromDays(7);
         o.ExpiryMode = ExpiryMode.ServerControlled;
-        o.SlidingWindow = TimeSpan.FromHours(1);
     });
 
     bewit.UseMongoDb(mongo =>

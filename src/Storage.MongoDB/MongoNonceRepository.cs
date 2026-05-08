@@ -70,24 +70,6 @@ internal sealed class MongoNonceRepository : INonceRepository
         await _collection.UpdateManyAsync(filter, update, cancellationToken: cancellationToken);
     }
 
-    public async ValueTask<bool> ExtendExpiryAsync(
-        Guid nonce,
-        TimeSpan duration,
-        CancellationToken cancellationToken)
-    {
-        FilterDefinition<NonceDocument> filter = Builders<NonceDocument>.Filter.And(
-            Builders<NonceDocument>.Filter.Eq(d => d.Nonce, nonce),
-            Builders<NonceDocument>.Filter.Eq(d => d.IsDeleted, false));
-
-        UpdateDefinition<NonceDocument> update = Builders<NonceDocument>.Update
-            .Set(d => d.ExpirationDate, DateTime.UtcNow.Add(duration));
-
-        UpdateResult result = await _collection.UpdateOneAsync(
-            filter, update, cancellationToken: cancellationToken);
-
-        return result.ModifiedCount > 0;
-    }
-
     public async ValueTask<bool> UpdateExpiryAsync(
         Guid nonce,
         DateTime newExpiry,

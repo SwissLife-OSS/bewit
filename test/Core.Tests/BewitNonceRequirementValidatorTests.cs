@@ -56,58 +56,6 @@ public class BewitNonceRequirementValidatorTests
     }
 
     [Fact]
-    public void Validate_SlidingWindow_WithoutNonceRepo_ShouldFail()
-    {
-        var sut = new BewitNonceRequirementValidator(PayloadName, hasRealNonceRepo: false);
-        var options = new BewitOptions
-        {
-            Secret = "test-secret-at-least-32-chars-long!",
-            ExpiryMode = ExpiryMode.SelfContained,
-            SlidingWindow = TimeSpan.FromMinutes(30)
-        };
-
-        ValidateOptionsResult result = sut.Validate(PayloadName, options);
-
-        result.Failed.Should().BeTrue();
-        result.FailureMessage.Should().Contain("SlidingWindow");
-        result.FailureMessage.Should().Contain("UseMongoDb()");
-    }
-
-    [Fact]
-    public void Validate_SlidingWindow_WithoutServerControlled_ShouldFail()
-    {
-        var sut = new BewitNonceRequirementValidator(PayloadName, hasRealNonceRepo: true);
-        var options = new BewitOptions
-        {
-            Secret = "test-secret-at-least-32-chars-long!",
-            ExpiryMode = ExpiryMode.SelfContained,
-            SlidingWindow = TimeSpan.FromMinutes(30)
-        };
-
-        ValidateOptionsResult result = sut.Validate(PayloadName, options);
-
-        result.Failed.Should().BeTrue();
-        result.FailureMessage.Should().Contain("SlidingWindow");
-        result.FailureMessage.Should().Contain("ServerControlled");
-    }
-
-    [Fact]
-    public void Validate_SlidingWindow_WithServerControlled_ShouldSucceed()
-    {
-        var sut = new BewitNonceRequirementValidator(PayloadName, hasRealNonceRepo: true);
-        var options = new BewitOptions
-        {
-            Secret = "test-secret-at-least-32-chars-long!",
-            ExpiryMode = ExpiryMode.ServerControlled,
-            SlidingWindow = TimeSpan.FromMinutes(30)
-        };
-
-        ValidateOptionsResult result = sut.Validate(PayloadName, options);
-
-        result.Succeeded.Should().BeTrue();
-    }
-
-    [Fact]
     public void Validate_DifferentOptionsName_ShouldSkip()
     {
         var sut = new BewitNonceRequirementValidator(PayloadName, hasRealNonceRepo: false);

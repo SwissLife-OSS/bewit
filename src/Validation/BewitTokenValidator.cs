@@ -79,14 +79,5 @@ internal sealed class BewitTokenValidator<T>(
         {
             throw new BewitExpiredException();
         }
-
-        // Sliding window: extend the expiry on each successful validation
-        if (_options.SlidingWindow.HasValue)
-        {
-            await nonceRepository.ExtendExpiryAsync(
-                bewit.Token.Nonce,
-                _options.SlidingWindow.Value,
-                cancellationToken);
-        }
     }
 }
