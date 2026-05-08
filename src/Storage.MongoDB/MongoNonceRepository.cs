@@ -1,154 +1,110 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-#nullable enable
+namespace Bewit.Storage.MongoDB;
 
-namespace Bewit.Storage.MongoDB
+internal sealed class MongoNonceRepository : INonceRepository
 {
-    internal class MongoNonceRepository : INonceRepository
+    private readonly IMongoCollection<NonceDocument> _collection;
+    private readonly NonceUsage _nonceUsage;
+
+    public MongoNonceRepository(
+        IMongoDatabase database,
+        IOptions<BewitMongoOptions> options)
     {
-        private readonly MongoNonceOptions _options;
-        private readonly IMongoCollection<Token> _collection;
+        BewitMongoOptions mongoOptions = options.Value;
+        _nonceUsage = mongoOptions.NonceUsage;
 
-        static MongoNonceRepository()
+        _collection = database.GetCollection<NonceDocument>(mongoOptions.CollectionName);
+
+        EnsureIndexes(mongoOptions.RecordExpireAfterDays);
+    }
+
+    public async ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken)
+    {
+        await _collection.InsertOneAsync(
+            NonceDocument.FromToken(token),
+            cancellationToken: cancellationToken);
+    }
+
+    public async ValueTask<Token?> TakeOneAsync(Guid nonce, CancellationToken cancellationToken)
+    {
+        FilterDefinition<NonceDocument> filter = Builders<NonceDocument>.Filter.And(
+            Builders<NonceDocument>.Filter.Eq(d => d.Nonce, nonce),
+            Builders<NonceDocument>.Filter.Eq(d => d.IsDeleted, false));
+
+        if (_nonceUsage == NonceUsage.OneTime)
         {
-            ConventionRegistry.Register(
-                "bewit.conventions",
-                new ConventionPack
+            UpdateDefinition<NonceDocument> update = Builders<NonceDocument>.Update
+                .Set(d => d.IsDeleted, true);
+
+            NonceDocument? doc = await _collection.FindOneAndUpdateAsync(
+                filter,
+                update,
+                new FindOneAndUpdateOptions<NonceDocument>
                 {
-                    new DiscriminatorClassMapConvention()
-                }, t => t.FullName?.StartsWith("Bewit") ?? false);
+                    ReturnDocument = ReturnDocument.Before
+                },
+                cancellationToken);
 
-            BsonClassMap.RegisterClassMap<Token>(cm =>
-            {
-                cm.MapIdMember(c => c.Nonce);
-                cm.MapField(c => c.ExpirationDate);
-                cm.MapField(c => c.IsDeleted);
-                cm.MapField(c => c.ExtraProperties);
-                cm.SetIgnoreExtraElements(true);
-            });
+            return doc?.ToToken();
         }
 
-        public MongoNonceRepository(IMongoDatabase database, MongoNonceOptions options)
+        NonceDocument? found = await _collection
+            .Find(filter)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return found?.ToToken();
+    }
+
+    public async ValueTask DeleteIdentifierAsync(
+        string identifier,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<NonceDocument> filter = Builders<NonceDocument>.Filter
+            .Eq(d => d.Identifier, identifier);
+
+        UpdateDefinition<NonceDocument> update = Builders<NonceDocument>.Update
+            .Set(d => d.IsDeleted, true);
+
+        await _collection.UpdateManyAsync(filter, update, cancellationToken: cancellationToken);
+    }
+
+    public async ValueTask<bool> UpdateExpiryAsync(
+        Guid nonce,
+        DateTime newExpiry,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<NonceDocument> filter = Builders<NonceDocument>.Filter.And(
+            Builders<NonceDocument>.Filter.Eq(d => d.Nonce, nonce),
+            Builders<NonceDocument>.Filter.Eq(d => d.IsDeleted, false));
+
+        UpdateDefinition<NonceDocument> update = Builders<NonceDocument>.Update
+            .Set(d => d.ExpirationDate, newExpiry);
+
+        UpdateResult result = await _collection.UpdateOneAsync(
+            filter, update, cancellationToken: cancellationToken);
+
+        return result.ModifiedCount > 0;
+    }
+
+    private void EnsureIndexes(int expireAfterDays)
+    {
+        var indexModels = new List<CreateIndexModel<NonceDocument>>
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-            _collection = database.GetCollection<Token>(options.CollectionName);
+            new(
+                Builders<NonceDocument>.IndexKeys.Ascending(d => d.Identifier),
+                new CreateIndexOptions { Name = "ix_identifier", Sparse = true }),
 
-            _collection.Indexes.CreateOne(new CreateIndexModel<Token>(
-                Builders<Token>.IndexKeys.Ascending(nameof(IdentifiableToken.Identifier))));
-
-            _collection.Indexes.CreateOne(new CreateIndexModel<Token>(
-                Builders<Token>.IndexKeys.Ascending(nameof(Token.ExpirationDate)),
-                new CreateIndexOptions
+            new(
+                Builders<NonceDocument>.IndexKeys.Ascending(d => d.CreatedAt),
+                new CreateIndexOptions<NonceDocument>
                 {
-                    ExpireAfter = TimeSpan.FromDays(options.RecordExpireAfterDays)
-                }));
-        }
+                    Name = "ix_ttl",
+                    ExpireAfter = TimeSpan.FromDays(expireAfterDays)
+                })
+        };
 
-        public async ValueTask InsertOneAsync(
-            Token token, CancellationToken cancellationToken)
-        {
-            token.ExtraProperties = token.ExtraProperties ?? new Dictionary<string, object>();
-
-            IReadOnlySet<string> propertyNamesWithPrimitiveValueType =
-                GetPropertyNamesWithPrimitiveValueType(token.ExtraProperties);
-
-            SetJsonStringValue(token.ExtraProperties, propertyNamesWithPrimitiveValueType);
-
-            await _collection.InsertOneAsync(token, cancellationToken: cancellationToken);
-
-            CreateIndexes(propertyNamesWithPrimitiveValueType);
-        }
-
-        public async ValueTask<Token?> TakeOneAsync(
-            string token,
-            CancellationToken cancellationToken)
-        {
-            FilterDefinition<Token> findFilter =
-                Builders<Token>.Filter.Eq(n => n.Nonce, token) &
-                (Builders<Token>.Filter.Not(Builders<Token>.Filter.Exists(n => n.IsDeleted)) |
-                 Builders<Token>.Filter.Eq(n => n.IsDeleted, false));
-
-            UpdateDefinition<Token> updateDefinition =
-                Builders<Token>.Update.Set(x => x.IsDeleted, true);
-
-            if (_options.NonceUsage == NonceUsage.OneTime)
-            {
-                return await _collection
-                    .FindOneAndUpdateAsync(findFilter, updateDefinition, cancellationToken: cancellationToken);
-            }
-
-            return await _collection
-                .Find(findFilter)
-                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-        }
-
-        public async ValueTask DeleteIdentifier(
-            string identifier,
-            CancellationToken cancellationToken)
-        {
-            FilterDefinition<Token> findFilter = Builders<Token>.Filter
-                .Eq(nameof(IdentifiableToken.Identifier), identifier);
-
-            await _collection.DeleteManyAsync(findFilter, cancellationToken);
-        }
-
-        public static void Initialize()
-        {
-            //ensure static constructor is called
-        }
-
-        private void CreateIndexes(IEnumerable<string> extraPropertyNames)
-        {
-            var indexOptions = new CreateIndexOptions { Background = true };
-
-            foreach (string extraPropertyName in extraPropertyNames)
-            {
-                _collection.Indexes.CreateOne(new CreateIndexModel<Token>(
-                    Builders<Token>.IndexKeys.Ascending(
-                        $"{nameof(Token.ExtraProperties)}.{extraPropertyName}"), indexOptions));
-            }
-        }
-
-        private IReadOnlySet<string> GetPropertyNamesWithPrimitiveValueType(
-            Dictionary<string, object> extraProperties)
-        {
-            HashSet<string> names = new HashSet<string>();
-
-            foreach (KeyValuePair<string, object> keyValue in extraProperties)
-            {
-                if (keyValue.Value == null)
-                {
-                    continue;
-                }
-
-                if (TypeChecker.IsPrimitiveType(keyValue.Value.GetType()))
-                {
-                    names.Add(keyValue.Key);
-                }
-            }
-
-            return names;
-        }
-
-        private void SetJsonStringValue(
-            Dictionary<string, object> extraProperties, IReadOnlySet<string> namesToSkip)
-        {
-            foreach(string name in extraProperties.Keys)
-            {
-                if (namesToSkip.Contains(name))
-                {
-                    continue;
-                }
-
-                extraProperties[name] = JsonSerializer.Serialize(extraProperties[name]);
-            }
-        }
+        _collection.Indexes.CreateMany(indexModels);
     }
 }

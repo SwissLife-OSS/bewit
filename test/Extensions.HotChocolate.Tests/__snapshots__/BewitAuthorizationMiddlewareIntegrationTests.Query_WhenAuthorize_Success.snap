@@ -1,6 +1,0 @@
-﻿{
-  "QueryResult": "{\n  \"data\": {\n    \"foo\": \"bar\"\n  }\n}",
-  "BewitContext": {
-    "Email": "foo@bar.gmail.com"
-  }
-}

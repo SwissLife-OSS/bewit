@@ -23,7 +23,6 @@
     <PackageReference Include="Squadron.Mongo" />
     <PackageReference Include="coverlet.msbuild" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
 </Project>

@@ -1,45 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 using Bewit.Generation;
 using HotChocolate.Resolvers;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Bewit.Extensions.HotChocolate.Generation
+namespace Bewit.Extensions.HotChocolate;
+
+internal sealed class BewitUrlMiddleware(FieldDelegate next)
 {
-    public class BewitUrlMiddleware
+    public async Task InvokeAsync(IMiddlewareContext context)
     {
-        private readonly FieldDelegate _next;
+        await next(context);
 
-        public BewitUrlMiddleware(FieldDelegate next)
+        if (context.Result is string url && !string.IsNullOrWhiteSpace(url))
         {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
-        }
+            var uri = new Uri(url, UriKind.RelativeOrAbsolute);
 
-        public async Task InvokeAsync(
-            IMiddlewareContext context,
-            IBewitTokenGenerator<string> tokenGenerator)
-        {
-            await _next(context).ConfigureAwait(false);
+            string pathAndQuery = uri.IsAbsoluteUri
+                ? uri.PathAndQuery
+                : url;
 
-            if (context.Result is string result)
-            {
-                var uri = new Uri(result);
+            var generator = context.Services
+                .GetRequiredService<IBewitTokenGenerator<string>>();
 
-                BewitToken<string> bewit =
-                    await tokenGenerator.GenerateBewitTokenAsync(
-                        uri.PathAndQuery, context.GetBewitTokenExtraProperties(), context.RequestAborted);
+            BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+                pathAndQuery, null, context.RequestAborted);
 
-                var parametersToAdd = new Dictionary<string, string>
-                {
-                    { "bewit", WebUtility.UrlEncode((string) bewit) }
-                };
-                var newUri =
-                    QueryHelpers.AddQueryString(result, parametersToAdd);
+            string encodedToken = Uri.EscapeDataString((string)token);
 
-                context.Result = newUri;
-            }
+            string separator = url.Contains('?') ? "&" : "?";
+
+            context.Result = $"{url}{separator}bewit={encodedToken}";
         }
     }
 }

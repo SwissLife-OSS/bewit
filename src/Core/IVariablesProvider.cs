@@ -1,10 +1,17 @@
-using System;
+namespace Bewit;
 
-namespace Bewit
+/// <summary>
+/// Provides variable values for token generation, abstracted for testability.
+/// </summary>
+public interface IVariablesProvider
 {
-    public interface IVariablesProvider
-    {
-        DateTime UtcNow { get; }
-        Guid NextToken { get; }
-    }
+    /// <summary>
+    /// Current UTC time.
+    /// </summary>
+    DateTime UtcNow { get; }
+
+    /// <summary>
+    /// Generates a new unique nonce identifier.
+    /// </summary>
+    Guid NextToken { get; }
 }

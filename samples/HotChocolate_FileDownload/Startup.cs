@@ -5,9 +5,7 @@ using Microsoft.Extensions.Hosting;
 using HotChocolate.AspNetCore;
 using Host.Data;
 using Host.Types;
-using Bewit.Generation;
 using System;
-using Bewit.Mvc.Filter;
 using Host.Models;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,12 +17,9 @@ namespace Host
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                // Add some sample data
                 .AddSingleton(new DocumentsRepository(
                     new List<Document>
                     {
@@ -34,32 +29,27 @@ namespace Host
                             "application/pdf")
                     }));
 
-            var bewitOptions = new BewitOptions
+            services.AddBewit(bewit =>
             {
-                TokenDuration = TimeSpan.FromMinutes(5),
-                Secret = "ax54Z$tgs87454"
-            };
+                bewit.ConfigureOptions(o =>
+                {
+                    o.Secret = "ax54Z$tgs87454";
+                    o.TokenDuration = TimeSpan.FromMinutes(5);
+                });
 
-            // Add support for generating bewits in the GraphQL Api
-            services.AddBewitGeneration(
-                bewitOptions,
-                builder => builder.AddPayload<string>());
+                bewit.AddPayload<string>();
+            });
 
-            // Add support for validating bewits in the Mvc Api
-            services.AddBewitUrlAuthorizationFilter(
-                bewitOptions,
-                builder => { });
+            services.AddBewitGeneration<string>();
+            services.AddBewitValidation<string>();
 
-            // Add GraphQL Services
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
                 .AddMutationType<MutationType>()
                 .AddType<DocumentType>();
 
-            //Add MVC Services
             services.AddControllers();
-
             services.AddRouting();
         }
 

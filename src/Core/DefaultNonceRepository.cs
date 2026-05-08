@@ -1,29 +1,23 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+namespace Bewit;
 
-#nullable enable
-
-namespace Bewit
+internal sealed class DefaultNonceRepository : INonceRepository
 {
-    internal class DefaultNonceRepository : INonceRepository
-    {
-        private static readonly ValueTask EmptyTask = new ValueTask();
-        private static readonly ValueTask<Token?> EmptyToken = new ValueTask<Token?>(Token.Empty);
+    private const string Message =
+        "This operation requires a persistent nonce repository (e.g., MongoDB). " +
+        "Configure one via UseMongoDb() or UseNonceRepository() on the BewitBuilder or PayloadBuilder.";
 
-        public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken)
-        {
-            return EmptyTask;
-        }
+    public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken) =>
+        throw new NotSupportedException(Message);
 
-        public ValueTask<Token?> TakeOneAsync(string token, CancellationToken cancellationToken)
-        {
-            return EmptyToken;
-        }
+    public ValueTask<Token?> TakeOneAsync(Guid nonce, CancellationToken cancellationToken) =>
+        throw new NotSupportedException(Message);
 
-        public ValueTask DeleteIdentifier(string identifier, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException("Only stateful bewit support invalidation");
-        }
-    }
+    public ValueTask DeleteIdentifierAsync(string identifier, CancellationToken cancellationToken) =>
+        throw new NotSupportedException(Message);
+
+    public ValueTask<bool> UpdateExpiryAsync(
+        Guid nonce,
+        DateTime newExpiry,
+        CancellationToken cancellationToken) =>
+        throw new NotSupportedException(Message);
 }

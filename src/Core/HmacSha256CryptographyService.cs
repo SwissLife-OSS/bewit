@@ -1,49 +1,42 @@
-using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
-#nullable enable
+namespace Bewit;
 
-namespace Bewit
+/// <summary>
+/// HMAC-SHA256 implementation of <see cref="ICryptographyService"/>.
+/// Uses System.Text.Json for payload serialization.
+/// </summary>
+internal sealed class HmacSha256CryptographyService : ICryptographyService
 {
-    public class HmacSha256CryptographyService: ICryptographyService
+    private readonly byte[] _keyBytes;
+
+    public HmacSha256CryptographyService(string secret)
     {
-        private readonly string _secret;
-
-        public HmacSha256CryptographyService(BewitConfiguration configuration)
+        if (string.IsNullOrWhiteSpace(secret))
         {
-            _secret = configuration.Secret;
+            throw new ArgumentException("Secret must not be empty.", nameof(secret));
         }
 
-        public string GetHash<T>(string token, DateTime expirationDate, T payload)
-            where T: notnull
+        _keyBytes = Encoding.UTF8.GetBytes(secret);
+    }
+
+    public string GetHash<T>(Guid nonce, DateTime? expirationDate, T payload) where T : notnull
+    {
+        var content = new
         {
-            HMACSHA256? sha256 = null;
-            try
-            {
-                byte[] keyBytes = Encoding.UTF8.GetBytes(_secret);
-                sha256 = new HMACSHA256(keyBytes);
+            nonce,
+            expirationDate,
+            payload,
+            type = typeof(T).FullName
+        };
 
-                var toHash = new Dictionary<string, object>
-                {
-                    {nameof(token), token},
-                    {nameof(expirationDate), expirationDate},
-                    {nameof(payload), payload}
-                };
+        var contentBytes = Encoding.UTF8.GetBytes(
+            JsonSerializer.Serialize(content));
 
-                string hashable = JsonConvert.SerializeObject(toHash);
+        var hashBytes = HMACSHA256.HashData(_keyBytes, contentBytes);
 
-                byte[] hash =
-                    sha256.ComputeHash(Encoding.UTF8.GetBytes(hashable));
-
-                return Convert.ToBase64String(hash);
-            }
-            finally
-            {
-                sha256?.Dispose();
-            }
-        }
+        return Convert.ToBase64String(hashBytes);
     }
 }

@@ -1,36 +1,39 @@
-using System.Threading.Tasks;
-using HotChocolate.Execution;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using RequestDelegate = HotChocolate.Execution.RequestDelegate;
+using Microsoft.Extensions.Options;
 
-namespace Bewit.Extensions.HotChocolate.Validation
+namespace Bewit.Extensions.HotChocolate;
+
+internal sealed class BewitTokenExtractionMiddleware(
+    RequestDelegate next,
+    IOptions<BewitTokenExtractionOptions> options)
 {
-    public class BewitTokenHeaderRequestMiddleware
+    public async Task InvokeAsync(HttpContext context)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly RequestDelegate _next;
+        BewitTokenExtractionOptions config = options.Value;
+        string? token = null;
 
-        public BewitTokenHeaderRequestMiddleware(
-            IHttpContextAccessor httpContextAccessor,
-            RequestDelegate next)
+        if (config.Sources.HasFlag(BewitTokenSource.Header))
         {
-            _httpContextAccessor = httpContextAccessor;
-            _next = next;
-        }
+            bool hasHeader = context.Request.Headers.TryGetValue(
+                config.HeaderName, out var headerValues);
 
-        public ValueTask InvokeAsync(IRequestContext requestContext)
-        {
-            HttpContext context = _httpContextAccessor.HttpContext;
-
-            if (context != null &&
-                context.Request.Headers
-                    .TryGetValue(BewitTokenHeader.Value, out StringValues bewitToken))
+            if (hasHeader && headerValues.Count > 0)
             {
-                requestContext.ContextData[BewitTokenHeader.Value] = bewitToken.ToString();
+                token = headerValues[0];
             }
-
-            return _next(requestContext);
         }
+
+        if (string.IsNullOrWhiteSpace(token)
+            && config.Sources.HasFlag(BewitTokenSource.QueryString))
+        {
+            token = context.Request.Query[config.QueryParamName];
+        }
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            context.Items[config.ContextKey] = token;
+        }
+
+        await next(context);
     }
 }

@@ -1,70 +1,79 @@
-using System;
-using System.Threading.Tasks;
+using Bewit.Exceptions;
 using Bewit.Validation;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
-namespace Bewit.Extensions.HotChocolate.Validation
+namespace Bewit.Extensions.HotChocolate;
+
+internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
+    where T : notnull
 {
-    public class BewitAuthorizationMiddleware<T>
+    public async Task InvokeAsync(IMiddlewareContext context)
     {
-        private readonly FieldDelegate _next;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IBewitTokenValidator<T> _tokenValidator;
+        IHttpContextAccessor httpContextAccessor = context.Services
+            .GetRequiredService<IHttpContextAccessor>();
 
-        public BewitAuthorizationMiddleware(
-            FieldDelegate next,
-            IHttpContextAccessor httpContextAccessor,
-            IBewitTokenValidator<T> tokenValidator)
+        HttpContext? httpContext = httpContextAccessor.HttpContext;
+
+        if (httpContext is null)
         {
-            _next = next
-                ?? throw new ArgumentNullException(nameof(next));
-            _httpContextAccessor = httpContextAccessor
-                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _tokenValidator = tokenValidator
-                ?? throw new ArgumentNullException(nameof(tokenValidator));
+            context.ReportError(
+                ErrorBuilder.New()
+                    .SetMessage("No HTTP context available.")
+                    .SetCode("BEWIT_NO_HTTP_CONTEXT")
+                    .Build());
+
+            return;
         }
 
-        public async Task InvokeAsync(IMiddlewareContext context)
+        var options = context.Services
+            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+
+        string? tokenString = null;
+
+        if (httpContext.Items.TryGetValue(
+                options.Value.ContextKey, out var tokenObj))
         {
-            if (context.ContextData.TryGetValue(BewitTokenHeader.Value, out var objectToken) &&
-                objectToken is string bewitToken)
-            {
-                try
-                {
-                    object payload = await _tokenValidator.ValidateBewitTokenAsync(
-                        new BewitToken<T>(bewitToken),
-                        context.RequestAborted);
-
-                    _httpContextAccessor.SetBewitPayload(payload);
-                }
-                catch (Exception ex)
-                {
-                    CreateError(context, ex);
-                }
-
-                await _next(context);
-            }
-            else
-            {
-                CreateError(context);
-            }
+            tokenString = tokenObj as string;
         }
 
-        private void CreateError(IMiddlewareContext context, Exception ex = default)
+        if (string.IsNullOrWhiteSpace(tokenString))
         {
-            IErrorBuilder errorBuilder = ErrorBuilder.New()
-                .SetMessage("The current user is not authorized to access this resource.")
-                .SetCode(ErrorCodes.Authentication.NotAuthorized);
+            context.ReportError(
+                ErrorBuilder.New()
+                    .SetMessage("Missing bewit token.")
+                    .SetCode("BEWIT_MISSING")
+                    .Build());
 
-            if (ex != default)
-            {
-                errorBuilder.SetException(ex);
-            }
-
-            context.ContextData[WellKnownContextData.HttpStatusCode] = 401;
-            context.Result = errorBuilder.Build();
+            return;
         }
+
+        try
+        {
+            var validator = context.Services
+                .GetRequiredService<IBewitTokenValidator<T>>();
+
+            var bewitToken = new BewitToken<T>(tokenString);
+            T payload = await validator.ValidateBewitTokenAsync(
+                bewitToken, context.RequestAborted);
+
+            httpContextAccessor.SetBewitPayload(payload);
+        }
+        catch (BewitException ex)
+        {
+            context.ReportError(
+                ErrorBuilder.New()
+                    .SetMessage("Unauthorized.")
+                    .SetCode("BEWIT_UNAUTHORIZED")
+                    .SetException(ex)
+                    .Build());
+
+            return;
+        }
+
+        await next(context);
     }
 }
