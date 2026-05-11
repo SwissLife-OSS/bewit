@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="HotChocolate.Types" />
-    <PackageReference Include="HotChocolate.Execution" />
+    <PackageReference Include="HotChocolate.Execution.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

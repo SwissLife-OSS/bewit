@@ -77,7 +77,6 @@ namespace Host
                 .AddMutationType<Mutation>()
                 .AddType<DocumentType>()
                 .AddMutationConventions()
-                .InitializeOnStartup()
                 .UseDefaultPipeline();
 
             services.AddRouting();
@@ -96,7 +95,7 @@ namespace Host
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapGraphQL(path: "/")
-                        .WithOptions(new GraphQLServerOptions { EnableSchemaRequests = true });
+                        .WithOptions(o => o.EnableSchemaRequests = true);
                 });
         }
     }

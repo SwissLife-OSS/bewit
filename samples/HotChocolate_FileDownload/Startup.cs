@@ -66,7 +66,7 @@ namespace Host
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapGraphQL(path: "/")
-                        .WithOptions(new GraphQLServerOptions { EnableSchemaRequests = true });
+                        .WithOptions(o => o.EnableSchemaRequests = true);
                     endpoints.MapControllers();
                 });
         }
