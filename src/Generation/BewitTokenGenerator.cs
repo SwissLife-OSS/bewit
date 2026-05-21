@@ -44,8 +44,8 @@ internal sealed class BewitTokenGenerator<T>(
         var bewitToken = Token.Create(
             nonce,
             isSelfContained ? expirationDate : null,
-            tokenOptions?.Identifier,
-            tokenOptions?.ExtraProperties);
+            null,
+            null);
 
         var bewit = new Bewit<T>(bewitToken, payload, hash);
 

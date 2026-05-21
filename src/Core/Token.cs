@@ -40,16 +40,19 @@ public sealed class Token
     /// <summary>
     /// Optional identifier for bulk invalidation (e.g., user ID, share link ID).
     /// </summary>
+    [JsonIgnore]
     public string? Identifier { get; }
 
     /// <summary>
     /// Indicates whether this token has been consumed or revoked.
     /// </summary>
+    [JsonIgnore]
     public bool IsDeleted { get; internal set; }
 
     /// <summary>
     /// Additional metadata stored with the nonce record.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, object> ExtraProperties { get; }
 
     /// <summary>
