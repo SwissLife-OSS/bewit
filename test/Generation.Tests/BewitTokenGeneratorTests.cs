@@ -22,8 +22,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_SelfContained_ShouldReturnToken()
     {
-        var options = CreateOptions(ExpiryMode.SelfContained);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.SelfContained);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         BewitToken<string> token = await generator.GenerateBewitTokenAsync(
             "my-payload", null, CancellationToken.None);
@@ -38,8 +38,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_ServerControlled_ShouldInsertNonce()
     {
-        var options = CreateOptions(ExpiryMode.ServerControlled);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.ServerControlled);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         BewitToken<string> token = await generator.GenerateBewitTokenAsync(
             "my-payload", null, CancellationToken.None);
@@ -58,8 +58,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_CustomDuration_ShouldOverrideDefault()
     {
-        var options = CreateOptions(ExpiryMode.ServerControlled);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.ServerControlled);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         var tokenOptions = new BewitTokenOptions
         {
@@ -79,8 +79,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_WithIdentifier_ShouldIncludeInToken()
     {
-        var options = CreateOptions(ExpiryMode.ServerControlled);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.ServerControlled);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         var tokenOptions = new BewitTokenOptions
         {
@@ -99,8 +99,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_SelfContained_TokenShouldBeDeserializable()
     {
-        var options = CreateOptions(ExpiryMode.SelfContained);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.SelfContained);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         BewitToken<string> token = await generator.GenerateBewitTokenAsync(
             "test-payload", null, CancellationToken.None);
@@ -116,8 +116,8 @@ public class BewitTokenGeneratorTests
     [Fact]
     public async Task GenerateBewitTokenAsync_ServerControlled_TokenShouldNotCarryExpiry()
     {
-        var options = CreateOptions(ExpiryMode.ServerControlled);
-        var generator = CreateGenerator(options);
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.ServerControlled);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
 
         BewitToken<string> token = await generator.GenerateBewitTokenAsync(
             "test-payload", null, CancellationToken.None);
@@ -126,6 +126,49 @@ public class BewitTokenGeneratorTests
 
         bewit.Should().NotBeNull();
         bewit!.Token.ExpirationDate.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GenerateBewitTokenAsync_ServerControlled_ShouldStoreExtraProperties()
+    {
+        IOptions<BewitOptions> options = CreateOptions(ExpiryMode.ServerControlled);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
+        BewitTokenOptions bewitTokenOptions = new()
+        {
+            Identifier = "test-identifier",
+            ExtraProperties = new Dictionary<string, object> { ["extra-prop-1"] = "extra-prop-1-val" }
+        };
+
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "test-payload", bewitTokenOptions, CancellationToken.None);
+
+        _nonceRepository.Verify(
+            r => r.InsertOneAsync(
+                It.Is<Token>(t => t.Identifier == "test-identifier" && t.ExtraProperties.ContainsKey("extra-prop-1")),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Theory]
+    [InlineData(ExpiryMode.ServerControlled)]
+    [InlineData(ExpiryMode.SelfContained)]
+    public async Task GenerateBewitTokenAsync_WithTheoryExpiryMode_ShouldNeverConatainsExtraProperties(ExpiryMode expiryMode)
+    {
+        IOptions<BewitOptions> options = CreateOptions(expiryMode);
+        IBewitTokenGenerator<string> generator = CreateGenerator(options);
+        BewitTokenOptions bewitTokenOptions = new()
+        {
+            Identifier = "test-identifier",
+            ExtraProperties = new Dictionary<string, object> { ["extra-prop-1"] = "extra-prop-1-val" }
+        };
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "test-payload", bewitTokenOptions, CancellationToken.None);
+
+        Bewit<string>? bewit = BewitSerializer.Deserialize<string>((string)token);
+
+        bewit.Should().NotBeNull();
+        bewit.Token.Identifier.Should().BeNull();
+        bewit.Token.ExtraProperties.Should().BeEmpty();
     }
 
     private IBewitTokenGenerator<string> CreateGenerator(IOptions<BewitOptions> options)

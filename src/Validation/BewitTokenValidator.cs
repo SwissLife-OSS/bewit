@@ -19,7 +19,7 @@ internal sealed class BewitTokenValidator<T>(
         BewitToken<T> token,
         CancellationToken cancellationToken)
     {
-        var bewit = BewitSerializer.Deserialize<T>((string)token)
+        Bewit<T> bewit = BewitSerializer.Deserialize<T>((string)token)
             ?? throw new BewitInvalidException();
 
         bool isSelfContained = _options.ExpiryMode == ExpiryMode.SelfContained;
