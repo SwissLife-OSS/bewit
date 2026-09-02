@@ -15,14 +15,14 @@ public class BewitTokenValidatorTests
     private static readonly Guid FixedNonce = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
 
     [Fact]
-    public async Task AddBewitValidation_RegisteredObserver_ShouldReceiveExpiredContext()
+    public async Task AddBewitValidation_RegisteredEvents_ShouldReceiveValidationEvents()
     {
-        var observer = new Mock<IBewitTokenValidationObserver<string>>();
+        var validationEvents = new Mock<IBewitTokenValidationEvents<string>>();
         var variables = CreateVariablesProvider(FixedUtcNow);
         var services = new ServiceCollection();
+        INonceRepository? suppliedNonceRepository = null;
 
         services.AddSingleton(variables);
-        services.AddSingleton(observer.Object);
         services.AddBewit(bewit =>
         {
             bewit.ConfigureOptions(options =>
@@ -32,6 +32,11 @@ public class BewitTokenValidatorTests
                 options.ExpiryMode = ExpiryMode.SelfContained;
             });
             bewit.AddPayload<string>();
+        });
+        services.AddBewitTokenValidationEvents<string>((_, nonceRepository) =>
+        {
+            suppliedNonceRepository = nonceRepository;
+            return validationEvents.Object;
         });
         services.AddBewitGeneration<string>();
         services.AddBewitValidation<string>();
@@ -48,8 +53,19 @@ public class BewitTokenValidatorTests
             token, CancellationToken.None).AsTask();
 
         await act.Should().ThrowAsync<BewitExpiredException>();
-        observer.Verify(
-            o => o.OnTokenExpiredAsync(
+        suppliedNonceRepository.Should().BeOfType<DefaultNonceRepository>();
+        validationEvents.Verify(
+            o => o.OnValidatingAsync(
+                It.Is<BewitTokenValidatingContext<string>>(context =>
+                    context.Payload == "payload"
+                    && context.Nonce == FixedNonce
+                    && context.ValidatedAt == FixedUtcNow
+                    && context.ExpiryMode == ExpiryMode.SelfContained
+                    && context.TokenExpirationDate == FixedUtcNow.AddMinutes(-1)),
+                CancellationToken.None),
+            Times.Once);
+        validationEvents.Verify(
+            o => o.OnExpiredAsync(
                 It.Is<BewitTokenExpiredContext<string>>(context =>
                     context.Payload == "payload"
                     && context.ExpirationDate == FixedUtcNow.AddMinutes(-1)),
@@ -86,11 +102,11 @@ public class BewitTokenValidatorTests
 
         DateTime validatedAt = FixedUtcNow.AddMinutes(2);
         var validateTime = CreateVariablesProvider(validatedAt);
-        var observer = new Mock<IBewitTokenValidationObserver<string>>();
+        var validationEvents = new Mock<IBewitTokenValidationEvents<string>>();
         BewitTokenExpiredContext<string>? observedContext = null;
 
-        observer
-            .Setup(o => o.OnTokenExpiredAsync(
+        validationEvents
+            .Setup(o => o.OnExpiredAsync(
                 It.IsAny<BewitTokenExpiredContext<string>>(),
                 It.IsAny<CancellationToken>()))
             .Callback<BewitTokenExpiredContext<string>, CancellationToken>(
@@ -101,7 +117,7 @@ public class BewitTokenValidatorTests
             options,
             new DefaultNonceRepository(),
             validateTime,
-            [observer.Object]);
+            [validationEvents.Object]);
 
         Func<Task> act = () => validator.ValidateBewitTokenAsync(
             token, CancellationToken.None).AsTask();
@@ -113,6 +129,36 @@ public class BewitTokenValidatorTests
             expirationDate,
             validatedAt,
             ExpiryMode.SelfContained));
+    }
+
+    [Fact]
+    public async Task ValidateBewitToken_ExpiredToken_ShouldInvokeEventsInRegistrationOrder()
+    {
+        var options = CreateOptions(ExpiryMode.SelfContained, TimeSpan.FromMinutes(-1));
+        var variables = CreateVariablesProvider(FixedUtcNow);
+        var generator = CreateGenerator(
+            options, new DefaultNonceRepository(), variables);
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "payload", null, CancellationToken.None);
+        var calls = new List<string>();
+        var validator = CreateValidator(
+            options,
+            new DefaultNonceRepository(),
+            variables,
+            [
+                new RecordingValidationEvents("first", calls),
+                new RecordingValidationEvents("second", calls)
+            ]);
+
+        Func<Task> act = () => validator.ValidateBewitTokenAsync(
+            token, CancellationToken.None).AsTask();
+
+        await act.Should().ThrowAsync<BewitExpiredException>();
+        calls.Should().Equal(
+            "first:validating",
+            "second:validating",
+            "first:expired",
+            "second:expired");
     }
 
     [Fact]
@@ -132,19 +178,24 @@ public class BewitTokenValidatorTests
             ExpiryMode = ExpiryMode.SelfContained
         });
 
-        var observer = new Mock<IBewitTokenValidationObserver<string>>();
+        var validationEvents = new Mock<IBewitTokenValidationEvents<string>>();
         var validator = CreateValidator(
             differentOptions,
             new DefaultNonceRepository(),
             variables,
-            [observer.Object]);
+            [validationEvents.Object]);
 
         Func<Task> act = () => validator.ValidateBewitTokenAsync(
             token, CancellationToken.None).AsTask();
 
         await act.Should().ThrowAsync<BewitInvalidException>();
-        observer.Verify(
-            o => o.OnTokenExpiredAsync(
+        validationEvents.Verify(
+            o => o.OnValidatingAsync(
+                It.IsAny<BewitTokenValidatingContext<string>>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+        validationEvents.Verify(
+            o => o.OnExpiredAsync(
                 It.IsAny<BewitTokenExpiredContext<string>>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
@@ -184,6 +235,59 @@ public class BewitTokenValidatorTests
         string payload = await validator.ValidateBewitTokenAsync(token, CancellationToken.None);
 
         payload.Should().Be("payload");
+    }
+
+    [Fact]
+    public async Task ValidateBewitToken_ServerControlled_OnValidatingCanUpdateExpiryBeforeNonceIsLoaded()
+    {
+        var options = CreateOptions(ExpiryMode.ServerControlled);
+        var variables = CreateVariablesProvider(FixedUtcNow);
+        var nonceRepo = new Mock<INonceRepository>();
+        DateTime storedExpirationDate = FixedUtcNow.AddMinutes(-1);
+        DateTime extendedExpirationDate = FixedUtcNow.AddMinutes(5);
+
+        nonceRepo.Setup(r => r.InsertOneAsync(It.IsAny<Token>(), It.IsAny<CancellationToken>()))
+            .Returns(ValueTask.CompletedTask);
+        nonceRepo
+            .Setup(r => r.UpdateExpiryAsync(
+                FixedNonce,
+                extendedExpirationDate,
+                It.IsAny<CancellationToken>()))
+            .Callback(() => storedExpirationDate = extendedExpirationDate)
+            .ReturnsAsync(true);
+        nonceRepo
+            .Setup(r => r.TakeOneAsync(FixedNonce, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => Token.Create(FixedNonce, storedExpirationDate));
+
+        var generator = CreateGenerator(options, nonceRepo.Object, variables);
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "payload", null, CancellationToken.None);
+        var validationEvents = new ExtendingValidationEvents(
+            nonceRepo.Object, extendedExpirationDate);
+        var validator = CreateValidator(
+            options, nonceRepo.Object, variables, [validationEvents]);
+
+        string payload = await validator.ValidateBewitTokenAsync(
+            token, CancellationToken.None);
+
+        payload.Should().Be("payload");
+        validationEvents.ValidatingContext.Should().BeEquivalentTo(
+            new BewitTokenValidatingContext<string>(
+                "payload",
+                FixedNonce,
+                FixedUtcNow,
+                ExpiryMode.ServerControlled,
+                null));
+        validationEvents.ExpiredCallCount.Should().Be(0);
+        nonceRepo.Verify(
+            r => r.UpdateExpiryAsync(
+                FixedNonce,
+                extendedExpirationDate,
+                CancellationToken.None),
+            Times.Once);
+        nonceRepo.Verify(
+            r => r.TakeOneAsync(FixedNonce, CancellationToken.None),
+            Times.Once);
     }
 
     [Fact]
@@ -228,11 +332,11 @@ public class BewitTokenValidatorTests
         BewitToken<string> token = await generator.GenerateBewitTokenAsync(
             "payload", null, CancellationToken.None);
 
-        var observer = new Mock<IBewitTokenValidationObserver<string>>();
+        var validationEvents = new Mock<IBewitTokenValidationEvents<string>>();
         BewitTokenExpiredContext<string>? observedContext = null;
 
-        observer
-            .Setup(o => o.OnTokenExpiredAsync(
+        validationEvents
+            .Setup(o => o.OnExpiredAsync(
                 It.IsAny<BewitTokenExpiredContext<string>>(),
                 It.IsAny<CancellationToken>()))
             .Callback<BewitTokenExpiredContext<string>, CancellationToken>(
@@ -243,7 +347,7 @@ public class BewitTokenValidatorTests
             options,
             nonceRepo.Object,
             variables,
-            [observer.Object]);
+            [validationEvents.Object]);
 
         Func<Task> act = () => validator.ValidateBewitTokenAsync(
             token, CancellationToken.None).AsTask();
@@ -289,10 +393,57 @@ public class BewitTokenValidatorTests
         IOptions<BewitOptions> options,
         INonceRepository nonceRepo,
         IVariablesProvider variables,
-        IEnumerable<IBewitTokenValidationObserver<string>>? observers = null) =>
+        IEnumerable<IBewitTokenValidationEvents<string>>? validationEvents = null) =>
         new(options,
             new HmacSha256CryptographyService(options.Value.Secret),
             nonceRepo,
             variables,
-            observers ?? []);
+            validationEvents ?? []);
+
+    private sealed class ExtendingValidationEvents(
+        INonceRepository nonceRepository,
+        DateTime newExpirationDate) : IBewitTokenValidationEvents<string>
+    {
+        public BewitTokenValidatingContext<string>? ValidatingContext { get; private set; }
+
+        public int ExpiredCallCount { get; private set; }
+
+        public async ValueTask OnValidatingAsync(
+            BewitTokenValidatingContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            ValidatingContext = context;
+            await nonceRepository.UpdateExpiryAsync(
+                context.Nonce, newExpirationDate, cancellationToken);
+        }
+
+        public ValueTask OnExpiredAsync(
+            BewitTokenExpiredContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            ExpiredCallCount++;
+            return ValueTask.CompletedTask;
+        }
+    }
+
+    private sealed class RecordingValidationEvents(
+        string name,
+        ICollection<string> calls) : IBewitTokenValidationEvents<string>
+    {
+        public ValueTask OnValidatingAsync(
+            BewitTokenValidatingContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            calls.Add($"{name}:validating");
+            return ValueTask.CompletedTask;
+        }
+
+        public ValueTask OnExpiredAsync(
+            BewitTokenExpiredContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            calls.Add($"{name}:expired");
+            return ValueTask.CompletedTask;
+        }
+    }
 }

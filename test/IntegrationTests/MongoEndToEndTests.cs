@@ -1,5 +1,6 @@
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
+using Bewit.Validation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -149,5 +150,75 @@ public class MongoEndToEndTests(MongoReplicaSetResource mongoResource)
             .ValidateBewitTokenAsync(token, CancellationToken.None).AsTask();
 
         await act.Should().ThrowAsync<Exception>();
+    }
+
+    [Fact]
+    public async Task ValidationEvents_ShouldUpdateExpiredNonceBeforeValidation()
+    {
+        IMongoDatabase database = mongoResource.CreateDatabase();
+        DateTime newExpirationDate = DateTime.UtcNow.AddDays(7);
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o =>
+            {
+                o.Secret = "a-very-secret-key-at-least-32-chars!";
+                o.TokenDuration = TimeSpan.FromMinutes(-1);
+                o.ExpiryMode = ExpiryMode.ServerControlled;
+            });
+
+            bewit.UseMongoDb(
+                _ => database,
+                m => m.NonceUsage = NonceUsage.ReUse);
+
+            bewit.AddPayload<string>();
+        });
+        services.AddBewitTokenValidationEvents<string>(
+            (_, repository) => new ExtendingValidationEvents(
+                repository, newExpirationDate));
+        services.AddBewitGeneration<string>();
+        services.AddBewitValidation<string>();
+
+        await using ServiceProvider sp = services.BuildServiceProvider();
+        var generator = sp.GetRequiredService<IBewitTokenGenerator<string>>();
+        var validator = sp.GetRequiredService<IBewitTokenValidator<string>>();
+        var validationEvents = sp.GetRequiredService<
+            IBewitTokenValidationEvents<string>>();
+        BewitToken<string> token = await generator.GenerateBewitTokenAsync(
+            "expired-before-event", null, CancellationToken.None);
+
+        string payload = await validator.ValidateBewitTokenAsync(
+            token, CancellationToken.None);
+
+        payload.Should().Be("expired-before-event");
+        validationEvents.Should().BeOfType<ExtendingValidationEvents>();
+        ((ExtendingValidationEvents)validationEvents).ExpiredCallCount.Should().Be(0);
+    }
+
+    private sealed class ExtendingValidationEvents(
+        INonceRepository repository,
+        DateTime newExpirationDate) : IBewitTokenValidationEvents<string>
+    {
+        public int ExpiredCallCount { get; private set; }
+
+        public async ValueTask OnValidatingAsync(
+            BewitTokenValidatingContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            context.ExpiryMode.Should().Be(ExpiryMode.ServerControlled);
+            context.TokenExpirationDate.Should().BeNull();
+
+            await repository.UpdateExpiryAsync(
+                context.Nonce, newExpirationDate, cancellationToken);
+        }
+
+        public ValueTask OnExpiredAsync(
+            BewitTokenExpiredContext<string> context,
+            CancellationToken cancellationToken)
+        {
+            ExpiredCallCount++;
+            return ValueTask.CompletedTask;
+        }
     }
 }

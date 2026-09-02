@@ -6,6 +6,29 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class BewitValidationServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers a singleton validation event handler and supplies the nonce repository
+    /// configured for the payload type to its factory.
+    /// </summary>
+    public static IServiceCollection AddBewitTokenValidationEvents<T>(
+        this IServiceCollection services,
+        Func<IServiceProvider, INonceRepository, IBewitTokenValidationEvents<T>> factory)
+        where T : notnull
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+
+        string optionsName = typeof(T).FullName ?? typeof(T).Name;
+
+        services.AddSingleton<IBewitTokenValidationEvents<T>>(sp =>
+        {
+            var nonceRepository = sp.GetRequiredKeyedService<INonceRepository>(optionsName);
+
+            return factory(sp, nonceRepository);
+        });
+
+        return services;
+    }
+
     public static IServiceCollection AddBewitValidation<T>(
         this IServiceCollection services)
         where T : notnull
@@ -21,14 +44,14 @@ public static class BewitValidationServiceCollectionExtensions
             var cryptoService = new HmacSha256CryptographyService(bewitOptions.Secret);
             var nonceRepository = sp.GetRequiredKeyedService<INonceRepository>(optionsName);
             var variablesProvider = sp.GetRequiredService<IVariablesProvider>();
-            var observers = sp.GetServices<IBewitTokenValidationObserver<T>>();
+            var validationEvents = sp.GetServices<IBewitTokenValidationEvents<T>>();
 
             return new BewitTokenValidator<T>(
                 options,
                 cryptoService,
                 nonceRepository,
                 variablesProvider,
-                observers);
+                validationEvents);
         });
 
         return services;

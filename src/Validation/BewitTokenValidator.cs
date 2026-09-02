@@ -10,7 +10,7 @@ internal sealed class BewitTokenValidator<T>(
     ICryptographyService cryptographyService,
     INonceRepository nonceRepository,
     IVariablesProvider variablesProvider,
-    IEnumerable<IBewitTokenValidationObserver<T>> observers)
+    IEnumerable<IBewitTokenValidationEvents<T>> validationEvents)
     : IBewitTokenValidator<T>
     where T : notnull
 {
@@ -37,13 +37,24 @@ internal sealed class BewitTokenValidator<T>(
             throw new BewitInvalidException();
         }
 
+        DateTime validatedAt = variablesProvider.UtcNow;
+
+        await NotifyTokenValidatingAsync(
+            bewit,
+            validatedAt,
+            isSelfContained ? bewit.Token.ExpirationDate : null,
+            isSelfContained ? ExpiryMode.SelfContained : ExpiryMode.ServerControlled,
+            cancellationToken);
+
         if (isSelfContained)
         {
-            await ValidateSelfContainedExpiryAsync(bewit, cancellationToken);
+            await ValidateSelfContainedExpiryAsync(
+                bewit, validatedAt, cancellationToken);
         }
         else
         {
-            await ValidateServerControlledAsync(bewit, cancellationToken);
+            await ValidateServerControlledAsync(
+                bewit, validatedAt, cancellationToken);
         }
 
         return bewit.Payload;
@@ -51,10 +62,9 @@ internal sealed class BewitTokenValidator<T>(
 
     private async ValueTask ValidateSelfContainedExpiryAsync(
         Bewit<T> bewit,
+        DateTime validatedAt,
         CancellationToken cancellationToken)
     {
-        DateTime validatedAt = variablesProvider.UtcNow;
-
         if (bewit.Token.ExpirationDate is { } expirationDate
             && expirationDate < validatedAt)
         {
@@ -71,6 +81,7 @@ internal sealed class BewitTokenValidator<T>(
 
     private async ValueTask ValidateServerControlledAsync(
         Bewit<T> bewit,
+        DateTime validatedAt,
         CancellationToken cancellationToken)
     {
         Token? nonceRecord = await nonceRepository.TakeOneAsync(
@@ -86,8 +97,6 @@ internal sealed class BewitTokenValidator<T>(
             throw new BewitNotFoundException();
         }
 
-        DateTime validatedAt = variablesProvider.UtcNow;
-
         if (nonceRecord.ExpirationDate is { } expirationDate
             && expirationDate < validatedAt)
         {
@@ -99,6 +108,26 @@ internal sealed class BewitTokenValidator<T>(
                 cancellationToken);
 
             throw new BewitExpiredException();
+        }
+    }
+
+    private async ValueTask NotifyTokenValidatingAsync(
+        Bewit<T> bewit,
+        DateTime validatedAt,
+        DateTime? tokenExpirationDate,
+        ExpiryMode expiryMode,
+        CancellationToken cancellationToken)
+    {
+        var context = new BewitTokenValidatingContext<T>(
+            bewit.Payload,
+            bewit.Token.Nonce,
+            validatedAt,
+            expiryMode,
+            tokenExpirationDate);
+
+        foreach (IBewitTokenValidationEvents<T> events in validationEvents)
+        {
+            await events.OnValidatingAsync(context, cancellationToken);
         }
     }
 
@@ -116,9 +145,9 @@ internal sealed class BewitTokenValidator<T>(
             validatedAt,
             expiryMode);
 
-        foreach (IBewitTokenValidationObserver<T> observer in observers)
+        foreach (IBewitTokenValidationEvents<T> events in validationEvents)
         {
-            await observer.OnTokenExpiredAsync(context, cancellationToken);
+            await events.OnExpiredAsync(context, cancellationToken);
         }
     }
 }
