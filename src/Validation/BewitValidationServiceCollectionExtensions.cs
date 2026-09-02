@@ -21,12 +21,14 @@ public static class BewitValidationServiceCollectionExtensions
             var cryptoService = new HmacSha256CryptographyService(bewitOptions.Secret);
             var nonceRepository = sp.GetRequiredKeyedService<INonceRepository>(optionsName);
             var variablesProvider = sp.GetRequiredService<IVariablesProvider>();
+            var observers = sp.GetServices<IBewitTokenValidationObserver<T>>();
 
             return new BewitTokenValidator<T>(
                 options,
                 cryptoService,
                 nonceRepository,
-                variablesProvider);
+                variablesProvider,
+                observers);
         });
 
         return services;

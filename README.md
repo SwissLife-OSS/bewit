@@ -164,6 +164,40 @@ var validator = serviceProvider.GetRequiredService<IBewitTokenValidator<string>>
 string payload = await validator.ValidateBewitTokenAsync(token, cancellationToken);
 ```
 
+### Observe Expired Tokens
+
+Register one or more singleton observers when an application needs diagnostics for
+expired tokens. Observers run after token integrity has been verified and immediately
+before `BewitExpiredException` is thrown.
+
+```csharp
+public sealed class ShareLinkExpiryObserver
+    : IBewitTokenValidationObserver<ShareLinkPayload>
+{
+    public ValueTask OnTokenExpiredAsync(
+        BewitTokenExpiredContext<ShareLinkPayload> context,
+        CancellationToken cancellationToken)
+    {
+        // context.Payload is trusted at this point.
+        // context.ExpirationDate is authoritative for context.ExpiryMode.
+        Console.WriteLine(
+            $"Share {context.Payload.ShareId} expired at {context.ExpirationDate:O}");
+
+        return ValueTask.CompletedTask;
+    }
+}
+
+services.AddSingleton<
+    IBewitTokenValidationObserver<ShareLinkPayload>,
+    ShareLinkExpiryObserver>();
+```
+
+The context provides the validated payload, token nonce, authoritative expiration
+date, validation time, and expiry mode. It never exposes the raw token or its hash.
+For `SelfContained`, the expiration date comes from the signed token. For
+`ServerControlled`, it comes from the nonce repository record. Observers must be
+thread-safe and should not throw exceptions.
+
 ## Server-Controlled Tokens
 
 `ExpiryMode.ServerControlled` requires a persistent nonce repository.
