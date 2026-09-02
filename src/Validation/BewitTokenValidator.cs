@@ -9,7 +9,8 @@ internal sealed class BewitTokenValidator<T>(
     IOptions<BewitOptions> options,
     ICryptographyService cryptographyService,
     INonceRepository nonceRepository,
-    IVariablesProvider variablesProvider)
+    IVariablesProvider variablesProvider,
+    IEnumerable<IBewitTokenValidationEvents<T>> validationEvents)
     : IBewitTokenValidator<T>
     where T : notnull
 {
@@ -36,29 +37,51 @@ internal sealed class BewitTokenValidator<T>(
             throw new BewitInvalidException();
         }
 
+        DateTime validatedAt = variablesProvider.UtcNow;
+
+        await NotifyTokenValidatingAsync(
+            bewit,
+            validatedAt,
+            isSelfContained ? bewit.Token.ExpirationDate : null,
+            isSelfContained ? ExpiryMode.SelfContained : ExpiryMode.ServerControlled,
+            cancellationToken);
+
         if (isSelfContained)
         {
-            ValidateSelfContainedExpiry(bewit);
+            await ValidateSelfContainedExpiryAsync(
+                bewit, validatedAt, cancellationToken);
         }
         else
         {
-            await ValidateServerControlledAsync(bewit, cancellationToken);
+            await ValidateServerControlledAsync(
+                bewit, validatedAt, cancellationToken);
         }
 
         return bewit.Payload;
     }
 
-    private void ValidateSelfContainedExpiry(Bewit<T> bewit)
+    private async ValueTask ValidateSelfContainedExpiryAsync(
+        Bewit<T> bewit,
+        DateTime validatedAt,
+        CancellationToken cancellationToken)
     {
-        if (bewit.Token.ExpirationDate.HasValue
-            && bewit.Token.ExpirationDate.Value < variablesProvider.UtcNow)
+        if (bewit.Token.ExpirationDate is { } expirationDate
+            && expirationDate < validatedAt)
         {
+            await NotifyTokenExpiredAsync(
+                bewit,
+                expirationDate,
+                validatedAt,
+                ExpiryMode.SelfContained,
+                cancellationToken);
+
             throw new BewitExpiredException();
         }
     }
 
     private async ValueTask ValidateServerControlledAsync(
         Bewit<T> bewit,
+        DateTime validatedAt,
         CancellationToken cancellationToken)
     {
         Token? nonceRecord = await nonceRepository.TakeOneAsync(
@@ -74,10 +97,57 @@ internal sealed class BewitTokenValidator<T>(
             throw new BewitNotFoundException();
         }
 
-        if (nonceRecord.ExpirationDate.HasValue
-            && nonceRecord.ExpirationDate.Value < variablesProvider.UtcNow)
+        if (nonceRecord.ExpirationDate is { } expirationDate
+            && expirationDate < validatedAt)
         {
+            await NotifyTokenExpiredAsync(
+                bewit,
+                expirationDate,
+                validatedAt,
+                ExpiryMode.ServerControlled,
+                cancellationToken);
+
             throw new BewitExpiredException();
+        }
+    }
+
+    private async ValueTask NotifyTokenValidatingAsync(
+        Bewit<T> bewit,
+        DateTime validatedAt,
+        DateTime? tokenExpirationDate,
+        ExpiryMode expiryMode,
+        CancellationToken cancellationToken)
+    {
+        var context = new BewitTokenValidatingContext<T>(
+            bewit.Payload,
+            bewit.Token.Nonce,
+            validatedAt,
+            expiryMode,
+            tokenExpirationDate);
+
+        foreach (IBewitTokenValidationEvents<T> events in validationEvents)
+        {
+            await events.OnValidatingAsync(context, cancellationToken);
+        }
+    }
+
+    private async ValueTask NotifyTokenExpiredAsync(
+        Bewit<T> bewit,
+        DateTime expirationDate,
+        DateTime validatedAt,
+        ExpiryMode expiryMode,
+        CancellationToken cancellationToken)
+    {
+        var context = new BewitTokenExpiredContext<T>(
+            bewit.Payload,
+            bewit.Token.Nonce,
+            expirationDate,
+            validatedAt,
+            expiryMode);
+
+        foreach (IBewitTokenValidationEvents<T> events in validationEvents)
+        {
+            await events.OnExpiredAsync(context, cancellationToken);
         }
     }
 }
