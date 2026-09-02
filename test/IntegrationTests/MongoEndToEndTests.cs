@@ -1,3 +1,4 @@
+using Bewit.Exceptions;
 using Bewit.Generation;
 using Bewit.Storage.MongoDB;
 using Bewit.Validation;
@@ -150,6 +151,95 @@ public class MongoEndToEndTests(MongoReplicaSetResource mongoResource)
             .ValidateBewitTokenAsync(token, CancellationToken.None).AsTask();
 
         await act.Should().ThrowAsync<Exception>();
+    }
+
+    [Fact]
+    public async Task UpdateExpiryByIdentifier_ShouldUpdateAllActiveMatchingTokens()
+    {
+        IMongoDatabase database = mongoResource.CreateDatabase();
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o =>
+            {
+                o.Secret = "a-very-secret-key-at-least-32-chars!";
+                o.TokenDuration = TimeSpan.FromMinutes(-1);
+                o.ExpiryMode = ExpiryMode.ServerControlled;
+            });
+
+            bewit.UseMongoDb(
+                _ => database,
+                m => m.NonceUsage = NonceUsage.ReUse);
+
+            bewit.AddPayload<string>();
+        });
+
+        services.AddBewitGeneration<string>();
+        services.AddBewitValidation<string>();
+
+        await using ServiceProvider sp = services.BuildServiceProvider();
+        var generator = sp.GetRequiredService<IBewitTokenGenerator<string>>();
+        var validator = sp.GetRequiredService<IBewitTokenValidator<string>>();
+        var repository = sp.GetRequiredKeyedService<INonceRepository>(
+            typeof(string).FullName!);
+
+        BewitToken<string> firstToken = await generator.GenerateBewitTokenAsync(
+            "first", new BewitTokenOptions { Identifier = "share-123" }, CancellationToken.None);
+        BewitToken<string> secondToken = await generator.GenerateBewitTokenAsync(
+            "second", new BewitTokenOptions { Identifier = "share-123" }, CancellationToken.None);
+        BewitToken<string> otherToken = await generator.GenerateBewitTokenAsync(
+            "other", new BewitTokenOptions { Identifier = "share-456" }, CancellationToken.None);
+
+        bool updated = await repository.UpdateExpiryByIdentifierAsync(
+            "share-123", DateTime.UtcNow.AddDays(7), CancellationToken.None);
+
+        updated.Should().BeTrue();
+        (await validator.ValidateBewitTokenAsync(firstToken, CancellationToken.None))
+            .Should().Be("first");
+        (await validator.ValidateBewitTokenAsync(secondToken, CancellationToken.None))
+            .Should().Be("second");
+        Func<Task> validateOther = () => validator
+            .ValidateBewitTokenAsync(otherToken, CancellationToken.None).AsTask();
+        await validateOther.Should().ThrowAsync<BewitExpiredException>();
+    }
+
+    [Fact]
+    public async Task UpdateExpiryByIdentifier_ShouldIgnoreDeletedTokens()
+    {
+        IMongoDatabase database = mongoResource.CreateDatabase();
+        var services = new ServiceCollection();
+
+        services.AddBewit(bewit =>
+        {
+            bewit.ConfigureOptions(o =>
+            {
+                o.Secret = "a-very-secret-key-at-least-32-chars!";
+                o.ExpiryMode = ExpiryMode.ServerControlled;
+            });
+
+            bewit.UseMongoDb(
+                _ => database,
+                m => m.NonceUsage = NonceUsage.ReUse);
+
+            bewit.AddPayload<string>();
+        });
+
+        services.AddBewitGeneration<string>();
+
+        await using ServiceProvider sp = services.BuildServiceProvider();
+        var generator = sp.GetRequiredService<IBewitTokenGenerator<string>>();
+        var repository = sp.GetRequiredKeyedService<INonceRepository>(
+            typeof(string).FullName!);
+
+        await generator.GenerateBewitTokenAsync(
+            "deleted", new BewitTokenOptions { Identifier = "share-123" }, CancellationToken.None);
+        await repository.DeleteIdentifierAsync("share-123", CancellationToken.None);
+
+        bool updated = await repository.UpdateExpiryByIdentifierAsync(
+            "share-123", DateTime.UtcNow.AddDays(7), CancellationToken.None);
+
+        updated.Should().BeFalse();
     }
 
     [Fact]

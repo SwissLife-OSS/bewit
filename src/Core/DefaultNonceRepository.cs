@@ -20,4 +20,10 @@ internal sealed class DefaultNonceRepository : INonceRepository
         DateTime newExpiry,
         CancellationToken cancellationToken) =>
         throw new NotSupportedException(Message);
+
+    public ValueTask<bool> UpdateExpiryByIdentifierAsync(
+        string identifier,
+        DateTime newExpiry,
+        CancellationToken cancellationToken) =>
+        throw new NotSupportedException(Message);
 }

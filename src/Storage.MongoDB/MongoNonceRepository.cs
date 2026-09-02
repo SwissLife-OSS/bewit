@@ -88,6 +88,26 @@ internal sealed class MongoNonceRepository : INonceRepository
         return result.ModifiedCount > 0;
     }
 
+    public async ValueTask<bool> UpdateExpiryByIdentifierAsync(
+        string identifier,
+        DateTime newExpiry,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<NonceDocument> filter = Builders<NonceDocument>.Filter.And(
+            Builders<NonceDocument>.Filter.Eq(d => d.Identifier, identifier),
+            Builders<NonceDocument>.Filter.Eq(d => d.IsDeleted, false));
+
+        UpdateDefinition<NonceDocument> update = Builders<NonceDocument>.Update
+            .Set(d => d.ExpirationDate, newExpiry);
+
+        UpdateResult result = await _collection.UpdateManyAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+
+        return result.MatchedCount > 0;
+    }
+
     private void EnsureIndexes(int expireAfterDays)
     {
         var indexModels = new List<CreateIndexModel<NonceDocument>>
