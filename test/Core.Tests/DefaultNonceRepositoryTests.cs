@@ -49,4 +49,48 @@ public class DefaultNonceRepositoryTests
         await act.Should().ThrowAsync<NotSupportedException>()
             .WithMessage("*persistent nonce repository*");
     }
+
+    [Fact]
+    public async Task UpdateExpiryByIdentifierAsync_ShouldThrowNotSupportedException()
+    {
+        Func<Task> act = () => _sut
+            .UpdateExpiryByIdentifierAsync("share-123", DateTime.UtcNow, CancellationToken.None)
+            .AsTask();
+
+        await act.Should().ThrowAsync<NotSupportedException>()
+            .WithMessage("*persistent nonce repository*");
+    }
+
+    [Fact]
+    public async Task UpdateExpiryByIdentifierAsync_CustomRepositoryWithoutOverride_ShouldRemainCompatible()
+    {
+        INonceRepository repository = new ExistingCustomNonceRepository();
+
+        Func<Task> act = () => repository
+            .UpdateExpiryByIdentifierAsync("share-123", DateTime.UtcNow, CancellationToken.None)
+            .AsTask();
+
+        await act.Should().ThrowAsync<NotSupportedException>()
+            .WithMessage("*supports it*");
+    }
+
+    private sealed class ExistingCustomNonceRepository : INonceRepository
+    {
+        public ValueTask InsertOneAsync(Token token, CancellationToken cancellationToken) =>
+            ValueTask.CompletedTask;
+
+        public ValueTask<Token?> TakeOneAsync(Guid nonce, CancellationToken cancellationToken) =>
+            ValueTask.FromResult<Token?>(null);
+
+        public ValueTask DeleteIdentifierAsync(
+            string identifier,
+            CancellationToken cancellationToken) =>
+            ValueTask.CompletedTask;
+
+        public ValueTask<bool> UpdateExpiryAsync(
+            Guid nonce,
+            DateTime newExpiry,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult(false);
+    }
 }

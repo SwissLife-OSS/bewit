@@ -15,6 +15,7 @@ namespace Bewit;
 ///
 /// // Admin extends share link expiry
 /// await repository.UpdateExpiryAsync(nonceId, newExpiresAt, cancellationToken);
+/// await repository.UpdateExpiryByIdentifierAsync("share-123", newExpiresAt, cancellationToken);
 ///
 /// // Revoke all tokens for an identifier
 /// await repository.DeleteIdentifierAsync("user-123", cancellationToken);
@@ -50,4 +51,15 @@ public interface INonceRepository
         Guid nonce,
         DateTime newExpiry,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Sets the expiry of all active nonce records matching the identifier.
+    /// Returns <c>true</c> when at least one active record matched, otherwise <c>false</c>.
+    /// </summary>
+    ValueTask<bool> UpdateExpiryByIdentifierAsync(
+        string identifier,
+        DateTime newExpiry,
+        CancellationToken cancellationToken) =>
+        throw new NotSupportedException(
+            "Updating token expiry by identifier requires a nonce repository that supports it.");
 }
