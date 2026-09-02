@@ -264,29 +264,6 @@ public class Mutation(IBewitTokenRevoker<BarPayload> revoker)
 }
 ```
 
-## Updating Server-Controlled Expiry
-
-Set an identifier when generating server-controlled tokens when their expiry must
-later follow the lifetime of an owning resource. The configured nonce repository can
-then update every active token for that identifier in one operation:
-
-```csharp
-await generator.GenerateBewitTokenAsync(
-    payload,
-    new BewitTokenOptions { Identifier = shareId },
-    cancellationToken);
-
-bool found = await nonceRepository.UpdateExpiryByIdentifierAsync(
-    shareId,
-    newExpirationDate,
-    cancellationToken);
-```
-
-The operation returns `true` when at least one active nonce matched. Deleted or
-consumed nonces are not updated. Custom nonce repositories can implement this
-optional capability; repositories that do not support it throw
-`NotSupportedException`.
-
 ## MongoDB with OIDC (Azure Cosmos DB)
 
 ```csharp
