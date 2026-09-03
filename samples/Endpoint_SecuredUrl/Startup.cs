@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using Bewit;
-using Bewit.Generation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,17 +15,13 @@ namespace Host
         {
             services.AddBewit(bewit =>
             {
-                bewit.ConfigureOptions(o =>
-                {
-                    o.Secret = "ax54Z$tgs87454";
-                    o.TokenDuration = TimeSpan.FromMinutes(5);
-                });
-
-                bewit.AddPayload<string>();
+                bewit.UseSigningKey(
+                    "sample", "sample-signing-key-with-at-least-32-bytes");
+                bewit.AddToken<string>("download", token => token
+                    .Configure(options => options.Lifetime = TimeSpan.FromMinutes(5)));
             });
 
-            services.AddBewitGeneration<string>();
-            services.AddBewitValidation<string>();
+            services.AddBewitAspNetCore();
             services.AddRouting();
         }
 
@@ -38,14 +33,12 @@ namespace Host
             }
 
             app.UseRouting()
-                .UseBewitEndpointAuthorization<string>()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/download/{id:int}", async c =>
-                    {
-                        var bytes = Encoding.UTF8.GetBytes("hello world");
-                        await c.Response.Body.WriteAsync(bytes, 0, bytes.Length);
-                    });
+                    endpoints.MapGet(
+                        "/download/{id:int}",
+                        () => Results.Text("hello world"))
+                        .AddBewitAuthorization<string>();
 
                     endpoints.MapGet("/opensesame/{id:int}", async c =>
                     {
@@ -55,7 +48,7 @@ namespace Host
                         var id = c.Request.RouteValues.GetValueOrDefault("id");
 
                         BewitToken<string> token =
-                            await generator.GenerateBewitTokenAsync(
+                            await generator.GenerateAsync(
                                 $"/download/{id}", default);
 
                         string html = @$"<html><a href=""/download/{id}?bewit={token}"">download</a>

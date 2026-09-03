@@ -9,31 +9,28 @@ public static class BewitServiceCollectionExtensions
         this IServiceCollection services,
         Action<BewitBuilder> configure)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
         var builder = new BewitBuilder(services);
         configure(builder);
 
-        services.TryAddSingleton<IVariablesProvider, VariablesProvider>();
-        services.AddHttpContextAccessor();
-
-        var optionsBuilder = services
-            .AddOptions<BewitTokenExtractionOptions>();
-
-        if (builder.TokenExtractionConfigSection is not null)
+        OptionsBuilder<BewitOptions> optionsBuilder = services.AddOptions<BewitOptions>();
+        if (builder.ConfigurationSection is not null)
         {
-            optionsBuilder.BindConfiguration(
-                builder.TokenExtractionConfigSection);
+            optionsBuilder.BindConfiguration(builder.ConfigurationSection);
         }
-
-        if (builder.TokenExtractionAction is not null)
+        if (builder.ConfigureAction is not null)
         {
-            optionsBuilder.Configure(builder.TokenExtractionAction);
+            optionsBuilder.Configure(builder.ConfigureAction);
         }
+        optionsBuilder.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IValidateOptions<BewitOptions>, BewitOptionsValidator>());
+        optionsBuilder.ValidateOnStart();
 
-        optionsBuilder
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton<IBewitTokenIdGenerator, BewitTokenIdGenerator>();
 
-        foreach (Action<IServiceCollection> registration in builder.PayloadRegistrations)
+        foreach (Action<IServiceCollection> registration in builder.Registrations)
         {
             registration(services);
         }

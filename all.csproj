@@ -6,11 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(BuildTestsOnly)' != 'true'">
-    <ProjectReference Include="**/*.csproj" />
+    <ProjectReference Include="src/Core/Core.csproj" />
+    <ProjectReference Include="src/Storage.MongoDB/Storage.MongoDB.csproj" />
+    <ProjectReference Include="src/Extensions.Http/Extensions.Http.csproj" />
+    <ProjectReference Include="src/Extensions.HotChocolate/Extensions.HotChocolate.csproj" />
+    <ProjectReference Include="src/Compatibility.V8/Compatibility.V8.csproj" />
+    <ProjectReference Include="src/Compatibility.V8.MongoDB/Compatibility.V8.MongoDB.csproj" />
+    <ProjectReference Include="samples/Endpoint_SecuredUrl/Endpoint.SecuredUrl.csproj" />
+    <ProjectReference Include="samples/HotChocolate_FileDownload/HotChocolate.FileDownload.csproj" />
+    <ProjectReference Include="samples/HotChocolate_SecuredArgument/HotChocolate.SecuredArgument.csproj" />
+    <ProjectReference Include="test/Core.Tests/Core.Tests.csproj" />
+    <ProjectReference Include="test/IntegrationTests/IntegrationTests.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildTestsOnly)' == 'true'">
-    <ProjectReference Include="**/test/**/*.csproj" />
+    <ProjectReference Include="test/Core.Tests/Core.Tests.csproj" />
+    <ProjectReference Include="test/IntegrationTests/IntegrationTests.csproj" />
   </ItemGroup>
 
 </Project>

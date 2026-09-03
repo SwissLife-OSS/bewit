@@ -1,77 +1,71 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Bewit;
 
 public sealed class BewitBuilder
 {
-    internal IServiceCollection Services { get; }
+    private readonly HashSet<Type> _payloadTypes = [];
+    private readonly HashSet<string> _purposes = new(StringComparer.Ordinal);
 
+    internal BewitBuilder(IServiceCollection services) => Services = services;
+
+    public IServiceCollection Services { get; }
     internal string? ConfigurationSection { get; private set; }
+    internal Action<BewitOptions>? ConfigureAction { get; private set; }
+    internal IList<Action<IServiceCollection>> Registrations { get; } = [];
 
-    internal Action<BewitOptions>? GlobalOptionsAction { get; private set; }
-
-    internal Func<IServiceProvider, INonceRepository>? NonceRepositoryFactory { get; private set; }
-
-    internal Action<BewitTokenExtractionOptions>? TokenExtractionAction { get; private set; }
-
-    internal string? TokenExtractionConfigSection { get; private set; }
-
-    internal List<Action<IServiceCollection>> PayloadRegistrations { get; } = [];
-
-    internal BewitBuilder(IServiceCollection services)
+    public BewitBuilder BindConfiguration(string sectionName)
     {
-        Services = services;
-    }
-
-    public BewitBuilder BindConfiguration(string sectionPath)
-    {
-        ConfigurationSection = sectionPath;
-
+        ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
+        ConfigurationSection = sectionName;
         return this;
     }
 
-    public BewitBuilder ConfigureOptions(Action<BewitOptions> configure)
+    public BewitBuilder Configure(Action<BewitOptions> configure)
     {
-        GlobalOptionsAction = configure;
-
+        ArgumentNullException.ThrowIfNull(configure);
+        ConfigureAction += configure;
         return this;
     }
 
-    public BewitBuilder UseNonceRepository(
-        Func<IServiceProvider, INonceRepository> factory)
+    public BewitBuilder UseSigningKey(string keyId, string key)
     {
-        NonceRepositoryFactory = factory;
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        return Configure(options =>
+        {
+            options.CurrentKeyId = keyId;
+            options.SigningKeys[keyId] = key;
+        });
+    }
 
+    public BewitBuilder AddToken<TPayload>(
+        string purpose,
+        Action<BewitTokenBuilder<TPayload>>? configure = null)
+        where TPayload : notnull
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(purpose);
+
+        if (!_payloadTypes.Add(typeof(TPayload)))
+        {
+            throw new InvalidOperationException(
+                $"Payload type '{typeof(TPayload)}' is already registered.");
+        }
+
+        if (!_purposes.Add(purpose))
+        {
+            throw new InvalidOperationException($"Token purpose '{purpose}' is already registered.");
+        }
+
+        var tokenBuilder = new BewitTokenBuilder<TPayload>(Services, purpose);
+        configure?.Invoke(tokenBuilder);
+        Registrations.Add(tokenBuilder.Register);
         return this;
     }
 
-    public BewitBuilder AddPayload<T>(Action<PayloadBuilder<T>>? configure = null) where T : notnull
+    public BewitBuilder AddStateStore<TStore>()
+        where TStore : class, IBewitTokenStateStore
     {
-        var payloadBuilder = new PayloadBuilder<T>();
-        configure?.Invoke(payloadBuilder);
-
-        Func<IServiceProvider, INonceRepository>? builderFactory = NonceRepositoryFactory;
-        string? section = ConfigurationSection;
-
-        PayloadRegistrations.Add(services =>
-            PayloadRegistrationHelper.Register(
-                services, payloadBuilder, section, GlobalOptionsAction, builderFactory));
-
-        return this;
-    }
-
-    public BewitBuilder ConfigureTokenExtraction(
-        Action<BewitTokenExtractionOptions> configure)
-    {
-        TokenExtractionAction = configure;
-
-        return this;
-    }
-
-    public BewitBuilder BindTokenExtractionConfiguration(string sectionPath)
-    {
-        TokenExtractionConfigSection = sectionPath;
-
+        Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IBewitTokenStateStore, TStore>());
         return this;
     }
 }

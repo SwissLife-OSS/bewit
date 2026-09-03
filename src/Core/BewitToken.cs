@@ -1,7 +1,7 @@
 namespace Bewit;
 
 /// <summary>
-/// Opaque, URL-safe wrapper around a serialized and Base64-encoded <see cref="Bewit{T}"/>.
+/// Opaque, URL-safe wrapper around an encoded and signed token envelope.
 /// This is the value transmitted over the wire (in headers, query parameters, or URLs).
 /// </summary>
 /// <typeparam name="T">The payload type.</typeparam>

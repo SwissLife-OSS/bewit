@@ -22,7 +22,7 @@ namespace Host
         {
             Document? document = _repository.GetDocument(documentName);
 
-            if(document == null)
+            if (document == null)
             {
                 throw new Exception("Document could not be found.");
             }

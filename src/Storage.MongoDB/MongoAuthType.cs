@@ -1,4 +1,4 @@
-namespace Bewit.Storage.MongoDB;
+namespace Bewit.MongoDB;
 
 public enum MongoAuthType
 {

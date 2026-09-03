@@ -1,15 +1,14 @@
+using System;
+using System.Collections.Generic;
+using Bewit;
+using Host.Data;
+using Host.Models;
+using Host.Types;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HotChocolate.AspNetCore;
-using Host.Data;
-using Host.Types;
-using System;
-using Host.Models;
-using System.Collections.Generic;
-using Bewit;
-using Bewit.Storage.MongoDB;
 
 namespace Host
 {
@@ -28,48 +27,22 @@ namespace Host
 
             services.AddBewit(bewit =>
             {
-                bewit.ConfigureOptions(o =>
+                bewit.UseSigningKey(
+                    "sample", "sample-signing-key-with-at-least-32-bytes");
+                bewit.UseMongoDb(mongo =>
                 {
-                    o.Secret = "ax54Z$tgs87454";
-                    o.TokenDuration = TimeSpan.FromMinutes(5);
+                    mongo.ConnectionString = "mongodb://localhost:27017";
+                    mongo.DatabaseName = "bewit_secured_argument";
                 });
 
-                bewit.AddPayload<FooPayload>();
-
-                bewit.AddPayload<BarPayload>(p =>
-                {
-                    p.ConfigureOptions(o =>
-                    {
-                        o.ExpiryMode = ExpiryMode.ServerControlled;
-                    });
-
-                    p.UseMongoDb(m =>
-                    {
-                        m.ConnectionString = "mongodb://localhost:27017";
-                        m.DatabaseName = "bewit_secured_argument";
-                    });
-                });
-
-                bewit.AddPayload<BazPayload>(p =>
-                {
-                    p.ConfigureOptions(o =>
-                    {
-                        o.ExpiryMode = ExpiryMode.ServerControlled;
-                    });
-
-                    p.UseMongoDb(m =>
-                    {
-                        m.ConnectionString = "mongodb://localhost:27017";
-                        m.DatabaseName = "bewit_secured_argument";
-                    });
-                });
+                bewit.AddToken<FooPayload>("foo");
+                bewit.AddToken<BarPayload>("bar", token => token
+                    .UseServerControlledExpiration());
+                bewit.AddToken<BazPayload>("baz", token => token
+                    .UseServerControlledExpiration());
             });
 
-            services.AddBewitGeneration<FooPayload>();
-            services.AddBewitGeneration<BarPayload>();
-            services.AddBewitGeneration<BazPayload>();
-            services.AddBewitValidation<FooPayload>();
-            services.AddBewitValidation<BarPayload>();
+            services.AddBewitAspNetCore();
 
             services
                 .AddGraphQLServer()
@@ -90,7 +63,6 @@ namespace Host
             }
 
             app
-                .UseBewitTokenExtraction()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {

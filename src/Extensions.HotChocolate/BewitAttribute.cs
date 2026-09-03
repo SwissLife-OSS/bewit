@@ -27,7 +27,7 @@ public sealed class BewitAttribute<T> : ObjectFieldDescriptorAttribute
             descriptor.Use(next => async middlewareContext =>
             {
                 if (middlewareContext.Result is IError error
-                    && error.Exception is BewitNotFoundException or BewitExpiredException)
+                    && error.Exception is BewitException)
                 {
                     if (SuppressExceptions)
                     {

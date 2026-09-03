@@ -3,11 +3,8 @@ using Xunit;
 
 namespace Bewit.IntegrationTests;
 
-public static class TestCollectionNames
+[CollectionDefinition(Name)]
+public sealed class IntegrationFixture : ICollectionFixture<MongoReplicaSetResource>
 {
-    public const string Integration = "Integration";
+    public const string Name = "MongoDB";
 }
-
-[CollectionDefinition(TestCollectionNames.Integration)]
-public class IntegrationFixture :
-    ICollectionFixture<MongoReplicaSetResource>;

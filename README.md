@@ -1,460 +1,163 @@
 # Bewit
 
-**Bewit is an authentication scheme for secure, temporary access tokens.**
-
-Bewit enables authentication in use cases where cookies and auth headers can't be used — file downloads, temporary links, single-use tokens, and share links with admin-controlled expiry.
-
-## Features
-
-- **Self-Contained tokens** — expiry embedded in the token (stateless)
-- **Server-Controlled tokens** — expiry managed in the database; requires `UseMongoDb()` or `UseNonceRepository()`
-- **Token revocation** — type-safe `IBewitTokenRevoker<T>` to revoke tokens by identifier
-- **Multi-tenancy** — different secrets and modes per payload type
-- **MongoDB persistence** — with OIDC auth support (Azure.Identity)
-- **HotChocolate integration** — `[Bewit<T>]` attribute for GraphQL resolvers
-- **MVC integration** — `[BewitMvc]`, `[FromBewit]`, `[BewitUrlAuthorization]` filters
-- **Aspire-ready** — connection string pattern for distributed apps
-
-## Quick Start
-
-### Install
-
-```bash
-dotnet add package Bewit
-dotnet add package Bewit.Generation
-dotnet add package Bewit.Validation
-```
-
-### Registration
-
-**From appsettings.json:**
-```json
-{
-  "Bewit": {
-    "Secret": "your-secret-at-least-32-chars!",
-    "TokenDuration": "00:05:00",
-    "ExpiryMode": "SelfContained"
-  }
-}
-```
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.BindConfiguration("Bewit");
-    bewit.AddPayload<string>();
-});
-
-services.AddBewitGeneration<string>();
-services.AddBewitValidation<string>();
-```
-
-**Or code-only:**
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.ConfigureOptions(o =>
-    {
-        o.Secret = "your-secret-at-least-32-chars!";
-        o.TokenDuration = TimeSpan.FromMinutes(5);
-        o.ExpiryMode = ExpiryMode.SelfContained;
-    });
-
-    bewit.AddPayload<string>();
-});
-
-services.AddBewitGeneration<string>();
-services.AddBewitValidation<string>();
-```
-
-Both can be combined — `BindConfiguration` loads from appsettings first, then `ConfigureOptions` overrides specific values.
-
-## Configuration
-
-v7.0 supports `appsettings.json` binding, code-based configuration, or both. When combined, code wins (standard .NET options layering: Bind → Configure → PostConfigure).
-
-### From appsettings.json
-```json
-{
-  "Bewit": {
-    "Secret": "your-secret-at-least-32-chars!",
-    "TokenDuration": "00:05:00",
-    "ExpiryMode": "SelfContained"
-  }
-}
-```
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.BindConfiguration("Bewit");
-    bewit.AddPayload<string>();
-});
-```
-
-### Code overrides on top of config
-
-Aspire-friendly — `IConfiguration` is read at resolve time, not registration time:
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.BindConfiguration("Bewit");
-    bewit.ConfigureOptions(o =>
-    {
-        o.TokenDuration = TimeSpan.FromMinutes(30); // overrides appsettings value
-    });
-    bewit.AddPayload<string>();
-});
-```
-
-### Per-payload config section
-
-Each payload type can bind to its own config section:
-```json
-{
-  "Bewit": {
-    "Secret": "global-secret",
-    "TokenDuration": "00:05:00"
-  },
-  "Bewit:Downloads": {
-    "Secret": "download-secret",
-    "TokenDuration": "00:01:00",
-    "ExpiryMode": "ServerControlled"
-  }
-}
-```
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.BindConfiguration("Bewit");
-    bewit.AddPayload<string>();
-    bewit.AddPayload<DownloadPayload>(p =>
-        p.BindConfiguration("Bewit:Downloads")); // overrides global section
-});
-```
-
-### Code-only (no appsettings)
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.ConfigureOptions(o =>
-    {
-        o.Secret = "your-secret";
-        o.TokenDuration = TimeSpan.FromMinutes(5);
-    });
-    bewit.AddPayload<string>();
-});
-```
-
-### Generate a Token
-
-```csharp
-var generator = serviceProvider.GetRequiredService<IBewitTokenGenerator<string>>();
-
-BewitToken<string> token = await generator.GenerateBewitTokenAsync(
-    "my-payload", null, cancellationToken);
-```
-
-### Validate a Token
-
-```csharp
-var validator = serviceProvider.GetRequiredService<IBewitTokenValidator<string>>();
-
-string payload = await validator.ValidateBewitTokenAsync(token, cancellationToken);
-```
-
-### Validation Events
-
-Register one or more singleton event handlers to run application logic after token
-integrity has been verified. `OnValidatingAsync` runs before expiry and nonce validation;
-`OnExpiredAsync` runs immediately before `BewitExpiredException` is thrown.
-
-```csharp
-public sealed class ShareLinkValidationEvents(
-    INonceRepository nonceRepository,
-    IShareLinkRepository shareLinks,
-    IExpiredTokenTelemetry telemetry)
-    : IBewitTokenValidationEvents<ShareLinkPayload>
-{
-    public async ValueTask OnValidatingAsync(
-        BewitTokenValidatingContext<ShareLinkPayload> context,
-        CancellationToken cancellationToken)
-    {
-        // Example application policy: synchronize a server-controlled nonce
-        // before Bewit loads and validates it.
-        ShareLink link = await shareLinks.GetAsync(
-            context.Payload.ShareId, cancellationToken);
-
-        if (context.ExpiryMode == ExpiryMode.ServerControlled
-            && link.ExpiresAt > context.ValidatedAt)
-        {
-            await nonceRepository.UpdateExpiryAsync(
-                context.Nonce, link.ExpiresAt, cancellationToken);
-        }
-    }
-
-    public ValueTask OnExpiredAsync(
-        BewitTokenExpiredContext<ShareLinkPayload> context,
-        CancellationToken cancellationToken)
-    {
-        telemetry.RecordExpiredToken(
-            context.Payload.ShareId,
-            context.ExpirationDate,
-            context.ValidatedAt);
-
-        return ValueTask.CompletedTask;
-    }
-}
-
-services.AddBewitTokenValidationEvents<ShareLinkPayload>(
-    (sp, nonceRepository) => new ShareLinkValidationEvents(
-        nonceRepository,
-        sp.GetRequiredService<IShareLinkRepository>(),
-        sp.GetRequiredService<IExpiredTokenTelemetry>()));
-```
-
-Both contexts provide the trusted payload, token nonce, validation time, and expiry
-mode without exposing the raw token or hash. `TokenExpirationDate` on the validating
-context contains the signed expiry for `SelfContained` tokens and is `null` for
-`ServerControlled` tokens because the handler runs before the nonce repository is read.
-`ExpirationDate` on the expired context is always authoritative: it comes from the
-signed token for `SelfContained` and the nonce repository for `ServerControlled`.
-Handlers run sequentially in registration order, must be thread-safe, and should not
-throw exceptions.
-
-## Server-Controlled Tokens
-
-`ExpiryMode.ServerControlled` requires a persistent nonce repository.
-The app fails at startup if `ServerControlled` is set without `UseMongoDb()` / `UseNonceRepository()`.
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.ConfigureOptions(o =>
-    {
-        o.Secret = "your-secret";
-        o.TokenDuration = TimeSpan.FromDays(7);
-        o.ExpiryMode = ExpiryMode.ServerControlled;
-    });
-
-    bewit.UseMongoDb(mongo =>
-    {
-        mongo.ConnectionString = "mongodb://localhost:27017";
-        mongo.DatabaseName = "myapp";
-    });
-
-    bewit.AddPayload<ShareLinkPayload>();
-});
-```
-
-## Token Revocation
-
-Inject `IBewitTokenRevoker<T>` to revoke all tokens for an identifier — no keyed DI magic strings needed:
-
-```csharp
-public class Mutation(IBewitTokenRevoker<BarPayload> revoker)
-{
-    public async Task<string> InvalidateTokens(string identifier, CancellationToken ct)
-    {
-        await revoker.RevokeByIdentifierAsync(identifier, ct);
-
-        return identifier;
-    }
-}
-```
-
-## MongoDB with OIDC (Azure Cosmos DB)
-
-```csharp
-bewit.UseMongoDb(mongo =>
-{
-    mongo.ConnectionString = "mongodb+srv://...";
-    mongo.DatabaseName = "mydb";
-    mongo.AuthType = MongoAuthType.Oidc;
-    mongo.OidcScopes = ["https://cosmos-db-scope/.default"];
-});
-```
-
-Or reuse an existing `IMongoDatabase` from DI — the recommended approach when the service already uses [`MongoDB.Extensions.Context`](https://github.com/SwissLife-OSS/mongo-extensions):
-
-```csharp
-// Register the context once
-services.AddMongoDbContext<MyDbContext, IMyDbContext>(
-    configurationSection: "MongoDb");
-
-// Bewit reuses its IMongoDatabase — no second connection opened
-services.AddBewit(bewit =>
-{
-    bewit.UseMongoDb(
-        sp => sp.GetRequiredService<IMyDbContext>().Database,
-        mongo => { mongo.NonceUsage = NonceUsage.OneTime; });
-
-    bewit.AddPayload<MyPayload>(p =>
-        p.ConfigureOptions(o => o.ExpiryMode = ExpiryMode.ServerControlled));
-});
-```
-
-This shares the connection pool and inherits the convention packs, serializer registrations, and read/write concerns configured on the context.
-
-## Multiple Payloads with Shared MongoDB
-
-All payloads inherit the builder-level MongoDB and options. Per-payload overrides are possible:
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.ConfigureOptions(o =>
-    {
-        o.Secret = "your-secret";
-        o.ExpiryMode = ExpiryMode.ServerControlled;
-    });
-
-    bewit.UseMongoDb(mongo =>
-    {
-        mongo.ConnectionString = "mongodb://localhost:27017";
-        mongo.DatabaseName = "myapp";
-        mongo.NonceUsage = NonceUsage.ReUse;
-    });
-
-    bewit.AddPayload<NominationBewitContext>();
-    bewit.AddPayload<UserRegistrationBewitContext>();
-    bewit.AddPayload<DocumentDownloadBewitContext>();
-
-    // Override: self-contained, no MongoDB needed
-    bewit.AddPayload<DownloadBewitContext>(p =>
-    {
-        p.ConfigureOptions(o =>
-        {
-            o.ExpiryMode = ExpiryMode.SelfContained;
-            o.TokenDuration = TimeSpan.FromMinutes(5);
-        });
-    });
-});
-```
-
-## HotChocolate Integration
-
-```bash
-dotnet add package Bewit.Extensions.HotChocolate
-```
-
-### `[Bewit<T>]` Attribute
-
-```csharp
-[Mutation]
-[Bewit<NominationBewitContext>(ExceptionType = typeof(BewitValidationException))]
-public static async Task<NominationDto> AssignNomineeAsync(
-    [Service] IHttpContextAccessor httpContextAccessor, ...)
-{
-    var context = httpContextAccessor.GetBewitPayload<NominationBewitContext>();
-}
-```
-
-### Setup
-
-```csharp
-app.UseBewitTokenExtraction();
-```
-
-## HTTP Endpoint Integration
-
-```bash
-dotnet add package Bewit.Http
-```
-
-### Minimal API — Endpoint Filter (recommended)
-
-Apply authorization to individual routes or route groups:
-```csharp
-app.MapGet("/files/{id}", (string id) => ...)
-    .AddBewitAuthorization<MyPayload>();
-
-// or protect a group of endpoints:
-app.MapGroup("/api/files")
-    .AddBewitAuthorization<MyPayload>();
-```
-
-The filter validates the token from the configured header, query parameter, or pre-extracted `HttpContext.Items` entry, and makes the payload available via `GetBewitPayload<T>()`.
-
-### Middleware (global)
-
-Protect all endpoints via middleware:
-```csharp
-app.UseBewitEndpointAuthorization<MyPayload>();
-```
-
-## Token Extraction
-
-All extensions (HotChocolate, Http, Mvc) read the bewit token from the same configurable sources: an HTTP **header** and/or a **query parameter**. Header takes precedence when both are present.
-
-Defaults match the v6.x behavior:
-- Header: `bewitToken`
-- Query parameter: `bewit`
-
-### Code configuration
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.ConfigureTokenExtraction(o =>
-    {
-        o.HeaderName = "X-Custom-Token";
-        o.QueryParamName = "token";
-    });
-
-    bewit.AddPayload<string>();
-});
-```
-
-### appsettings.json
-```json
-{
-  "Bewit:TokenExtraction": {
-    "HeaderName": "X-Custom-Token",
-    "QueryParamName": "token"
-  }
-}
-```
-
-```csharp
-services.AddBewit(bewit =>
-{
-    bewit.BindTokenExtractionConfiguration("Bewit:TokenExtraction");
-    bewit.AddPayload<string>();
-});
-```
-
-Both can be combined — `BindTokenExtractionConfiguration` loads from appsettings first, then `ConfigureTokenExtraction` overrides specific values (standard .NET options layering).
-
-## MVC Integration
-
-```bash
-dotnet add package Bewit.Extensions.Mvc
-```
-
-```csharp
-[BewitUrlAuthorization]
-[HttpGet("download/{id}")]
-public IActionResult Download(string id) { ... }
-```
+Bewit creates short-lived, purpose-bound HMAC tokens for links and API operations. Version 9 has one core package for issuing and validating tokens, a stable `bwt1` wire format, explicit key rotation, and a generic server-side token repository.
 
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| `Bewit` | Core abstractions, models, crypto, DI |
-| `Bewit.Generation` | Token generation |
-| `Bewit.Validation` | Token validation |
-| `Bewit.Storage.MongoDB` | MongoDB nonce repository with OIDC support |
-| `Bewit.Extensions.HotChocolate` | HotChocolate `[Bewit<T>]`, middleware |
-| `Bewit.Extensions.Mvc` | MVC filters and parameter binding |
-| `Bewit.Http` | Minimal API endpoint authorization |
+| Package | Purpose |
+| --- | --- |
+| `Bewit` | Core contracts, v9 generation and validation |
+| `Bewit.MongoDB` | Server-controlled v9 token state in MongoDB |
+| `Bewit.AspNetCore` | ASP.NET Core token extraction and endpoint authorization |
+| `Bewit.HotChocolate` | Hot Chocolate field middleware |
+| `Bewit.Compatibility.V8` | Optional read-only v8 token validation |
+| `Bewit.Compatibility.V8.MongoDB` | Optional access to the old `bewit_nonces` collection |
 
-## Migration
+The v8 `Bewit.Generation`, `Bewit.Validation`, `Bewit.Storage.MongoDB`, `Bewit.Http`, and `Bewit.Extensions.Mvc` packages are discontinued.
 
-See [Migration Guide v7](docs/migration-guide-v7.md).
+## Registration
 
-## Community
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.UseSigningKey("2026-09", configuration["Bewit:SigningKey"]!);
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](https://contributor-covenant.org/)
-to clarify expected behavior in our community. For more information, see the [Swiss Life OSS Code of Conduct](https://swisslife-oss.github.io/coc).
+    bewit.UseMongoDb(mongo =>
+    {
+        mongo.ConnectionString = configuration.GetConnectionString("MongoDb")!;
+        mongo.DatabaseName = "sharebox";
+    });
+
+    bewit.AddToken<UserShareLinkPayload>("share-link", token => token
+        .UseServerControlledExpiration()
+        .UseReusableTokens()
+        .Configure(options => options.Lifetime = TimeSpan.FromDays(7)));
+});
+```
+
+`AddToken<TPayload>` registers the generator, validator, and generic repository together. A payload type and a purpose can each be registered only once in a service provider. The purpose is a stable protocol value; do not derive it from a CLR type name.
+
+The signing key must contain at least 32 UTF-8 bytes. To rotate keys, add the previous and new keys to `SigningKeys` and set `CurrentKeyId` to the new key. Existing tokens select their verification key by signed key ID.
+
+## Generate and validate
+
+```csharp
+BewitToken<UserShareLinkPayload> token = await generator.GenerateAsync(
+    payload,
+    new BewitTokenOptions
+    {
+        Identifier = shareLink.Id.ToString(),
+        Lifetime = TimeSpan.FromDays(7)
+    },
+    cancellationToken);
+
+UserShareLinkPayload payload = await validator.ValidateAsync(token, cancellationToken);
+```
+
+New tokens always use `bwt1.<envelope>.<signature>`. The envelope and signature are Base64Url without padding. The signed envelope contains the version, key ID, purpose, expiration mode, token ID, optional embedded expiration, and payload. Validators sign the exact envelope bytes and never fall back to v8 after seeing the `bwt1` prefix.
+
+## Server-controlled expiration and revocation
+
+Server-controlled tokens are stored in the `bewit_tokens` collection by default. State is scoped by purpose and format.
+
+```csharp
+IBewitTokenRepository<UserShareLinkPayload> repository = ...;
+
+BewitBulkOperationResult updated = await repository.UpdateExpirationByIdentifierAsync(
+    shareLink.Id.ToString(),
+    newExpiration,
+    cancellationToken);
+
+BewitBulkOperationResult revoked = await repository.RevokeByIdentifierAsync(
+    shareLink.Id.ToString(),
+    cancellationToken);
+```
+
+Expiration updates intentionally match active tokens even when their previous expiration has passed. This makes an expired share usable again after the application extends both its domain record and Bewit state. Bulk results report affected records per token format during migration.
+
+`UpdateExpirationAsync(reference, ...)` updates one known token. `TryConsumeAsync` is atomic for single-use tokens. Self-contained tokens do not create repository state and cannot be single-use.
+
+## Validation policies and observers
+
+Policies run after signature verification and after server state has been loaded, but before status and expiration enforcement. They can perform an application-specific repair and request exactly one state reload.
+
+```csharp
+public sealed class LegacySharePolicy(
+    IBewitTokenRepository<UserShareLinkPayload> repository,
+    TimeProvider timeProvider)
+    : IBewitTokenValidationPolicy<UserShareLinkPayload>
+{
+    public async ValueTask<BewitTokenValidationPolicyResult> OnValidatingAsync(
+        BewitTokenValidationContext<UserShareLinkPayload> context,
+        CancellationToken cancellationToken)
+    {
+        if (context.Reference.Format != BewitTokenFormat.V8
+            || context.Record?.Identifier is not null)
+        {
+            return BewitTokenValidationPolicyResult.Continue;
+        }
+
+        await repository.UpdateExpirationAsync(
+            context.Reference,
+            timeProvider.GetUtcNow().AddDays(7),
+            cancellationToken);
+
+        return BewitTokenValidationPolicyResult.RefreshState;
+    }
+}
+```
+
+Register it on the token: `.AddValidationPolicy<LegacySharePolicy>()`. Policy exceptions fail validation. Observers use `IBewitTokenValidationObserver<TPayload>` for validated, expired, and rejected telemetry; observer failures are logged and never alter authentication.
+
+## ASP.NET Core
+
+```csharp
+services.AddBewitAspNetCore(options =>
+{
+    options.HeaderName = "bewitToken";
+    options.QueryParameterName = "bewit";
+});
+
+app.UseBewitEndpointAuthorization<UserShareLinkPayload>();
+// or: endpoint.AddBewitAuthorization<UserShareLinkPayload>();
+```
+
+Missing tokens return 401 and invalid, expired, consumed, or revoked tokens return 403. A successful validation stores the typed payload on `HttpContext`; read it with `httpContext.GetBewitPayload<TPayload>()`.
+
+## V8 to v9 migration
+
+Install both compatibility packages only in applications that must accept links issued by v8:
+
+```csharp
+services.AddBewit(bewit =>
+{
+    bewit.UseSigningKey("v9-current", v9SigningKey);
+    bewit.UseMongoDb(mongo =>
+    {
+        mongo.ConnectionString = mongoConnectionString;
+        mongo.DatabaseName = databaseName;
+        mongo.CollectionName = "bewit_tokens";
+    });
+    bewit.UseV8MongoDb("share-link", legacy =>
+    {
+        legacy.CollectionName = "bewit_nonces";
+        legacy.Usage = BewitTokenUsage.Reusable;
+    });
+
+    bewit.AddToken<UserShareLinkPayload>("share-link", token => token
+        .UseServerControlledExpiration()
+        .AcceptV8Tokens(v8 =>
+        {
+            v8.Secret = legacySecret;
+            v8.ExpirationMode = BewitExpirationMode.ServerControlled;
+            v8.PayloadTypeName = "ShareBox.Api.UserShareLinkPayload";
+            v8.AcceptUntil = DateTimeOffset.Parse("2026-12-01T00:00:00Z");
+        }));
+});
+```
+
+There is no legacy issuing switch: after deploying v9, every newly generated token is v9. Unprefixed input is dispatched only to the v8 codec. `bwt1` input is dispatched only to v9.
+
+Use a blue-green or otherwise atomic traffic cutover. A mixed deployment is unsafe because an old v8 instance cannot validate a v9 token created by a new instance. Keep `bewit_nonces` untouched while compatibility is enabled; v9 writes only to `bewit_tokens`. Remove both compatibility packages after the longest v8 lifetime and operational grace period have elapsed.
+
+See [the v9 migration guide](docs/migration-guide-v9.md) for the rollout and rollback checklist.

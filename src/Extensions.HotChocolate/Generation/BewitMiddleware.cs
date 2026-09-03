@@ -1,4 +1,3 @@
-using Bewit.Generation;
 using HotChocolate.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,10 +11,10 @@ internal sealed class BewitMiddleware<T>(FieldDelegate next) where T : notnull
 
         if (context.Result is T payload)
         {
-            var generator = context.Services
+            IBewitTokenGenerator<T> generator = context.Services
                 .GetRequiredService<IBewitTokenGenerator<T>>();
 
-            BewitToken<T> token = await generator.GenerateBewitTokenAsync(
+            BewitToken<T> token = await generator.GenerateAsync(
                 payload, null, context.RequestAborted);
 
             context.Result = (string)token;

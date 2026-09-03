@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Bewit.Http</RootNamespace>
-    <AssemblyName>Bewit.Http</AssemblyName>
-    <PackageId>Bewit.Http</PackageId>
+    <RootNamespace>Bewit.AspNetCore</RootNamespace>
+    <AssemblyName>Bewit.AspNetCore</AssemblyName>
+    <PackageId>Bewit.AspNetCore</PackageId>
+    <Description>ASP.NET Core extraction and endpoint authorization for Bewit tokens.</Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="..\Validation\Validation.csproj"/>
     <ProjectReference Include="..\Core\Core.csproj"/>
   </ItemGroup>
 

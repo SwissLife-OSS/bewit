@@ -1,5 +1,5 @@
+using Bewit.AspNetCore;
 using Bewit.Exceptions;
-using Bewit.Validation;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
@@ -29,16 +29,9 @@ internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
             return;
         }
 
-        var options = context.Services
-            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
-
-        string? tokenString = null;
-
-        if (httpContext.Items.TryGetValue(
-                options.Value.ContextKey, out var tokenObj))
-        {
-            tokenString = tokenObj as string;
-        }
+        IOptions<BewitAspNetCoreOptions> options = context.Services
+            .GetRequiredService<IOptions<BewitAspNetCoreOptions>>();
+        string? tokenString = httpContext.GetBewitToken(options.Value);
 
         if (string.IsNullOrWhiteSpace(tokenString))
         {
@@ -53,14 +46,14 @@ internal sealed class BewitAuthorizationMiddleware<T>(FieldDelegate next)
 
         try
         {
-            var validator = context.Services
+            IBewitTokenValidator<T> validator = context.Services
                 .GetRequiredService<IBewitTokenValidator<T>>();
 
             var bewitToken = new BewitToken<T>(tokenString);
-            T payload = await validator.ValidateBewitTokenAsync(
+            T payload = await validator.ValidateAsync(
                 bewitToken, context.RequestAborted);
 
-            httpContextAccessor.SetBewitPayload(payload);
+            httpContext.SetBewitPayload(payload);
         }
         catch (BewitException ex)
         {

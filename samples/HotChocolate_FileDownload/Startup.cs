@@ -1,17 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Bewit;
+using Host.Data;
+using Host.Models;
+using Host.Types;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HotChocolate.AspNetCore;
-using Host.Data;
-using Host.Types;
-using System;
-using Host.Models;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
-using Bewit;
 
 namespace Host
 {
@@ -31,17 +31,13 @@ namespace Host
 
             services.AddBewit(bewit =>
             {
-                bewit.ConfigureOptions(o =>
-                {
-                    o.Secret = "ax54Z$tgs87454";
-                    o.TokenDuration = TimeSpan.FromMinutes(5);
-                });
-
-                bewit.AddPayload<string>();
+                bewit.UseSigningKey(
+                    "sample", "sample-signing-key-with-at-least-32-bytes");
+                bewit.AddToken<string>("download-url", token => token
+                    .Configure(options => options.Lifetime = TimeSpan.FromMinutes(5)));
             });
 
-            services.AddBewitGeneration<string>();
-            services.AddBewitValidation<string>();
+            services.AddBewitAspNetCore();
 
             services
                 .AddGraphQLServer()
