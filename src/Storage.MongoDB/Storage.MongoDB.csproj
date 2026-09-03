@@ -1,19 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Bewit.Storage.MongoDB</RootNamespace>
-    <AssemblyName>Bewit.Storage.MongoDB</AssemblyName>
-    <PackageId>Bewit.Storage.MongoDB</PackageId>
+    <RootNamespace>Bewit.MongoDB</RootNamespace>
+    <AssemblyName>Bewit.MongoDB</AssemblyName>
+    <PackageId>Bewit.MongoDB</PackageId>
+    <Description>MongoDB state storage for server-controlled Bewit v9 tokens.</Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
     <PackageReference Include="MongoDB.Driver" />
   </ItemGroup>
 

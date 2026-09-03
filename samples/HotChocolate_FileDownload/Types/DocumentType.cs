@@ -3,7 +3,7 @@ using HotChocolate.Types;
 
 namespace Host.Types
 {
-    public class DocumentType: ObjectType<Document>
+    public class DocumentType : ObjectType<Document>
     {
         protected override void Configure(IObjectTypeDescriptor<Document> descriptor)
         {

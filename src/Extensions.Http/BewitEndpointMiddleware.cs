@@ -1,34 +1,17 @@
 using Bewit.Exceptions;
-using Bewit.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bewit.Http;
+namespace Bewit.AspNetCore;
 
 internal sealed class BewitEndpointMiddleware<T>(
     RequestDelegate next,
-    IOptions<BewitTokenExtractionOptions> options) where T : notnull
+    IOptions<BewitAspNetCoreOptions> options) where T : notnull
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        BewitTokenExtractionOptions config = options.Value;
-
-        string? bewitToken = null;
-
-        if (config.Sources.HasFlag(BewitTokenSource.Header)
-            && context.Request.Headers.TryGetValue(
-                config.HeaderName, out var headerValues)
-            && headerValues.Count > 0)
-        {
-            bewitToken = headerValues[0];
-        }
-
-        if (string.IsNullOrWhiteSpace(bewitToken)
-            && config.Sources.HasFlag(BewitTokenSource.QueryString))
-        {
-            bewitToken = context.Request.Query[config.QueryParamName];
-        }
+        string? bewitToken = context.GetBewitToken(options.Value);
 
         if (string.IsNullOrWhiteSpace(bewitToken))
         {
@@ -37,19 +20,16 @@ internal sealed class BewitEndpointMiddleware<T>(
             return;
         }
 
-        var validator = context.RequestServices
+        IBewitTokenValidator<T> validator = context.RequestServices
             .GetRequiredService<IBewitTokenValidator<T>>();
 
         try
         {
-            T payload = await validator.ValidateBewitTokenAsync(
+            T payload = await validator.ValidateAsync(
                 new BewitToken<T>(bewitToken),
                 context.RequestAborted);
 
-            var httpContextAccessor = context.RequestServices
-                .GetRequiredService<IHttpContextAccessor>();
-
-            httpContextAccessor.SetBewitPayload(payload);
+            context.SetBewitPayload(payload);
         }
         catch (BewitException)
         {

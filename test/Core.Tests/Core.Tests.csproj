@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\Compatibility.V8\Compatibility.V8.csproj" />
   </ItemGroup>
 
 </Project>

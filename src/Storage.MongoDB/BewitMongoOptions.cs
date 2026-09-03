@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 
-namespace Bewit.Storage.MongoDB;
+namespace Bewit.MongoDB;
 
 public sealed class BewitMongoOptions
 {
@@ -11,13 +11,11 @@ public sealed class BewitMongoOptions
     [Required]
     public string DatabaseName { get; set; } = string.Empty;
 
-    public string CollectionName { get; set; } = "bewit_nonces";
+    public string CollectionName { get; set; } = "bewit_tokens";
 
     public MongoAuthType AuthType { get; set; } = MongoAuthType.Password;
 
     public List<string>? OidcScopes { get; set; }
-
-    public NonceUsage NonceUsage { get; set; } = NonceUsage.OneTime;
 
     public int RecordExpireAfterDays { get; set; } = 730;
 }

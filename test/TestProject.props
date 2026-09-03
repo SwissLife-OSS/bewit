@@ -18,11 +18,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Moq" />
-    <PackageReference Include="Snapshooter.Xunit" />
-    <PackageReference Include="Squadron.Mongo" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="coverlet.msbuild" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
   </ItemGroup>
 
 </Project>

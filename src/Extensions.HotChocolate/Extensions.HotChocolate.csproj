@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Bewit.Extensions.HotChocolate</RootNamespace>
-    <AssemblyName>Bewit.Extensions.HotChocolate</AssemblyName>
-    <PackageId>Bewit.Extensions.HotChocolate</PackageId>
+    <RootNamespace>Bewit.HotChocolate</RootNamespace>
+    <AssemblyName>Bewit.HotChocolate</AssemblyName>
+    <PackageId>Bewit.HotChocolate</PackageId>
+    <Description>Hot Chocolate field middleware for Bewit token generation and validation.</Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="..\Generation\Generation.csproj" />
-    <ProjectReference Include="..\Validation\Validation.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Extensions.Http\Extensions.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

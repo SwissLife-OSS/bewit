@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Bewit;
-using Bewit.Generation;
 
 namespace Host.Types
 {
@@ -9,23 +8,23 @@ namespace Host.Types
     {
         private readonly IBewitTokenGenerator<FooPayload> _fooPayloadGenerator;
         private readonly IBewitTokenGenerator<BarPayload> _barPayloadGenerator;
-        private readonly IBewitTokenRevoker<BarPayload> _barRevoker;
+        private readonly IBewitTokenRepository<BarPayload> _barRepository;
 
         public Mutation(
             IBewitTokenGenerator<FooPayload> fooPayloadGenerator,
             IBewitTokenGenerator<BarPayload> barPayloadGenerator,
-            IBewitTokenRevoker<BarPayload> barRevoker)
+            IBewitTokenRepository<BarPayload> barRepository)
         {
             _fooPayloadGenerator = fooPayloadGenerator;
             _barPayloadGenerator = barPayloadGenerator;
-            _barRevoker = barRevoker;
+            _barRepository = barRepository;
         }
 
         public async Task<string> InvalidateBewitTokens(
             string identifier,
             CancellationToken cancellationToken)
         {
-            await _barRevoker.RevokeByIdentifierAsync(identifier, cancellationToken);
+            await _barRepository.RevokeByIdentifierAsync(identifier, cancellationToken);
 
             return identifier;
         }
@@ -33,7 +32,7 @@ namespace Host.Types
         public async Task<string> CreateBewitToken(string value)
         {
             return (await _fooPayloadGenerator
-                    .GenerateBewitTokenAsync(
+                    .GenerateAsync(
                         new FooPayload { Value = value },
                         default))
                 .ToString();
@@ -42,7 +41,7 @@ namespace Host.Types
         public async Task<string> CreateIdentifiableBewitToken(string identifier)
         {
             return (await _barPayloadGenerator
-                    .GenerateBewitTokenAsync(
+                    .GenerateAsync(
                         new BarPayload(),
                         new BewitTokenOptions { Identifier = identifier },
                         default))

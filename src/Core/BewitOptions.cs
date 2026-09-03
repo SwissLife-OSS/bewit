@@ -1,53 +1,45 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 
 namespace Bewit;
 
-/// <summary>
-/// Configuration options for the Bewit token system.
-/// Supports named options for multi-tenancy scenarios.
-/// </summary>
-/// <example>
-/// <code>
-/// services.AddBewit(bewit =>
-/// {
-///     bewit.ConfigureOptions(o =>
-///     {
-///         o.Secret = "my-secret-key";
-///         o.TokenDuration = TimeSpan.FromMinutes(5);
-///         o.ExpiryMode = ExpiryMode.ServerControlled;
-///     });
-/// });
-/// </code>
-/// </example>
 public sealed class BewitOptions
 {
-    /// <summary>
-    /// Secret used for HMAC-SHA256 hash generation. Mandatory.
-    /// </summary>
-    [Required]
-    public string Secret { get; set; } = string.Empty;
+    public string CurrentKeyId { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Default duration of generated tokens.
-    /// For <see cref="ExpiryMode.SelfContained"/>, this is the authoritative expiry baked into the token.
-    /// For <see cref="ExpiryMode.ServerControlled"/>, this is a generous fallback safety net in the token;
-    /// the nonce repository record holds the real expiry.
-    /// Default is 60 seconds.
-    /// </summary>
-    public TimeSpan TokenDuration { get; set; } = TimeSpan.FromMinutes(1);
+    public Dictionary<string, string> SigningKeys { get; set; } = [];
 
-    /// <summary>
-    /// Controls how token expiration is enforced.
-    /// Default is <see cref="ExpiryMode.SelfContained"/>.
-    /// </summary>
-    public ExpiryMode ExpiryMode { get; set; } = ExpiryMode.SelfContained;
+    public int MaximumTokenSizeBytes { get; set; } = 16 * 1024;
 }
 
-/// <summary>
-/// Validates <see cref="BewitOptions"/> using data annotations and custom rules.
-/// </summary>
-[OptionsValidator]
-public partial class BewitOptionsValidator : IValidateOptions<BewitOptions>
+internal sealed class BewitOptionsValidator : IValidateOptions<BewitOptions>
 {
+    public ValidateOptionsResult Validate(string? name, BewitOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(options.CurrentKeyId))
+        {
+            return ValidateOptionsResult.Fail("CurrentKeyId is required.");
+        }
+
+        if (!options.SigningKeys.TryGetValue(options.CurrentKeyId, out _))
+        {
+            return ValidateOptionsResult.Fail(
+                $"Signing key '{options.CurrentKeyId}' is not configured.");
+        }
+
+        if (options.SigningKeys.Any(pair =>
+                string.IsNullOrWhiteSpace(pair.Key)
+                || System.Text.Encoding.UTF8.GetByteCount(pair.Value) < 32))
+        {
+            return ValidateOptionsResult.Fail(
+                "Every signing key must have a non-empty ID and contain at least 32 UTF-8 bytes.");
+        }
+
+        if (options.MaximumTokenSizeBytes is < 256 or > 1024 * 1024)
+        {
+            return ValidateOptionsResult.Fail(
+                "MaximumTokenSizeBytes must be between 256 and 1048576.");
+        }
+
+        return ValidateOptionsResult.Success;
+    }
 }

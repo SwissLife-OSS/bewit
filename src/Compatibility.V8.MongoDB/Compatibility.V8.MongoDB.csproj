@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Bewit.Compatibility.V8.MongoDB</RootNamespace>
+    <AssemblyName>Bewit.Compatibility.V8.MongoDB</AssemblyName>
+    <PackageId>Bewit.Compatibility.V8.MongoDB</PackageId>
+    <Description>Read and update compatibility for legacy Bewit v8 MongoDB nonce collections.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Compatibility.V8\Compatibility.V8.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="MongoDB.Driver" />
+  </ItemGroup>
+</Project>

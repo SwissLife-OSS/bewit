@@ -2,7 +2,7 @@ using Azure.Core;
 using Azure.Identity;
 using MongoDB.Driver.Authentication.Oidc;
 
-namespace Bewit.Storage.MongoDB;
+namespace Bewit.MongoDB;
 
 internal sealed class BewitOidcCallback(List<string> scopes) : IOidcCallback
 {

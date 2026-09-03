@@ -1,10 +1,9 @@
 using Bewit.Exceptions;
-using Bewit.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bewit.Http;
+namespace Bewit.AspNetCore;
 
 public sealed class BewitEndpointFilter<T> : IEndpointFilter
     where T : notnull
@@ -13,33 +12,11 @@ public sealed class BewitEndpointFilter<T> : IEndpointFilter
         EndpointFilterInvocationContext context,
         EndpointFilterDelegate next)
     {
-        var httpContext = context.HttpContext;
-        var options = httpContext.RequestServices
-            .GetRequiredService<IOptions<BewitTokenExtractionOptions>>();
+        HttpContext httpContext = context.HttpContext;
+        IOptions<BewitAspNetCoreOptions> options = httpContext.RequestServices
+            .GetRequiredService<IOptions<BewitAspNetCoreOptions>>();
 
-        BewitTokenExtractionOptions config = options.Value;
-
-        string? tokenString = null;
-
-        if (httpContext.Items.TryGetValue(config.ContextKey, out var tokenObj))
-        {
-            tokenString = tokenObj as string;
-        }
-
-        if (string.IsNullOrWhiteSpace(tokenString)
-            && config.Sources.HasFlag(BewitTokenSource.Header)
-            && httpContext.Request.Headers.TryGetValue(
-                config.HeaderName, out var headerValues)
-            && headerValues.Count > 0)
-        {
-            tokenString = headerValues[0];
-        }
-
-        if (string.IsNullOrWhiteSpace(tokenString)
-            && config.Sources.HasFlag(BewitTokenSource.QueryString))
-        {
-            tokenString = httpContext.Request.Query[config.QueryParamName];
-        }
+        string? tokenString = httpContext.GetBewitToken(options.Value);
 
         if (string.IsNullOrWhiteSpace(tokenString))
         {
@@ -48,17 +25,14 @@ public sealed class BewitEndpointFilter<T> : IEndpointFilter
 
         try
         {
-            var validator = httpContext.RequestServices
+            IBewitTokenValidator<T> validator = httpContext.RequestServices
                 .GetRequiredService<IBewitTokenValidator<T>>();
 
-            var payload = await validator.ValidateBewitTokenAsync(
+            T payload = await validator.ValidateAsync(
                 new BewitToken<T>(tokenString),
                 httpContext.RequestAborted);
 
-            var httpContextAccessor = httpContext.RequestServices
-                .GetRequiredService<IHttpContextAccessor>();
-
-            httpContextAccessor.SetBewitPayload(payload);
+            httpContext.SetBewitPayload(payload);
         }
         catch (BewitException)
         {
